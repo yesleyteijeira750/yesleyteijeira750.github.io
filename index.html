@@ -7,6 +7,7 @@
   <meta name="description" content="Join Bountiful Blessings of Charlotte County Inc in fighting hunger and serving our community.">
   <link href="https://fonts.googleapis.com/css?family=Montserrat:700,400&display=swap" rel="stylesheet">
   <style>
+    html { scroll-behavior: smooth; }
     body {
       margin: 0;
       font-family: 'Montserrat', Arial, sans-serif;
@@ -15,26 +16,25 @@
     }
     header {
       background: #ffb347;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.07);
       padding: 20px 0;
       text-align: center;
-      position: relative;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.07);
     }
     header img.logo {
       width: 110px;
-      vertical-align: middle;
       border-radius: 20px;
       margin-right: 16px;
+      vertical-align: middle;
       box-shadow: 0 2px 8px rgba(0,0,0,0.09);
     }
     header h1 {
       display: inline-block;
-      font-size: 2.3em;
       color: #fff;
-      margin: 0;
+      font-size: 2.3em;
       font-weight: 700;
-      letter-spacing: 1px;
+      margin: 0;
       vertical-align: middle;
+      letter-spacing: 1px;
       text-shadow: 1px 2px 6px rgba(0,0,0,0.13);
     }
     nav {
@@ -53,37 +53,32 @@
       transition: background 0.18s;
       box-shadow: 0 2px 8px rgba(255,136,51,0.09);
     }
-    nav a:hover {
-      background: #e76600;
-    }
+    nav a:hover { background: #e76600; }
     .hero {
       background: linear-gradient(120deg,#ffb347 0%,#70a47b 100%);
       padding: 38px 18px;
       border-radius: 0 0 52px 52px;
       text-align: center;
       color: #fff;
-      margin-bottom: 30px;
       box-shadow: 0 4px 18px rgba(0,0,0,0.04);
+      margin-bottom: 30px;
     }
     .hero h2 {
-      font-size: 2em;
-      margin-bottom: 10px;
-      font-weight: 700;
-      letter-spacing: 1px;
+      font-size: 2em; margin-bottom: 10px;
+      font-weight: 700; letter-spacing: 1px;
       text-shadow: 1px 2px 8px rgba(0,0,0,0.09);
     }
     .hero p {
       font-size: 1.19em;
-      margin: 0 0 18px 0;
-      color: #f9f8f8;
+      margin-bottom: 18px;
       text-shadow: 1px 1px 6px rgba(0,0,0,0.10);
     }
     .cta-buttons {
-      margin-top: 24px;
       display: flex;
       justify-content: center;
       gap: 20px;
       flex-wrap: wrap;
+      margin-top: 24px;
     }
     .cta-buttons a {
       background: #fff;
@@ -93,23 +88,20 @@
       border-radius: 32px;
       text-decoration: none;
       font-size: 1.07em;
-      box-shadow: 0 2px 14px rgba(255,136,51,0.09);
       transition: background 0.22s, color 0.22s;
       border: 2px solid #ff8833;
+      box-shadow: 0 2px 14px rgba(255,136,51,0.09);
     }
     .cta-buttons a.cta-green {
       color: #70a47b;
       border-color: #70a47b;
     }
-    .cta-buttons a:hover {
-      background: #ff8833;
-      color: #fff;
-    }
+    .cta-buttons a:hover { background: #ff8833; color: #fff; }
     .container {
       max-width: 900px;
       margin: 0 auto;
-      padding: 24px 18px;
       background: #fff7eb;
+      padding: 24px 18px;
       border-radius: 18px;
       box-shadow: 0 4px 18px rgba(0,0,0,0.08);
     }
@@ -117,50 +109,37 @@
       font-size: 1.5em;
       color: #ff8833;
       font-weight: 700;
-      margin-bottom: 10px;
-      margin-top: 38px;
+      margin: 38px 0 10px;
       text-align: center;
     }
     .schedule, .mission {
       background: #e8e2d2;
-      border-radius: 10px;
       padding: 16px 18px;
       margin-bottom: 18px;
       font-size: 1.09em;
+      border-radius: 10px;
       box-shadow: 0 2px 7px rgba(112,164,123,0.06);
     }
     .mission {
       background: #f1f8e9;
-      color: #222;
       border-left: 8px solid #70a47b;
       font-size: 1.16em;
     }
     footer {
       background: #222;
       color: #fff;
-      padding: 24px 0;
       text-align: center;
-      border-radius: 32px 32px 0 0;
+      padding: 24px 0;
       margin-top: 42px;
-      font-size: 0.98em;
+      border-radius: 32px 32px 0 0;
       box-shadow: 0 -2px 16px rgba(0,0,0,0.07);
+      font-size: 0.98em;
     }
-    footer a {
-      color: #ffb347;
-      text-decoration: none;
-      font-weight: 700;
-    }
+    footer a { color: #ffb347; text-decoration: none; font-weight: 700; }
     @media (max-width: 800px) {
-      .container {
-        padding: 11px 4px;
-        max-width: 98vw;
-      }
-      header h1 {
-        font-size: 1.3em;
-      }
-      .hero h2 {
-        font-size: 1.3em;
-      }
+      header h1 { font-size: 1.3em; }
+      .hero h2 { font-size: 1.3em; }
+      .container { padding: 11px 4px; max-width: 98vw; }
     }
   </style>
 </head>
@@ -174,6 +153,7 @@
       <a href="#contact">Contact</a>
     </nav>
   </header>
+
   <div class="hero">
     <h2>Join Us in Fighting Hunger!</h2>
     <p>Together we serve Charlotte County by giving hope, food and community. Be a part of something bigger—volunteer, donate, or help us spread the word!</p>
@@ -183,29 +163,35 @@
       <a href="https://www.facebook.com/share/g/1BPajU3Der/" target="_blank">Join Facebook Group</a>
     </div>
   </div>
+
   <div class="container">
     <div class="section-title" id="mission">Our Mission</div>
     <div class="mission">
       <b>Fighting hunger, building hope.</b><br>
       We collect, store and distribute nutritious food—produce, dairy, proteins and dry goods—serving those in need. 100% volunteer-run, we focus on logistics, supply and distribution to maximize every donation.
     </div>
+
     <div class="section-title" id="schedule">Food Pantry Schedule</div>
     <div class="schedule">
-      <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQZQ8NezyhVGK2L99HE_gTxFmjNnsWKwYplfMKjUksXTuqBdklUSfdN9rV6rgINIQ/embed?start=false&loop=false&delayms=5000"
-        frameborder="0" width="100%" height="480" allowfullscreen mozallowfullscreen webkitallowfullscreen>
+      <iframe
+        src="https://docs.google.com/presentation/d/e/2PACX-1vQZQ8NezyhVGK2L99HE_gTxFmjNnsWKwYplfMKjUksXTuqBdklUSfdN9rV6rgINIQ/embed?start=false&loop=false&delayms=5000"
+        frameborder="0" width="100%" height="480"
+        allowfullscreen mozallowfullscreen webkitallowfullscreen>
       </iframe>
       <small>*Check Facebook for holiday closures or changes.</small>
     </div>
+
     <div class="section-title" id="contact">Contact & Location</div>
     <div class="schedule">
       <ul>
-        <li><b>Phone:</b> <a href="tel:9418838439">(941) 883 ‐8439</a></li>
+        <li><b>Phone:</b> <a href="tel:9418838439">(941) 883‑8439</a></li>
         <li><b>Punta Gorda Pantry:</b> <b>New Life Church</b>, 507 W Marion Ave, Punta Gorda, FL</li>
         <li><b>Email:</b> <a href="mailto:aguilesa@gmail.com">aguilesa@gmail.com</a></li>
         <li><b>Official Address:</b> Port Charlotte (Alton Rd), FL</li>
       </ul>
     </div>
   </div>
+
   <footer>
     &copy; 2025 Bountiful Blessings of Charlotte County Inc &mdash;
     <a href="https://www.facebook.com/share/g/1BPajU3Der/" target="_blank">Facebook Group</a> |
