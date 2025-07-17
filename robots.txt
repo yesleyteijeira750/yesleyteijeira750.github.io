@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://bountifulblessingsofcharlottecountyinc.org/sitemap.xml
