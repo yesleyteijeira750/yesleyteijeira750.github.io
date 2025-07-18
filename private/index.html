@@ -4,149 +4,147 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Private Access - Bountiful Blessings</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'Montserrat', sans-serif;
-      background: #fdf6f0;
+      background: #fff8f0;
+      padding: 30px;
       color: #333;
-      margin: 0;
-      padding: 0;
       text-align: center;
     }
+
     .container {
-      max-width: 700px;
+      max-width: 600px;
       margin: 60px auto;
       background: #fff;
       padding: 30px;
       border-radius: 12px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     }
-    input[type="password"] {
-      padding: 10px;
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
       font-size: 1em;
-      width: 80%;
-      max-width: 300px;
-      border-radius: 6px;
       border: 1px solid #ccc;
-      margin-top: 10px;
+      border-radius: 8px;
     }
+
     button {
-      margin-top: 16px;
-      padding: 10px 24px;
-      font-size: 1em;
+      padding: 12px 28px;
       background-color: #FFB27F;
       color: white;
+      font-weight: bold;
       border: none;
       border-radius: 30px;
       cursor: pointer;
-      font-weight: 600;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
+
     button:hover {
       background-color: #f79960;
     }
-    .error {
-      color: red;
-      margin-top: 10px;
-    }
+
+    .error { color: red; }
+    .success { color: green; }
+
     iframe {
-      border: none;
       width: 100%;
       max-width: 960px;
       height: 600px;
-      margin-top: 20px;
+      border: none;
+      margin-top: 30px;
       border-radius: 12px;
     }
   </style>
 </head>
 <body>
 
-  <!-- Password Section -->
-  <div class="container" id="auth-container">
-    <h2>Private Access</h2>
-    <p>Please enter the access password to continue:</p>
-    <input type="password" id="password" placeholder="Enter password" />
-    <br />
-    <button onclick="checkPassword()">Continue</button>
-    <div class="error" id="error-message"></div>
-  </div>
+<div class="container" id="auth">
+  <h2>Private Access</h2>
+  <p>Please enter the password to access:</p>
+  <input type="password" id="password" placeholder="Enter password">
+  <button onclick="checkPassword()">Continue</button>
+  <p class="error" id="authError"></p>
+</div>
 
-  <!-- Google Form Section -->
-  <div class="container" id="form-container" style="display: none;">
-    <h2>Quick Verification</h2>
-    <p>Please complete this short form to continue:</p>
-    <iframe id="form-frame" src="https://docs.google.com/forms/d/e/1FAIpQLSdJP2C9ncT0M2WxkLqvtUJ3keidjnbl9Udop4ZwVuDJRxFQtQ/viewform?embedded=true" width="640" height="763">Loading…</iframe>
-    <button id="continueButton" onclick="goToContent()" style="margin-top: 20px; display: none;">Continue to Site</button>
-  </div>
+<div class="container" id="form" style="display:none;">
+  <h2>Quick Verification</h2>
+  <p>Please fill out to proceed:</p>
+  <form id="verifyForm">
+    <input type="text" name="name" placeholder="Full Name" required>
+    <select name="residency" required>
+      <option value="">Are you a resident of Varanda 1, 2, 3, Gulf Breeze or attend Victory Church?</option>
+      <option value="yes">Yes</option>
+      <option value="no">No</option>
+    </select>
+    <button type="submit">Submit</button>
+    <p class="error" id="formError"></p>
+    <p class="success" id="formSuccess"></p>
+  </form>
+</div>
 
-  <!-- Final Content Section -->
-  <div class="container" id="content-container" style="display: none;">
-    <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQUlsBjGyFOn6K5lJwZuCkgcBwhWLnIDj-kbprtEZa-1rpYw3MlgtN_uyqnGt1mEbcjEghY4JMJepQr/pubembed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
-  </div>
+<div class="container" id="content" style="display:none;">
+  <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQUlsBjGyFOn6K5lJwZuCkgcBwhWLnIDj-kbprtEZa-1rpYw3MlgtN_uyqnGt1mEbcjEghY4JMJepQr/pubembed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
+</div>
 
-  <script>
-    const PASSWORD = "Greendoor22";
+<script>
+  const PASSWORD = "Greendoor22";
+  const scriptURL = "https://script.google.com/macros/s/AKfycbxwPT9NZumdYSpdC0K6qHIJj2d03j1XuvO6FYxsuQJZRbgLN5UrKjLuzLoQID9LRSgieA/exec";
 
-    function checkPassword() {
-      const input = document.getElementById('password').value;
-      const error = document.getElementById('error-message');
+  function checkPassword() {
+    const input = document.getElementById('password').value;
+    const error = document.getElementById('authError');
+    if (input === PASSWORD) {
+      localStorage.setItem('access_granted', 'true');
+      showFormOrContent();
+    } else {
+      error.textContent = "⚠️ Incorrect password. Please try again.";
+    }
+  }
 
-      if (input === PASSWORD) {
-        localStorage.setItem('privateAccess', 'true');
-        showForm();
-      } else {
-        error.innerText = "⚠️ The password you entered is incorrect. You are not authorized to access this section of the site. Please try again.";
-      }
+  function showFormOrContent() {
+    document.getElementById('auth').style.display = 'none';
+    if (localStorage.getItem('form_submitted') === 'true') {
+      document.getElementById('content').style.display = 'block';
+    } else {
+      document.getElementById('form').style.display = 'block';
+    }
+  }
+
+  document.getElementById('verifyForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const form = e.target;
+    const formData = new FormData(form);
+    const residency = formData.get("residency");
+    const error = document.getElementById('formError');
+    const success = document.getElementById('formSuccess');
+
+    if (residency !== "yes") {
+      error.textContent = "❌ Access denied. You must be an eligible resident.";
+      return;
     }
 
-    function showForm() {
-      document.getElementById('auth-container').style.display = 'none';
-      document.getElementById('form-container').style.display = 'block';
-      monitorFormSubmission();
+    fetch(scriptURL, { method: "POST", body: formData })
+      .then(() => {
+        success.textContent = "✅ Verified. Access granted.";
+        localStorage.setItem('form_submitted', 'true');
+        setTimeout(() => {
+          document.getElementById('form').style.display = 'none';
+          document.getElementById('content').style.display = 'block';
+        }, 1000);
+      })
+      .catch(() => {
+        error.textContent = "⚠️ There was an error submitting the form.";
+      });
+  });
+
+  window.onload = () => {
+    if (localStorage.getItem('access_granted') === 'true') {
+      showFormOrContent();
     }
-
-    function showContent() {
-      document.getElementById('auth-container').style.display = 'none';
-      document.getElementById('form-container').style.display = 'none';
-      document.getElementById('content-container').style.display = 'block';
-    }
-
-    function goToContent() {
-      localStorage.setItem('formSubmitted', 'true');
-      showContent();
-    }
-
-    function monitorFormSubmission() {
-      const continueBtn = document.getElementById('continueButton');
-      continueBtn.style.display = 'inline-block';
-
-      let countdown = 30;
-      continueBtn.innerText = `Continue to Site (${countdown}s)`;
-
-      const interval = setInterval(() => {
-        countdown--;
-        continueBtn.innerText = `Continue to Site (${countdown}s)`;
-        if (countdown <= 0) {
-          clearInterval(interval);
-          goToContent();
-        }
-      }, 1000);
-    }
-
-    window.onload = () => {
-      const hasAccess = localStorage.getItem('privateAccess') === 'true';
-      const formDone = localStorage.getItem('formSubmitted') === 'true';
-
-      if (hasAccess && formDone) {
-        showContent();
-      } else if (hasAccess) {
-        showForm();
-      } else {
-        document.getElementById('auth-container').style.display = 'block';
-      }
-    }
-  </script>
+  };
+</script>
 
 </body>
 </html>
