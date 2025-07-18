@@ -8,44 +8,39 @@
   <style>
     body {
       font-family: 'Montserrat', sans-serif;
-      background: #fdf6f0;
-      color: #333;
+      background: linear-gradient(to right, #fff8f0, #f5faff);
+      color: #222;
+      text-align: center;
       margin: 0;
       padding: 0;
-      text-align: center;
     }
     .container {
       max-width: 700px;
       margin: 60px auto;
       background: #fff;
       padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.05);
     }
     input, select {
-      padding: 10px;
-      font-size: 1em;
       width: 90%;
-      max-width: 400px;
-      border-radius: 6px;
+      padding: 12px;
+      margin: 10px 0;
+      font-size: 1em;
       border: 1px solid #ccc;
-      margin-top: 10px;
-      margin-bottom: 16px;
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
+      border-radius: 8px;
     }
     button {
-      margin-top: 10px;
-      padding: 10px 24px;
-      font-size: 1em;
+      padding: 12px 28px;
       background-color: #FFB27F;
       color: white;
+      font-size: 1em;
       border: none;
       border-radius: 30px;
       cursor: pointer;
       font-weight: 600;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      margin-top: 10px;
     }
     button:hover {
       background-color: #f79960;
@@ -55,84 +50,84 @@
       margin-top: 10px;
     }
     iframe {
-      border: none;
       width: 100%;
-      max-width: 960px;
       height: 600px;
+      border: none;
+      border-radius: 12px;
       margin-top: 20px;
-      border-radius: 10px;
     }
   </style>
 </head>
 <body>
 
-  <!-- Password Gate -->
+  <!-- STEP 1: PASSWORD -->
   <div class="container" id="auth-container">
     <h2>Private Access</h2>
     <p>Please enter the access password to continue:</p>
     <input type="password" id="password" placeholder="Enter password" />
+    <br />
     <button onclick="checkPassword()">Continue</button>
     <div class="error" id="error-message"></div>
   </div>
 
-  <!-- Verification Form -->
-  <div class="container" id="form-container" style="display:none;">
-    <h2>Verification</h2>
-    <p>Please provide your name and location to proceed:</p>
-    <form id="access-form">
-      <input type="text" id="name" name="name" placeholder="Full Name" required />
-      <select id="residence" name="residence" required>
-        <option value="">Select your location</option>
-        <option value="Varanda 1">Varanda 1</option>
-        <option value="Varanda 2">Varanda 2</option>
-        <option value="Varanda 3">Varanda 3</option>
-        <option value="Gulf Breeze">Gulf Breeze</option>
-        <option value="Victory Church">Victory Church</option>
-      </select>
-      <button type="submit">Submit</button>
-    </form>
-    <div id="form-error" class="error"></div>
+  <!-- STEP 2: FORM -->
+  <div class="container" id="form-container" style="display:none">
+    <h2>Quick Verification</h2>
+    <p>To continue, please enter your name and confirm your residence:</p>
+    <input type="text" id="name" placeholder="Your full name" required />
+    <select id="residence" required>
+      <option value="">Select your residence</option>
+      <option value="Varanda 1">Varanda 1</option>
+      <option value="Varanda 2">Varanda 2</option>
+      <option value="Varanda 3">Varanda 3</option>
+      <option value="Gulf Breeze">Gulf Breeze</option>
+      <option value="Victory Church">Victory Church</option>
+    </select>
+    <button onclick="submitForm()">Submit</button>
+    <div class="error" id="form-error"></div>
   </div>
 
-  <!-- Final Private Content -->
-  <div class="container" id="content-container" style="display:none;">
+  <!-- STEP 3: PRIVATE CONTENT -->
+  <div class="container" id="content-container" style="display:none">
+    <h2>Welcome to the Private Area</h2>
     <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQUlsBjGyFOn6K5lJwZuCkgcBwhWLnIDj-kbprtEZa-1rpYw3MlgtN_uyqnGt1mEbcjEghY4JMJepQr/pubembed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
   </div>
 
   <script>
     const PASSWORD = "Greendoor22";
-    const scriptURL = "https://script.google.com/macros/s/AKfycbxJIYZHP9r33Kc4IQTLTG0ZZr7uQC7o1PrbeXF0bMfK1veK-a8UR1Lx6IiSwfViURCBPw/exec";
+    const FORM_KEY = "formCompleted";
+    const AUTH_KEY = "privateAccess";
 
+    const authContainer = document.getElementById("auth-container");
+    const formContainer = document.getElementById("form-container");
+    const contentContainer = document.getElementById("content-container");
+
+    // STEP 1: Password Check
     function checkPassword() {
       const input = document.getElementById("password").value;
       const error = document.getElementById("error-message");
-
       if (input === PASSWORD) {
-        localStorage.setItem("privateAccess", "true");
-        showFormIfNeeded();
+        localStorage.setItem(AUTH_KEY, "true");
+        authContainer.style.display = "none";
+
+        if (localStorage.getItem(FORM_KEY) === "true") {
+          contentContainer.style.display = "block";
+        } else {
+          formContainer.style.display = "block";
+        }
       } else {
-        error.innerText = "⚠️ The password you entered is incorrect. You are not authorized to access this section of the site. Please try again.";
+        error.innerText = "⚠️ The password you entered is incorrect. Please try again.";
       }
     }
 
-    function showFormIfNeeded() {
-      document.getElementById("auth-container").style.display = "none";
-
-      if (localStorage.getItem("formCompleted") === "true") {
-        document.getElementById("content-container").style.display = "block";
-      } else {
-        document.getElementById("form-container").style.display = "block";
-      }
-    }
-
-    document.getElementById("access-form").addEventListener("submit", function(e) {
-      e.preventDefault();
-
+    // STEP 2: Submit Form to Google Sheet
+    function submitForm() {
       const name = document.getElementById("name").value.trim();
       const residence = document.getElementById("residence").value;
+      const error = document.getElementById("form-error");
 
       if (!name || !residence) {
-        document.getElementById("form-error").innerText = "Please complete all fields.";
+        error.innerText = "Please complete all fields.";
         return;
       }
 
@@ -140,23 +135,33 @@
       formData.append("Name", name);
       formData.append("Residence", residence);
 
-      fetch(scriptURL, { method: "POST", body: formData })
-        .then(() => {
-          localStorage.setItem("formCompleted", "true");
-          document.getElementById("form-container").style.display = "none";
-          document.getElementById("content-container").style.display = "block";
-        })
-        .catch(error => {
-          console.error("Submission failed", error);
-          document.getElementById("form-error").innerText = "Submission failed. Please try again.";
-        });
-    });
+      fetch("https://script.google.com/macros/s/AKfycbyNb-3rgMpQSix3y5ObrqtiTvai62BeFs7NHe0Api0jBTvt04NGnGLLdEPYUdhNd-v-yg/exec", {
+        method: "POST",
+        body: formData
+      })
+      .then(response => response.text())
+      .then(result => {
+        localStorage.setItem(FORM_KEY, "true");
+        formContainer.style.display = "none";
+        contentContainer.style.display = "block";
+      })
+      .catch(() => {
+        error.innerText = "There was a problem submitting the form. Please try again.";
+      });
+    }
 
+    // STEP 0: Autoload if already authenticated and form completed
     window.onload = () => {
-      if (localStorage.getItem("privateAccess") === "true") {
-        showFormIfNeeded();
+      const auth = localStorage.getItem(AUTH_KEY);
+      const formDone = localStorage.getItem(FORM_KEY);
+
+      if (auth === "true" && formDone === "true") {
+        authContainer.style.display = "none";
+        formContainer.style.display = "none";
+        contentContainer.style.display = "block";
       }
     };
   </script>
+
 </body>
 </html>
