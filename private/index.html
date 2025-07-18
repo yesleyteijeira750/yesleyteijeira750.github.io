@@ -1,8 +1,9 @@
+<!-- SÓLO pega esto en tu archivo private/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Private Access - Bountiful Blessings</title>
   <style>
     body {
@@ -56,9 +57,16 @@
       height: 600px;
       margin-top: 20px;
     }
+    #countdown {
+      display: inline-block;
+      margin-left: 10px;
+      font-weight: bold;
+      color: #f79960;
+    }
   </style>
 </head>
 <body>
+
   <div class="container" id="auth-container">
     <h2>Private Access</h2>
     <p>Please enter the access password to continue:</p>
@@ -71,8 +79,14 @@
   <div class="container" id="form-container" style="display:none">
     <h2>Quick Verification</h2>
     <p>Please complete this short form to continue:</p>
-    <iframe id="form-frame" src="https://docs.google.com/forms/d/e/1FAIpQLSdJP2C9ncT0M2WxkLqvtUJ3keidjnbl9Udop4ZwVuDJRxFQtQ/viewform?embedded=true" width="640" height="763">Loading…</iframe>
-    <button id="continueButton" onclick="goToContent()" style="margin-top: 20px; display: none;">Continue to Site</button>
+    <iframe id="form-frame" src="https://docs.google.com/forms/d/e/1FAIpQLSdJP2C9ncT0M2WxkLqvtUJ3keidjnbl9Udop4ZwVuDJRxFQtQ/viewform?embedded=true">Loading…</iframe>
+    
+    <div style="margin-top: 20px;">
+      <button id="continueButton" onclick="goToContent()" style="display:none;">
+        Continue to Site
+      </button>
+      <span id="countdown"></span>
+    </div>
   </div>
 
   <div class="container" id="content-container" style="display:none">
@@ -90,6 +104,7 @@
         localStorage.setItem('privateAccess', 'true');
         document.getElementById('auth-container').style.display = 'none';
         document.getElementById('form-container').style.display = 'block';
+        startCountdown();
       } else {
         error.innerText = "⚠️ The password you entered is incorrect. You are not authorized to access this section of the site. Please try again.";
       }
@@ -100,15 +115,19 @@
       document.getElementById('content-container').style.display = 'block';
     }
 
-    function monitorFormSubmission() {
-      const formFrame = document.getElementById('form-frame');
-      const continueBtn = document.getElementById('continueButton');
-      let lastHeight = formFrame.clientHeight;
+    function startCountdown() {
+      const btn = document.getElementById("continueButton");
+      const countdown = document.getElementById("countdown");
+      let time = 30;
+      countdown.textContent = `(Wait ${time}s...)`;
 
-      setInterval(() => {
-        const newHeight = formFrame.clientHeight;
-        if (newHeight !== lastHeight) {
-          continueBtn.style.display = 'inline-block';
+      const timer = setInterval(() => {
+        time--;
+        countdown.textContent = `(Wait ${time}s...)`;
+        if (time <= 0) {
+          clearInterval(timer);
+          countdown.style.display = "none";
+          btn.style.display = "inline-block";
         }
       }, 1000);
     }
@@ -117,9 +136,10 @@
       if (localStorage.getItem('privateAccess') === 'true') {
         document.getElementById('auth-container').style.display = 'none';
         document.getElementById('form-container').style.display = 'block';
+        startCountdown();
       }
-      monitorFormSubmission();
-    }
+    };
   </script>
+
 </body>
 </html>
