@@ -2,101 +2,86 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Private Access - Bountiful Blessings</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Private Access</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
-      font-family: 'Montserrat', sans-serif;
-      background-color: #fef6f2;
-      color: #333;
+      font-family: Arial, sans-serif;
+      background: #fff7f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
       margin: 0;
-      padding: 0;
+    }
+    .login-box {
+      background: white;
+      padding: 40px 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
       text-align: center;
+      max-width: 400px;
+      width: 100%;
     }
-    .container {
-      max-width: 800px;
-      margin: 60px auto;
-      background: #fff;
-      padding: 40px;
-      border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    }
-    h1 {
-      color: #f9a45c;
+    h2 {
+      color: #333;
+      margin-bottom: 20px;
     }
     input[type="password"] {
-      padding: 10px;
-      font-size: 1em;
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
       border: 1px solid #ccc;
-      border-radius: 6px;
-      width: 70%;
-      margin-top: 10px;
+      border-radius: 8px;
+      font-size: 1em;
     }
     button {
-      padding: 10px 20px;
-      background-color: #f9a45c;
-      color: white;
+      padding: 12px 20px;
+      background-color: #FFB27F;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
+      color: white;
+      font-weight: bold;
       font-size: 1em;
       cursor: pointer;
-      margin-top: 15px;
     }
     button:hover {
-      background-color: #e98c4a;
+      background-color: #e89c65;
     }
     .error {
       color: red;
       margin-top: 15px;
-      font-weight: bold;
-    }
-    iframe {
-      width: 100%;
-      height: 600px;
-      border: none;
-      margin-top: 20px;
-      border-radius: 12px;
     }
   </style>
 </head>
 <body>
-  <div class="container" id="loginBox">
-    <h1>Private Access</h1>
+  <div class="login-box">
+    <h2>Private Area</h2>
     <p>Please enter the password to access this section.</p>
-    <input type="password" id="passwordInput" placeholder="Enter password">
-    <br>
-    <button onclick="checkPassword()">Submit</button>
-    <div id="errorMsg" class="error"></div>
-  </div>
-
-  <div class="container" id="privateContent" style="display: none;">
-    <h1>Welcome!</h1>
-    <p>You now have access to the private section of the website.</p>
-    <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQUlsBjGyFOn6K5lJwZuCkgcBwhWLnIDj-kbprtEZa-1rpYw3MlgtN_uyqnGt1mEbcjEghY4JMJepQr/pubembed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
+    <input type="password" id="password" placeholder="Enter password" />
+    <button onclick="checkPassword()">Access</button>
+    <div id="error" class="error"></div>
   </div>
 
   <script>
     const correctPassword = "Greendoor22";
 
-    function checkPassword() {
-      const input = document.getElementById('passwordInput').value;
-      const errorDiv = document.getElementById('errorMsg');
-
-      if (input === correctPassword) {
-        localStorage.setItem("privateAccess", "true");
-        document.getElementById("loginBox").style.display = "none";
-        document.getElementById("privateContent").style.display = "block";
-      } else {
-        errorDiv.textContent = "⚠️ The password you entered is incorrect. You are not authorized to access this section. Please try again.";
-      }
+    // If already authorized, go directly to the form
+    if (localStorage.getItem("authorized") === "true") {
+      window.location.href = "form.html";
     }
 
-    window.onload = function() {
-      if (localStorage.getItem("privateAccess") === "true") {
-        document.getElementById("loginBox").style.display = "none";
-        document.getElementById("privateContent").style.display = "block";
+    function checkPassword() {
+      const input = document.getElementById("password").value;
+      const error = document.getElementById("error");
+
+      if (input === correctPassword) {
+        localStorage.setItem("authorized", "true");
+        window.location.href = "form.html";
+      } else {
+        error.textContent = "⚠️ The password you entered is incorrect. You are not authorized to access this section. Please try again.";
       }
-    };
+    }
   </script>
 </body>
 </html>
