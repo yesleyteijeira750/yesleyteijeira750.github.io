@@ -1,63 +1,150 @@
-<script>
-  const PASSWORD = "Greendoor22";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Private Access - Bountiful Blessings</title>
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: #fdf6f0;
+      color: #333;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    .container {
+      max-width: 700px;
+      margin: 60px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    input[type="password"] {
+      padding: 10px;
+      font-size: 1em;
+      width: 80%;
+      max-width: 300px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      margin-top: 10px;
+    }
+    button {
+      margin-top: 16px;
+      padding: 10px 24px;
+      font-size: 1em;
+      background-color: #FFB27F;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    button:hover {
+      background-color: #f79960;
+    }
+    .error {
+      color: red;
+      margin-top: 10px;
+    }
+    iframe {
+      border: none;
+      width: 100%;
+      max-width: 960px;
+      height: 600px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
 
-  function checkPassword() {
-    const input = document.getElementById('password').value;
-    const error = document.getElementById('error-message');
+  <!-- PASSWORD SCREEN -->
+  <div class="container" id="auth-container" style="display:none;">
+    <h2>Private Access</h2>
+    <p>Please enter the access password to continue:</p>
+    <input type="password" id="password" placeholder="Enter password">
+    <br>
+    <button onclick="checkPassword()">Continue</button>
+    <div class="error" id="error-message"></div>
+  </div>
 
-    if (input === PASSWORD) {
-      localStorage.setItem('privateAccess', 'true');
+  <!-- GOOGLE FORM SCREEN -->
+  <div class="container" id="form-container" style="display:none;">
+    <h2>Quick Verification</h2>
+    <p>Please complete this short form to continue:</p>
+    <iframe id="form-frame" src="https://docs.google.com/forms/d/e/1FAIpQLSdJP2C9ncT0M2WxkLqvtUJ3keidjnbl9Udop4ZwVuDJRxFQtQ/viewform?embedded=true">Loading…</iframe>
+    <button id="continueButton" onclick="goToContent()" style="margin-top: 20px; display: none;">Continue to Site</button>
+  </div>
 
-      if (localStorage.getItem('formSubmitted') === 'true') {
-        showContent();
-      } else {
+  <!-- FINAL SITE CONTENT -->
+  <div class="container" id="content-container" style="display:none;">
+    <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQUlsBjGyFOn6K5lJwZuCkgcBwhWLnIDj-kbprtEZa-1rpYw3MlgtN_uyqnGt1mEbcjEghY4JMJepQr/pubembed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
+  </div>
+
+  <script>
+    const PASSWORD = "Greendoor22";
+
+    function checkPassword() {
+      const input = document.getElementById('password').value;
+      const error = document.getElementById('error-message');
+
+      if (input === PASSWORD) {
+        localStorage.setItem('privateAccess', 'true');
         showForm();
+      } else {
+        error.innerText = "⚠️ The password you entered is incorrect. You are not authorized to access this section of the site. Please try again.";
       }
-    } else {
-      error.innerText = "⚠️ The password you entered is incorrect. You are not authorized to access this section of the site. Please try again.";
     }
-  }
 
-  function goToContent() {
-    localStorage.setItem('formSubmitted', 'true');
-    document.getElementById('form-container').style.display = 'none';
-    showContent();
-  }
+    function showForm() {
+      document.getElementById('auth-container').style.display = 'none';
+      document.getElementById('form-container').style.display = 'block';
+    }
 
-  function showForm() {
-    document.getElementById('auth-container').style.display = 'none';
-    document.getElementById('form-container').style.display = 'block';
-  }
+    function showContent() {
+      document.getElementById('auth-container').style.display = 'none';
+      document.getElementById('form-container').style.display = 'none';
+      document.getElementById('content-container').style.display = 'block';
+    }
 
-  function showContent() {
-    document.getElementById('auth-container').style.display = 'none';
-    document.getElementById('form-container').style.display = 'none';
-    document.getElementById('content-container').style.display = 'block';
-  }
-
-  function monitorFormSubmission() {
-    const formFrame = document.getElementById('form-frame');
-    const continueBtn = document.getElementById('continueButton');
-    let lastHeight = formFrame.clientHeight;
-
-    setInterval(() => {
-      const newHeight = formFrame.clientHeight;
-      if (newHeight !== lastHeight) {
-        continueBtn.style.display = 'inline-block';
-      }
-    }, 1000);
-  }
-
-  window.onload = () => {
-    const hasAccess = localStorage.getItem('privateAccess') === 'true';
-    const formDone = localStorage.getItem('formSubmitted') === 'true';
-
-    if (hasAccess && formDone) {
+    function goToContent() {
+      localStorage.setItem('formSubmitted', 'true');
       showContent();
-    } else if (hasAccess) {
-      showForm();
     }
 
-    monitorFormSubmission();
-  };
-</script>
+    function monitorFormSubmission() {
+      const formFrame = document.getElementById('form-frame');
+      const continueBtn = document.getElementById('continueButton');
+
+      // Temporizador de 30 segundos
+      let countdown = 30;
+      const interval = setInterval(() => {
+        countdown--;
+        if (countdown <= 0) {
+          clearInterval(interval);
+          continueBtn.style.display = 'inline-block';
+        } else {
+          continueBtn.innerText = `Continue to Site (${countdown}s)`;
+        }
+      }, 1000);
+    }
+
+    window.onload = () => {
+      const hasAccess = localStorage.getItem('privateAccess') === 'true';
+      const formDone = localStorage.getItem('formSubmitted') === 'true';
+
+      if (hasAccess && formDone) {
+        showContent();
+      } else if (hasAccess) {
+        showForm();
+        monitorFormSubmission();
+      } else {
+        document.getElementById('auth-container').style.display = 'block';
+      }
+    };
+  </script>
+
+</body>
+</html>
