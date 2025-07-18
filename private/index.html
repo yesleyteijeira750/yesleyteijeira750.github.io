@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Private Access - Bountiful Blessings</title>
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: #fdf6f0;
+      color: #333;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    .container {
+      max-width: 700px;
+      margin: 60px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    input[type="password"] {
+      padding: 10px;
+      font-size: 1em;
+      width: 80%;
+      max-width: 300px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      margin-top: 10px;
+    }
+    button {
+      margin-top: 16px;
+      padding: 10px 24px;
+      font-size: 1em;
+      background-color: #FFB27F;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    button:hover {
+      background-color: #f79960;
+    }
+    .error {
+      color: red;
+      margin-top: 10px;
+    }
+    iframe {
+      border: none;
+      width: 100%;
+      max-width: 960px;
+      height: 600px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="auth-container">
+    <h2>Private Access</h2>
+    <p>Please enter the access password to continue:</p>
+    <input type="password" id="password" placeholder="Enter password">
+    <br>
+    <button onclick="checkPassword()">Continue</button>
+    <div class="error" id="error-message"></div>
+  </div>
+
+  <div class="container" id="form-container" style="display:none">
+    <h2>Quick Verification</h2>
+    <p>Please complete this short form to continue:</p>
+    <iframe id="form-frame" src="https://docs.google.com/forms/d/e/1FAIpQLSdJP2C9ncT0M2WxkLqvtUJ3keidjnbl9Udop4ZwVuDJRxFQtQ/viewform?embedded=true" width="640" height="763">Loading…</iframe>
+    <button id="continueButton" onclick="goToContent()" style="margin-top: 20px;">Continue to Site</button>
+  </div>
+
+  <div class="container" id="content-container" style="display:none">
+    <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQUlsBjGyFOn6K5lJwZuCkgcBwhWLnIDj-kbprtEZa-1rpYw3MlgtN_uyqnGt1mEbcjEghY4JMJepQr/pubembed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
+  </div>
+
+  <script>
+    const PASSWORD = "Greendoor22";
+
+    function checkPassword() {
+      const input = document.getElementById('password').value;
+      const error = document.getElementById('error-message');
+
+      if (input === PASSWORD) {
+        localStorage.setItem('privateAccess', 'true');
+        document.getElementById('auth-container').style.display = 'none';
+        document.getElementById('form-container').style.display = 'block';
+      } else {
+        error.innerText = "⚠️ The password you entered is incorrect. You are not authorized to access this section of the site. Please try again.";
+      }
+    }
+
+    function goToContent() {
+      document.getElementById('form-container').style.display = 'none';
+      document.getElementById('content-container').style.display = 'block';
+    }
+
+    window.onload = () => {
+      if (localStorage.getItem('privateAccess') === 'true') {
+        document.getElementById('auth-container').style.display = 'none';
+        document.getElementById('form-container').style.display = 'block';
+      }
+    }
+  </script>
+</body>
+</html>
