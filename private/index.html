@@ -2,121 +2,101 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Bountiful Blessings - Private Access</title>
+  <title>Private Access - Bountiful Blessings</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #f5e8dc 0%, #ffe5b4 100%);
-      text-align: center;
-      padding: 60px 20px;
+      font-family: 'Montserrat', sans-serif;
+      background-color: #fef6f2;
+      color: #333;
       margin: 0;
+      padding: 0;
+      text-align: center;
     }
-    .box {
-      background: white;
-      padding: 30px;
-      max-width: 400px;
-      margin: auto;
-      border-radius: 12px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.06);
+    .container {
+      max-width: 800px;
+      margin: 60px auto;
+      background: #fff;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
     h1 {
-      color: #333;
+      color: #f9a45c;
     }
     input[type="password"] {
       padding: 10px;
-      width: 80%;
-      margin: 15px 0;
       font-size: 1em;
-      border-radius: 8px;
       border: 1px solid #ccc;
-    }
-    button {
-      background: #70a47b;
-      color: white;
-      padding: 10px 20px;
-      font-weight: bold;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #5a8866;
-    }
-    .error {
-      color: #d9534f;
+      border-radius: 6px;
+      width: 70%;
       margin-top: 10px;
     }
-    .hidden-content {
-      display: none;
-    }
-    .presentation-container {
-      margin-top: 40px;
-      max-width: 960px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    .content-container {
-      background: #fff7eb;
-      padding: 20px;
-      margin-top: 30px;
-      border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    }
-    header {
-      background: #FFB27F;
-      padding: 20px 0;
+    button {
+      padding: 10px 20px;
+      background-color: #f9a45c;
       color: white;
-      font-size: 1.5em;
+      border: none;
+      border-radius: 6px;
+      font-size: 1em;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+    button:hover {
+      background-color: #e98c4a;
+    }
+    .error {
+      color: red;
+      margin-top: 15px;
       font-weight: bold;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.06);
+    }
+    iframe {
+      width: 100%;
+      height: 600px;
+      border: none;
+      margin-top: 20px;
+      border-radius: 12px;
     }
   </style>
 </head>
 <body>
-  <header>Bountiful Blessings of Charlotte County Inc</header>
-
-  <div class="box" id="login-box">
-    <h1>Private Area</h1>
-    <p>Please enter the access password:</p>
-    <input type="password" id="password" placeholder="Enter password"/>
-    <br/>
-    <button onclick="checkPassword()">Access</button>
-    <div class="error" id="error-message"></div>
+  <div class="container" id="loginBox">
+    <h1>Private Access</h1>
+    <p>Please enter the password to access this section.</p>
+    <input type="password" id="passwordInput" placeholder="Enter password">
+    <br>
+    <button onclick="checkPassword()">Submit</button>
+    <div id="errorMsg" class="error"></div>
   </div>
 
-  <div class="hidden-content" id="private-content">
-    <div class="content-container">
-      <h2>Food Pantry Schedule</h2>
-      <div class="presentation-container">
-        <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQUlsBjGyFOn6K5lJwZuCkgcBwhWLnIDj-kbprtEZa-1rpYw3MlgtN_uyqnGt1mEbcjEghY4JMJepQr/pubembed?start=true&loop=true&delayms=5000" frameborder="0" width="960" height="569" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
-      </div>
-    </div>
+  <div class="container" id="privateContent" style="display: none;">
+    <h1>Welcome!</h1>
+    <p>You now have access to the private section of the website.</p>
+    <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQUlsBjGyFOn6K5lJwZuCkgcBwhWLnIDj-kbprtEZa-1rpYw3MlgtN_uyqnGt1mEbcjEghY4JMJepQr/pubembed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
   </div>
 
   <script>
-    const CORRECT_PASSWORD = "Greendoor22";
+    const correctPassword = "Greendoor22";
 
     function checkPassword() {
-      const entered = document.getElementById('password').value;
-      const error = document.getElementById('error-message');
+      const input = document.getElementById('passwordInput').value;
+      const errorDiv = document.getElementById('errorMsg');
 
-      if (entered === CORRECT_PASSWORD) {
-        localStorage.setItem('privateAccess', 'true');
-        showContent();
+      if (input === correctPassword) {
+        localStorage.setItem("privateAccess", "true");
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("privateContent").style.display = "block";
       } else {
-        error.innerHTML = "⚠️ La contraseña que ingresó no es correcta.<br>Usted no está autorizado para acceder a esta sección del sitio.<br>Por favor, inténtelo nuevamente.";
+        errorDiv.textContent = "⚠️ The password you entered is incorrect. You are not authorized to access this section. Please try again.";
       }
     }
 
-    function showContent() {
-      document.getElementById('login-box').style.display = 'none';
-      document.getElementById('private-content').style.display = 'block';
-    }
-
-    if (localStorage.getItem('privateAccess') === 'true') {
-      showContent();
-    }
+    window.onload = function() {
+      if (localStorage.getItem("privateAccess") === "true") {
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("privateContent").style.display = "block";
+      }
+    };
   </script>
 </body>
 </html>
