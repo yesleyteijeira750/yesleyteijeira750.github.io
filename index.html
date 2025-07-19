@@ -143,20 +143,6 @@
       background-color: #e0884f;
     }
 
-    .gallery {
-      max-width: 800px;
-      margin: 40px auto;
-      position: relative;
-    }
-
-    .gallery img {
-      width: 100%;
-      max-height: 500px;
-      border-radius: 16px;
-      object-fit: cover;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    }
-
     footer {
       background-color: #222;
       color: white;
@@ -217,43 +203,6 @@
     <p>We collect, store, and distribute nutritious food—fresh produce, dairy, proteins, and dry goods. Our focus is on logistics, supply, and outreach to maximize every donation and help families across Charlotte County.</p>
   </div>
 
-  <!-- ✅ Auto Gallery Section -->
-  <div class="section-title">Community Photo Gallery</div>
-  <div class="gallery">
-    <img id="galleryImage" src="" alt="Gallery image" />
-  </div>
-
-  <script>
-    const scriptUrl = "https://script.google.com/macros/s/AKfycbwPgs5mtkjJmwyeLQD0eczAH75eK8fU7ih32WfeoYrepRjJewwkkVyS-QOg2BT3y_a2DA/exec";
-    const imageElement = document.getElementById("galleryImage");
-    let imageList = [], index = 0;
-
-    async function fetchImages() {
-      try {
-        const res = await fetch(scriptUrl);
-        const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) {
-          imageList = data;
-          startSlideshow();
-        } else {
-          imageElement.alt = "No images available.";
-        }
-      } catch (e) {
-        imageElement.alt = "Failed to load gallery.";
-      }
-    }
-
-    function startSlideshow() {
-      imageElement.src = imageList[index];
-      setInterval(() => {
-        index = (index + 1) % imageList.length;
-        imageElement.src = imageList[index];
-      }, 5000);
-    }
-
-    fetchImages();
-  </script>
-
   <div class="private-access">
     <p><strong>Are you a resident of Varanda 1, 2, 3, Golf Breeze, or a visitor of Victory Church?</strong></p>
     <a href="/private">Click here for private access</a>
@@ -266,3 +215,5 @@
 
 </body>
 </html>
+
+
