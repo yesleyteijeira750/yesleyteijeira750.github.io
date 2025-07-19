@@ -169,7 +169,6 @@
       }
     }
 
-    /* Gallery styles */
     .slider-container {
       position: relative;
       overflow: hidden;
@@ -227,7 +226,6 @@
     <p>We collect, store, and distribute nutritious food—fresh produce, dairy, proteins, and dry goods. Our focus is on logistics, supply, and outreach to maximize every donation and help families across Charlotte County.</p>
   </div>
 
-  <!-- NEW GALLERY SECTION -->
   <div class="section-title">Gallery</div>
   <div class="content">
     <div id="photo-gallery" class="slider-container">
@@ -247,7 +245,7 @@
 
   <script>
     async function loadGalleryImages() {
-      const response = await fetch("https://script.google.com/macros/s/AKfycbxDsb3r0f4pU41QzfMJY9Y2YObkzUF0-aXj5KaL-k3CO3YKOt8b8v5P4Lsi0AN9QHMv7g/exec");
+      const response = await fetch("https://script.google.com/macros/s/AKfycbxZVeQRY-XnnwNUVg1FwoDkhYXyQTBJ_Lw5dLqPYdsxviIIfkXQmT60TCrufJzdw09IlA/exec");
       const data = await response.json();
 
       const slider = document.getElementById("slider");
@@ -267,8 +265,6 @@
       const slider = document.getElementById("slider");
       const slides = slider.children;
       const total = slides.length;
-
-      if (total === 0) return;
 
       setInterval(() => {
         currentIndex = (currentIndex + 1) % total;
