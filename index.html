@@ -168,6 +168,30 @@
         font-size: 1.4em;
       }
     }
+
+    /* Gallery styles */
+    .slider-container {
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+      max-width: 900px;
+      height: 500px;
+      margin: 0 auto;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+
+    .slider {
+      display: flex;
+      transition: transform 1s ease;
+      height: 100%;
+    }
+
+    .slider img {
+      width: 100%;
+      object-fit: cover;
+      border-radius: 16px;
+    }
   </style>
 </head>
 <body>
@@ -203,6 +227,14 @@
     <p>We collect, store, and distribute nutritious food—fresh produce, dairy, proteins, and dry goods. Our focus is on logistics, supply, and outreach to maximize every donation and help families across Charlotte County.</p>
   </div>
 
+  <!-- NEW GALLERY SECTION -->
+  <div class="section-title">Gallery</div>
+  <div class="content">
+    <div id="photo-gallery" class="slider-container">
+      <div id="slider" class="slider"></div>
+    </div>
+  </div>
+
   <div class="private-access">
     <p><strong>Are you a resident of Varanda 1, 2, 3, Golf Breeze, or a visitor of Victory Church?</strong></p>
     <a href="/private">Click here for private access</a>
@@ -212,6 +244,36 @@
     <p>📧 Contact us at <a href="mailto:aguilesa@gmail.com">aguilesa@gmail.com</a></p>
     <p>© 2020 Bountiful Blessings of Charlotte County Inc.</p>
   </footer>
+
+  <script>
+    async function loadGalleryImages() {
+      const response = await fetch("https://script.google.com/macros/s/AKfycbycbBkU-jg_C_dXF4AceNtU0wB05LI-tWod3Mse1OO63LroTLjwsxwPW5lbL0egU21XOA/exec");
+      const data = await response.json();
+
+      const slider = document.getElementById("slider");
+      data.forEach((url) => {
+        const img = document.createElement("img");
+        img.src = url;
+        slider.appendChild(img);
+      });
+
+      startSlider();
+    }
+
+    let currentIndex = 0;
+    function startSlider() {
+      const slider = document.getElementById("slider");
+      const slides = slider.children;
+      const total = slides.length;
+
+      setInterval(() => {
+        currentIndex = (currentIndex + 1) % total;
+        slider.style.transform = `translateX(-${currentIndex * 100}%)`;
+      }, 4000);
+    }
+
+    window.addEventListener("DOMContentLoaded", loadGalleryImages);
+  </script>
 
 </body>
 </html>
