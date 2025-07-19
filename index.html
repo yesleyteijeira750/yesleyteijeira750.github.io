@@ -143,6 +143,20 @@
       background-color: #e0884f;
     }
 
+    .gallery {
+      max-width: 800px;
+      margin: 40px auto;
+      position: relative;
+    }
+
+    .gallery img {
+      width: 100%;
+      max-height: 500px;
+      border-radius: 16px;
+      object-fit: cover;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
     footer {
       background-color: #222;
       color: white;
@@ -203,14 +217,42 @@
     <p>We collect, store, and distribute nutritious food—fresh produce, dairy, proteins, and dry goods. Our focus is on logistics, supply, and outreach to maximize every donation and help families across Charlotte County.</p>
   </div>
 
-  <section id="photo-gallery" style="background-color: #fff4ec; padding: 60px 0;">
-    <h2 style="font-size: 2em; margin-bottom: 20px;">Photo Gallery</h2>
-    <div id="gallery-wrapper" style="overflow: hidden; max-width: 800px; margin: 0 auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
-      <div id="slider" style="display: flex; transition: transform 1s ease-in-out; width: 100%;">
-        <!-- Images will be inserted here -->
-      </div>
-    </div>
-  </section>
+  <!-- ✅ Auto Gallery Section -->
+  <div class="section-title">Community Photo Gallery</div>
+  <div class="gallery">
+    <img id="galleryImage" src="" alt="Gallery image" />
+  </div>
+
+  <script>
+    const scriptUrl = "https://script.google.com/macros/s/AKfycbwPgs5mtkjJmwyeLQD0eczAH75eK8fU7ih32WfeoYrepRjJewwkkVyS-QOg2BT3y_a2DA/exec";
+    const imageElement = document.getElementById("galleryImage");
+    let imageList = [], index = 0;
+
+    async function fetchImages() {
+      try {
+        const res = await fetch(scriptUrl);
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          imageList = data;
+          startSlideshow();
+        } else {
+          imageElement.alt = "No images available.";
+        }
+      } catch (e) {
+        imageElement.alt = "Failed to load gallery.";
+      }
+    }
+
+    function startSlideshow() {
+      imageElement.src = imageList[index];
+      setInterval(() => {
+        index = (index + 1) % imageList.length;
+        imageElement.src = imageList[index];
+      }, 5000);
+    }
+
+    fetchImages();
+  </script>
 
   <div class="private-access">
     <p><strong>Are you a resident of Varanda 1, 2, 3, Golf Breeze, or a visitor of Victory Church?</strong></p>
@@ -221,46 +263,6 @@
     <p>📧 Contact us at <a href="mailto:aguilesa@gmail.com">aguilesa@gmail.com</a></p>
     <p>© 2020 Bountiful Blessings of Charlotte County Inc.</p>
   </footer>
-
-  <script>
-    async function loadGalleryImages() {
-      try {
-        const response = await fetch("https://script.google.com/macros/s/AKfycbwPgs5mtkjJmwyeLQD0eczAH75eK8fU7ih32WfeoYrepRjJewwkkVyS-QOg2BT3y_a2DA/exec");
-        const data = await response.json();
-
-        const slider = document.getElementById("slider");
-        slider.innerHTML = "";
-
-        data.forEach(url => {
-          const img = document.createElement("img");
-          img.src = url;
-          img.alt = "Gallery Photo";
-          img.style.width = "100%";
-          img.style.maxWidth = "800px";
-          img.style.objectFit = "cover";
-          img.style.flexShrink = "0";
-          slider.appendChild(img);
-        });
-
-        if (data.length > 1) startSlider();
-      } catch (error) {
-        console.error("Failed to load images:", error);
-      }
-    }
-
-    let currentIndex = 0;
-    function startSlider() {
-      const slider = document.getElementById("slider");
-      const totalSlides = slider.children.length;
-
-      setInterval(() => {
-        currentIndex = (currentIndex + 1) % totalSlides;
-        slider.style.transform = `translateX(-${currentIndex * 100}%)`;
-      }, 4000);
-    }
-
-    window.addEventListener("DOMContentLoaded", loadGalleryImages);
-  </script>
 
 </body>
 </html>
