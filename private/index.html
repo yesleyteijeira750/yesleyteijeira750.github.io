@@ -49,6 +49,18 @@
       color: red;
       margin-top: 10px;
     }
+    .toggle-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: -8px;
+      font-size: 0.9em;
+    }
+    .toggle-wrapper input[type="checkbox"] {
+      margin-right: 8px;
+      transform: scale(1.2);
+      cursor: pointer;
+    }
     iframe {
       width: 100%;
       height: 600px;
@@ -65,6 +77,10 @@
     <h2>Private Access</h2>
     <p>Please enter the access password to continue:</p>
     <input type="password" id="password" placeholder="Enter password" />
+    <div class="toggle-wrapper">
+      <input type="checkbox" id="show-password" onclick="togglePassword()">
+      <label for="show-password">Show password</label>
+    </div>
     <br />
     <button onclick="checkPassword()">Continue</button>
     <div class="error" id="error-message"></div>
@@ -73,7 +89,7 @@
   <!-- STEP 2: FORM -->
   <div class="container" id="form-container" style="display:none">
     <h2>Quick Verification</h2>
-    <p>To continue, please enter your name and confirm your residence:</p>
+    <p>Please enter your name and confirm your residence:</p>
     <input type="text" id="name" placeholder="Your full name" required />
     <select id="residence" required>
       <option value="">Select your residence</option>
@@ -94,7 +110,6 @@
   </div>
 
   <script>
-    const PASSWORD = "Greendoor22";
     const FORM_KEY = "formCompleted";
     const AUTH_KEY = "privateAccess";
 
@@ -102,55 +117,77 @@
     const formContainer = document.getElementById("form-container");
     const contentContainer = document.getElementById("content-container");
 
-    // STEP 1: Password Check
-    function checkPassword() {
-      const input = document.getElementById("password").value;
-      const error = document.getElementById("error-message");
-      if (input === PASSWORD) {
-        localStorage.setItem(AUTH_KEY, "true");
-        authContainer.style.display = "none";
-
-        if (localStorage.getItem(FORM_KEY) === "true") {
-          contentContainer.style.display = "block";
-        } else {
-          formContainer.style.display = "block";
-        }
-      } else {
-        error.innerText = "⚠️ The password you entered is incorrect. Please try again.";
-      }
+    function togglePassword() {
+      const pwd = document.getElementById("password");
+      pwd.type = pwd.type === "password" ? "text" : "password";
     }
 
-    // STEP 2: Submit Form to Google Sheet
+    function checkPassword() {
+      const password = document.getElementById("password").value.trim();
+      const error = document.getElementById("error-message");
+
+      if (!password) {
+        error.innerText = "⚠️ Please enter the password.";
+        return;
+      }
+
+      const formData = new URLSearchParams();
+      formData.append("password", password);
+
+      fetch("https://script.google.com/macros/s/AKfycbx4tZnGltKEmX1FF_mZWH6BUyTPU6Vw1Jnr_Xke2ATinYDBQGA4AtjxVNji1Z1V56RZPA/exec", {
+        method: "POST",
+        body: formData
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.access === "granted") {
+          localStorage.setItem(AUTH_KEY, "true");
+          authContainer.style.display = "none";
+
+          if (localStorage.getItem(FORM_KEY) === "true") {
+            contentContainer.style.display = "block";
+          } else {
+            formContainer.style.display = "block";
+          }
+        } else {
+          error.innerText = "⚠️ The password you entered is incorrect. Please try again.";
+        }
+      })
+      .catch(() => {
+        error.innerText = "⚠️ Connection error. Please try again later.";
+      });
+    }
+
     function submitForm() {
       const name = document.getElementById("name").value.trim();
       const residence = document.getElementById("residence").value;
       const error = document.getElementById("form-error");
 
       if (!name || !residence) {
-        error.innerText = "Please complete all fields.";
+        error.innerText = "⚠️ Please complete all fields.";
         return;
       }
 
-      const formData = new FormData();
-      formData.append("Name", name);
-      formData.append("Residence", residence);
+      const formData = new URLSearchParams();
+      formData.append("password", "Greendoor22");
+      formData.append("name", name);
+      formData.append("residence", residence);
 
-      fetch("https://script.google.com/macros/s/AKfycbyNb-3rgMpQSix3y5ObrqtiTvai62BeFs7NHe0Api0jBTvt04NGnGLLdEPYUdhNd-v-yg/exec", {
+      fetch("https://script.google.com/macros/s/AKfycbx4tZnGltKEmX1FF_mZWH6BUyTPU6Vw1Jnr_Xke2ATinYDBQGA4AtjxVNji1Z1V56RZPA/exec", {
         method: "POST",
         body: formData
       })
-      .then(response => response.text())
-      .then(result => {
+      .then(res => res.json())
+      .then(() => {
         localStorage.setItem(FORM_KEY, "true");
         formContainer.style.display = "none";
         contentContainer.style.display = "block";
       })
       .catch(() => {
-        error.innerText = "There was a problem submitting the form. Please try again.";
+        error.innerText = "⚠️ There was a problem submitting the form. Please try again.";
       });
     }
 
-    // STEP 0: Autoload if already authenticated and form completed
     window.onload = () => {
       const auth = localStorage.getItem(AUTH_KEY);
       const formDone = localStorage.getItem(FORM_KEY);
