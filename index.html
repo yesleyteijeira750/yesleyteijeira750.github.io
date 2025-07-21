@@ -175,7 +175,7 @@
   <header>
     <img src="logo.png" alt="Logo" />
     <h1>Bountiful Blessings of Charlotte County Inc.</h1>
-    <p>Our Gold is to make sure that No One Goes to Bed Hungry</p>
+    <p><span style="font-size: 1.4em;">Our Gold is to make sure that No One Goes to Bed Hungry</span></p>
     <nav>
       <a href="mailto:aguilesa@gmail.com?subject=I want to volunteer">Volunteer</a>
       <a href="mailto:aguilesa@gmail.com?subject=Donate to Bountiful Blessings">Donate</a>
@@ -213,7 +213,62 @@
     <p>© 2020 Bountiful Blessings of Charlotte County Inc.</p>
   </footer>
 
+  <!-- Maintenance Mode -->
+  <script>
+    const maintenanceMode = true; // 👉 Change to true to activate maintenance mode
+
+    if (maintenanceMode) {
+      document.body.innerHTML = `
+        <style>
+          body {
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+          }
+
+          .maintenance-wrapper {
+            text-align: center;
+            padding: 20px;
+            animation: fadeIn 1.2s ease-in-out;
+          }
+
+          .maintenance-wrapper img {
+            max-width: 90%;
+            max-height: 300px;
+            height: auto;
+          }
+
+          .maintenance-wrapper h1 {
+            font-size: 2em;
+            color: #f9a45c;
+            margin-top: 20px;
+          }
+
+          .maintenance-wrapper p {
+            font-size: 1.1em;
+            color: #555;
+            margin-top: 10px;
+          }
+
+          @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+          }
+        </style>
+
+        <div class="maintenance-wrapper">
+          <img src="https://i.imgur.com/AX3eIjp.png" alt="Under Maintenance" />
+          <h1>Bountiful Blessings is currently undergoing maintenance</h1>
+          <p>We’re making improvements to serve you better. Please check back shortly.</p>
+        </div>
+      `;
+    }
+  </script>
 </body>
 </html>
-
-
