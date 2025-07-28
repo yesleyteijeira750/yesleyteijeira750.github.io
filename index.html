@@ -180,13 +180,14 @@
 
   <script>
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-      databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT_ID.appspot.com",
-      messagingSenderId: "SENDER_ID",
-      appId: "APP_ID"
+      apiKey: "AIzaSyA3mMfuz8T-VdV5slRAoO4d2mV2cjglEzU",
+      authDomain: "bountifulblessingscc-a2787.firebaseapp.com",
+      databaseURL: "https://bountifulblessingscc-a2787-default-rtdb.firebaseio.com",
+      projectId: "bountifulblessingscc-a2787",
+      storageBucket: "bountifulblessingscc-a2787.firebasestorage.app",
+      messagingSenderId: "154507345848",
+      appId: "1:154507345848:web:c87225f2065ab5662d594d",
+      measurementId: "G-DFKTEPT8GH"
     };
 
     firebase.initializeApp(firebaseConfig);
@@ -194,14 +195,16 @@
     const carousel = document.getElementById("carousel");
     const scheduleDiv = document.getElementById("schedule-content");
 
+    // Load schedule
     const scheduleRef = db.ref("announcements/schedule");
     scheduleRef.on("value", (snapshot) => {
       const data = snapshot.val();
-      scheduleDiv.innerHTML = data || "<p>No schedule information available.</p>";
+      scheduleDiv.innerHTML = data ? `<p>${data}</p>` : "<p>No schedule information available.</p>";
     });
 
+    // Load gallery images
     const galleryRef = db.ref("gallery");
-    galleryRef.once("value", (snapshot) => {
+    galleryRef.once("value").then(snapshot => {
       const urls = snapshot.val();
       if (!urls) {
         carousel.innerHTML = "<p>No images in gallery.</p>";
@@ -217,9 +220,10 @@
       });
       setInterval(() => {
         const current = carousel.querySelector("img.active");
-        current.classList.remove("active");
+        if (current) current.classList.remove("active");
         index = (index + 1) % images.length;
-        carousel.querySelectorAll("img")[index].classList.add("active");
+        const imgs = carousel.querySelectorAll("img");
+        if (imgs[index]) imgs[index].classList.add("active");
       }, 4000);
     });
   </script>
