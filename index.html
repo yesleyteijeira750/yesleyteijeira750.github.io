@@ -22,35 +22,30 @@
     header {
       background: #FFB27F;
       color: white;
-      padding: 40px 20px;
+      padding: 40px 20px 20px 20px;
       border-bottom: 5px solid #e09760;
       position: relative;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: center;
-      gap: 15px;
     }
 
     header img {
-      width: 120px;
+      width: 120px; /* tamaño original */
       border-radius: 16px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       margin-bottom: 10px;
-      flex-basis: 100%;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     header h1 {
       margin: 0;
       font-size: 2.5em;
       font-weight: 700;
-      flex-basis: 100%;
     }
 
-    /* Botones normales visibles siempre */
+    /* Botones visibles siempre */
     nav.buttons-nav {
-      margin-top: 10px;
-      flex-basis: 100%;
+      margin-top: 15px;
       text-align: center;
     }
 
@@ -76,7 +71,7 @@
       display: none;
       cursor: pointer;
       position: absolute;
-      top: 40px;
+      top: 20px;
       right: 20px;
       width: 30px;
       height: 25px;
@@ -96,11 +91,11 @@
       flex-direction: column;
       background-color: #FFB27F;
       position: absolute;
-      top: 75px;
+      top: 60px;
       right: 20px;
       border-radius: 8px;
       padding: 10px 0;
-      min-width: 120px;
+      min-width: 140px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.15);
       z-index: 1000;
     }
@@ -126,7 +121,7 @@
       background-color: #e0884f;
     }
 
-    /* Mostrar hamburguesa en móvil */
+    /* Mostrar hamburguesa solo en móvil */
     @media (max-width: 768px) {
       nav.buttons-nav {
         order: 3;
@@ -136,7 +131,7 @@
       }
     }
 
-    /* El resto de estilos iguales */
+    /* El resto de estilos igual que tu código */
 
     .section-title {
       font-size: 2em;
@@ -253,7 +248,6 @@
       }
     }
 
-
     /* --- MODAL LOGIN --- */
     #loginModal {
       display: none;
@@ -348,14 +342,12 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    // Monitor auth state: if user logged in, redirect to admin page
     onAuthStateChanged(auth, (user) => {
       if(user) {
-        window.location.href = "/admin"; // Cambia aquí si tu admin está en otra ruta
+        window.location.href = "/admin"; // Cambia si tu admin está en otra ruta
       }
     });
 
-    // Función para hacer login
     window.loginUser = function(event) {
       event.preventDefault();
       const email = document.getElementById('emailInput').value;
@@ -363,39 +355,34 @@
       const errorDiv = document.getElementById('loginError');
 
       signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          // Login exitoso, el onAuthStateChanged hará la redirección
+        .then(() => {
+          // La redirección la hace onAuthStateChanged
         })
         .catch((error) => {
           errorDiv.textContent = "Error: " + error.message;
         });
     };
 
-    // Función para abrir modal login
     window.openLoginModal = function() {
       document.getElementById('loginModal').classList.add('show');
-      closeMenu(); // cerrar menú hamburguesa al abrir modal
+      closeMenu();
     };
 
-    // Función para cerrar modal login
     window.closeLoginModal = function() {
       document.getElementById('loginModal').classList.remove('show');
       document.getElementById('loginError').textContent = "";
     };
 
-    // Función para alternar menú hamburguesa
     window.toggleMenu = function() {
       const nav = document.getElementById('hamburgerNav');
       nav.classList.toggle('show');
     };
 
-    // Función para cerrar menú hamburguesa (cuando se abre modal o clic fuera)
     function closeMenu() {
       const nav = document.getElementById('hamburgerNav');
       nav.classList.remove('show');
     }
 
-    // Cerrar modal con click fuera del contenido
     window.onclick = function(event) {
       const modal = document.getElementById('loginModal');
       if(event.target === modal) {
@@ -411,15 +398,15 @@
     <h1>Bountiful Blessings of Charlotte County Inc.</h1>
     <p><span style="font-size: 1.4em;">Our goal is that no one in Charlotte County goes to bed hungry.</span></p>
 
-    <!-- Botones visibles siempre -->
+    <!-- Botones normales -->
     <nav class="buttons-nav">
       <a href="mailto:aguilesa@gmail.com?subject=I want to volunteer">Volunteer</a>
       <a href="mailto:aguilesa@gmail.com?subject=Donate to Bountiful Blessings">Donate</a>
       <a href="https://www.facebook.com/share/g/1BPajU3Der/" target="_blank">Facebook Group</a>
     </nav>
 
-    <!-- Icono hamburguesa -->
-    <div class="menu-icon" onclick="toggleMenu()">
+    <!-- Icono hamburguesa para móvil -->
+    <div class="menu-icon" onclick="toggleMenu()" aria-label="Toggle menu" role="button" tabindex="0" onkeypress="if(event.key==='Enter'){toggleMenu()}">
       <div></div>
       <div></div>
       <div></div>
@@ -478,12 +465,5 @@
     </div>
   </div>
 
-  <script>
-    // Close menu when clicking Home or Admin links on mobile
-    function closeMenu() {
-      const nav = document.getElementById('hamburgerNav');
-      nav.classList.remove('show');
-    }
-  </script>
 </body>
 </html>
