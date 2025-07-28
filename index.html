@@ -9,6 +9,7 @@
   <link rel="icon" type="image/png" href="logo.png" />
 
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+
   <style>
     body {
       margin: 0;
@@ -23,6 +24,12 @@
       color: white;
       padding: 40px 20px;
       border-bottom: 5px solid #e09760;
+      position: relative;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
     }
 
     header img {
@@ -30,18 +37,24 @@
       border-radius: 16px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       margin-bottom: 10px;
+      flex-basis: 100%;
     }
 
     header h1 {
       margin: 0;
       font-size: 2.5em;
       font-weight: 700;
+      flex-basis: 100%;
     }
 
-    nav {
-      margin-top: 1rem;
+    /* Botones normales visibles siempre */
+    nav.buttons-nav {
+      margin-top: 10px;
+      flex-basis: 100%;
+      text-align: center;
     }
-    nav a {
+
+    nav.buttons-nav a {
       display: inline-block;
       margin: 0 10px;
       padding: 10px 20px;
@@ -53,10 +66,77 @@
       border: 2px solid #f9a45c;
       transition: 0.3s;
     }
-    nav a:hover {
+    nav.buttons-nav a:hover {
       background-color: #f9a45c;
       color: white;
     }
+
+    /* Menú hamburguesa */
+    .menu-icon {
+      display: none;
+      cursor: pointer;
+      position: absolute;
+      top: 40px;
+      right: 20px;
+      width: 30px;
+      height: 25px;
+      flex-direction: column;
+      justify-content: space-between;
+      z-index: 1100;
+    }
+
+    .menu-icon div {
+      height: 4px;
+      background-color: white;
+      border-radius: 2px;
+    }
+
+    nav.hamburger-nav {
+      display: none;
+      flex-direction: column;
+      background-color: #FFB27F;
+      position: absolute;
+      top: 75px;
+      right: 20px;
+      border-radius: 8px;
+      padding: 10px 0;
+      min-width: 120px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      z-index: 1000;
+    }
+
+    nav.hamburger-nav.show {
+      display: flex;
+    }
+
+    nav.hamburger-nav a {
+      padding: 10px 20px;
+      color: white;
+      text-decoration: none;
+      font-weight: 700;
+      border-bottom: 1px solid rgba(255,255,255,0.3);
+      cursor: pointer;
+    }
+
+    nav.hamburger-nav a:last-child {
+      border-bottom: none;
+    }
+
+    nav.hamburger-nav a:hover {
+      background-color: #e0884f;
+    }
+
+    /* Mostrar hamburguesa en móvil */
+    @media (max-width: 768px) {
+      nav.buttons-nav {
+        order: 3;
+      }
+      .menu-icon {
+        display: flex;
+      }
+    }
+
+    /* El resto de estilos iguales */
 
     .section-title {
       font-size: 2em;
@@ -172,7 +252,157 @@
         font-size: 1.4em;
       }
     }
+
+
+    /* --- MODAL LOGIN --- */
+    #loginModal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.6);
+      justify-content: center;
+      align-items: center;
+    }
+
+    #loginModal.show {
+      display: flex;
+    }
+
+    #loginModalContent {
+      background: white;
+      padding: 30px 25px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      text-align: left;
+    }
+
+    #loginModalContent h2 {
+      margin-top: 0;
+      color: #f9a45c;
+      text-align: center;
+    }
+
+    #loginModalContent label {
+      display: block;
+      margin: 12px 0 6px;
+      font-weight: 600;
+      color: #444;
+    }
+
+    #loginModalContent input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 1em;
+    }
+
+    #loginModalContent button {
+      width: 100%;
+      background-color: #f9a45c;
+      border: none;
+      padding: 12px;
+      border-radius: 30px;
+      font-weight: 700;
+      color: white;
+      font-size: 1.1em;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    #loginModalContent button:hover {
+      background-color: #e0884f;
+    }
+
+    #loginError {
+      color: red;
+      font-weight: 600;
+      margin-bottom: 10px;
+      min-height: 20px;
+    }
   </style>
+
+  <!-- Firebase JS SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyA3mMfuz8T-VdV5slRAoO4d2mV2cjglEzU",
+      authDomain: "bountifulblessingscc-a2787.firebaseapp.com",
+      projectId: "bountifulblessingscc-a2787",
+      storageBucket: "bountifulblessingscc-a2787.appspot.com",
+      messagingSenderId: "154507345848",
+      appId: "1:154507345848:web:c87225f2065ab5662d594d",
+      measurementId: "G-DFKTEPT8GH"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Monitor auth state: if user logged in, redirect to admin page
+    onAuthStateChanged(auth, (user) => {
+      if(user) {
+        window.location.href = "/admin"; // Cambia aquí si tu admin está en otra ruta
+      }
+    });
+
+    // Función para hacer login
+    window.loginUser = function(event) {
+      event.preventDefault();
+      const email = document.getElementById('emailInput').value;
+      const password = document.getElementById('passwordInput').value;
+      const errorDiv = document.getElementById('loginError');
+
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          // Login exitoso, el onAuthStateChanged hará la redirección
+        })
+        .catch((error) => {
+          errorDiv.textContent = "Error: " + error.message;
+        });
+    };
+
+    // Función para abrir modal login
+    window.openLoginModal = function() {
+      document.getElementById('loginModal').classList.add('show');
+      closeMenu(); // cerrar menú hamburguesa al abrir modal
+    };
+
+    // Función para cerrar modal login
+    window.closeLoginModal = function() {
+      document.getElementById('loginModal').classList.remove('show');
+      document.getElementById('loginError').textContent = "";
+    };
+
+    // Función para alternar menú hamburguesa
+    window.toggleMenu = function() {
+      const nav = document.getElementById('hamburgerNav');
+      nav.classList.toggle('show');
+    };
+
+    // Función para cerrar menú hamburguesa (cuando se abre modal o clic fuera)
+    function closeMenu() {
+      const nav = document.getElementById('hamburgerNav');
+      nav.classList.remove('show');
+    }
+
+    // Cerrar modal con click fuera del contenido
+    window.onclick = function(event) {
+      const modal = document.getElementById('loginModal');
+      if(event.target === modal) {
+        window.closeLoginModal();
+      }
+    };
+  </script>
 </head>
 <body>
 
@@ -180,10 +410,25 @@
     <img src="logo.png" alt="Logo" />
     <h1>Bountiful Blessings of Charlotte County Inc.</h1>
     <p><span style="font-size: 1.4em;">Our goal is that no one in Charlotte County goes to bed hungry.</span></p>
-    <nav>
+
+    <!-- Botones visibles siempre -->
+    <nav class="buttons-nav">
       <a href="mailto:aguilesa@gmail.com?subject=I want to volunteer">Volunteer</a>
       <a href="mailto:aguilesa@gmail.com?subject=Donate to Bountiful Blessings">Donate</a>
       <a href="https://www.facebook.com/share/g/1BPajU3Der/" target="_blank">Facebook Group</a>
+    </nav>
+
+    <!-- Icono hamburguesa -->
+    <div class="menu-icon" onclick="toggleMenu()">
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+
+    <!-- Menú hamburguesa -->
+    <nav id="hamburgerNav" class="hamburger-nav" aria-label="Mobile menu">
+      <a href="#home" onclick="closeMenu()">Home</a>
+      <a href="#" onclick="openLoginModal()">Admin</a>
     </nav>
   </header>
 
@@ -217,49 +462,27 @@
     <p>© 2020 Bountiful Blessings of Charlotte County Inc.</p>
   </footer>
 
+  <!-- Modal Login -->
+  <div id="loginModal" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+    <div id="loginModalContent">
+      <h2 id="loginTitle">Admin Login</h2>
+      <form onsubmit="loginUser(event)">
+        <label for="emailInput">Email</label>
+        <input id="emailInput" type="email" required autocomplete="username" />
+        <label for="passwordInput">Password</label>
+        <input id="passwordInput" type="password" required autocomplete="current-password" />
+        <div id="loginError"></div>
+        <button type="submit">Login</button>
+        <button type="button" style="margin-top:8px; background:#ccc; color:#444;" onclick="closeLoginModal()">Cancel</button>
+      </form>
+    </div>
+  </div>
+
   <script>
-    const maintenanceMode = true; // Change to true to activate maintenance mode
-
-    if (maintenanceMode) {
-      document.body.innerHTML = `
-        <style>
-          body {
-            margin: 0;
-            padding: 0;
-            background-color: #f9f9f9;
-            font-family: 'Montserrat', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-            flex-direction: column;
-            text-align: center;
-            color: #f9a45c;
-          }
-          img {
-            max-width: 90%;
-            max-height: 300px;
-            margin-bottom: 20px;
-            border-radius: 16px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-          }
-          h1 {
-            font-size: 2.5em;
-            margin: 0;
-            font-weight: 700;
-          }
-          p {
-            font-size: 1.2em;
-            color: #555;
-            margin-top: 10px;
-          }
-        </style>
-
-        <img src="maintenance.png" alt="Under Maintenance" />
-        <h1>We'll Be Right Back</h1>
-        <p>Bountiful Blessings is currently under maintenance. Please come back soon!</p>
-      `;
+    // Close menu when clicking Home or Admin links on mobile
+    function closeMenu() {
+      const nav = document.getElementById('hamburgerNav');
+      nav.classList.remove('show');
     }
   </script>
 </body>
