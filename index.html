@@ -2,77 +2,48 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Bountiful Blessings of Charlotte County Inc.</title>
 
+  <!-- Favicon -->
   <link rel="icon" type="image/png" href="logo.png" />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
 
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    /* --- Estilos base --- */
     body {
       margin: 0;
       font-family: 'Montserrat', sans-serif;
       background: linear-gradient(to right, #fff8f0, #f5faff);
       color: #222;
       text-align: center;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
     }
+
     header {
       background: #FFB27F;
       color: white;
-      padding: 40px 20px 20px;
+      padding: 40px 20px;
       border-bottom: 5px solid #e09760;
-      position: relative;
     }
+
     header img {
       width: 120px;
       border-radius: 16px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       margin-bottom: 10px;
     }
+
     header h1 {
       margin: 0;
       font-size: 2.5em;
       font-weight: 700;
     }
-    header p {
-      font-size: 1.4em;
-      margin-top: 6px;
-    }
 
-    /* Menú hamburguesa y nav */
-    #menu-btn {
-      display: none;
-      position: absolute;
-      top: 45px;
-      right: 20px;
-      width: 30px;
-      height: 22px;
-      cursor: pointer;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-    #menu-btn span {
-      display: block;
-      height: 4px;
-      background: white;
-      border-radius: 2px;
-    }
     nav {
-      margin-top: 20px;
+      margin-top: 1rem;
     }
-    nav ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-    }
-    nav ul li a {
+    nav a {
+      display: inline-block;
+      margin: 0 10px;
       padding: 10px 20px;
       border-radius: 30px;
       background-color: white;
@@ -81,53 +52,19 @@
       text-decoration: none;
       border: 2px solid #f9a45c;
       transition: 0.3s;
-      display: inline-block;
     }
-    nav ul li a:hover {
+    nav a:hover {
       background-color: #f9a45c;
       color: white;
     }
-    /* Selector de idioma */
-    #lang-select {
-      margin-left: 10px;
-      padding: 6px 12px;
-      border-radius: 20px;
-      border: none;
-      font-weight: 600;
-      cursor: pointer;
-    }
 
-    /* Responsive - menú hamburguesa */
-    @media (max-width: 700px) {
-      #menu-btn {
-        display: flex;
-      }
-      nav ul {
-        flex-direction: column;
-        background: #ffb27f;
-        position: absolute;
-        top: 100%;
-        right: 0;
-        width: 150px;
-        border-radius: 0 0 0 8px;
-        display: none;
-      }
-      nav ul.show {
-        display: flex;
-      }
-      nav ul li a {
-        margin: 5px 10px;
-        border-radius: 12px;
-      }
-    }
-
-    /* Títulos de sección */
     .section-title {
       font-size: 2em;
       margin: 40px 0 20px;
       color: #f9a45c;
       position: relative;
     }
+
     .section-title::after {
       content: "";
       width: 60px;
@@ -138,77 +75,64 @@
       border-radius: 4px;
     }
 
-    /* Contenido general */
     .content {
-      margin: 20px auto 50px;
+      margin: 20px auto;
       max-width: 900px;
       background: #ffffff;
       border-radius: 16px;
       padding: 30px 20px;
       box-shadow: 0 8px 24px rgba(0,0,0,0.05);
       text-align: left;
-      min-height: 200px;
     }
+
+    iframe {
+      width: 100%;
+      height: 600px;
+      border: none;
+      border-radius: 12px;
+    }
+
     .content p {
       font-size: 1.1em;
       line-height: 1.6;
       margin: 12px 0;
     }
 
-    /* Carrusel básico */
-    #carousel {
-      position: relative;
-      max-width: 900px;
-      margin: 0 auto 40px;
-      height: 300px;
-      border-radius: 16px;
-      overflow: hidden;
-      background: #ddd;
+    .calendar-button {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .calendar-button a {
+      background-color: #FFB27F;
+      padding: 12px 28px;
+      border-radius: 30px;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1.05em;
+      display: inline-block;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
-    #carousel img {
-      width: 100%;
-      height: 300px;
-      object-fit: cover;
-      position: absolute;
-      top: 0; left: 0;
-      opacity: 0;
-      transition: opacity 1s ease-in-out;
-      border-radius: 16px;
-    }
-    #carousel img.active {
-      opacity: 1;
-      position: relative;
+
+    .calendar-button a:hover {
+      background: #f79960;
     }
 
-    /* Announcements list */
-    #announcements-list {
-      list-style: none;
-      padding-left: 0;
-    }
-    #announcements-list li {
-      margin-bottom: 14px;
-      padding-left: 12px;
-      border-left: 4px solid #f9a45c;
-      font-size: 1.1em;
-      color: #444;
-    }
-
-    /* Private access */
     .private-access {
-      margin: 0 auto 50px;
-      max-width: 900px;
+      margin-top: 40px;
       padding: 24px;
       background: #fff8f0;
       border-top: 2px solid #f9a45c;
       border-radius: 12px;
-      text-align: center;
     }
+
     .private-access p {
       font-size: 1.1em;
       margin-bottom: 14px;
       color: #444;
     }
+
     .private-access a {
       display: inline-block;
       padding: 12px 24px;
@@ -217,211 +141,126 @@
       color: white;
       font-weight: 600;
       text-decoration: none;
-      cursor: pointer;
     }
+
     .private-access a:hover {
       background-color: #e0884f;
     }
 
-    /* Footer */
     footer {
       background-color: #222;
       color: white;
       padding: 20px;
-      margin-top: auto;
-      text-align: center;
+      margin-top: 40px;
     }
+
     footer a {
       color: #ffb347;
       text-decoration: none;
       font-weight: 600;
     }
+
     footer a:hover {
       text-decoration: underline;
     }
 
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 1.7em;
+      }
+      .section-title {
+        font-size: 1.4em;
+      }
+    }
   </style>
 </head>
 <body>
 
   <header>
     <img src="logo.png" alt="Logo" />
-    <h1 data-i18n="title">Bountiful Blessings of Charlotte County Inc.</h1>
-    <p data-i18n="subtitle">Our goal is that no one in Charlotte County goes to bed hungry.</p>
-
-    <!-- Botón menú hamburguesa -->
-    <div id="menu-btn" aria-label="Toggle menu" role="button" tabindex="0">
-      <span></span>
-      <span></span>
-      <span></span>
-    </div>
-
+    <h1>Bountiful Blessings of Charlotte County Inc.</h1>
+    <p><span style="font-size: 1.4em;">Our goal is that no one in Charlotte County goes to bed hungry.</span></p>
     <nav>
-      <ul id="menu-list">
-        <li><a href="#" data-i18n="menu_home" id="nav-home">Home</a></li>
-        <li><a href="#" data-i18n="menu_admin" id="nav-admin">Admin</a></li>
-        <li>
-          <select id="lang-select" aria-label="Select language">
-            <option value="en" selected>English</option>
-            <option value="es">Español</option>
-            <option value="ru">Русский</option>
-            <option value="ht">Kreyòl</option>
-          </select>
-        </li>
-      </ul>
+      <a href="mailto:aguilesa@gmail.com?subject=I want to volunteer">Volunteer</a>
+      <a href="mailto:aguilesa@gmail.com?subject=Donate to Bountiful Blessings">Donate</a>
+      <a href="https://www.facebook.com/share/g/1BPajU3Der/" target="_blank">Facebook Group</a>
     </nav>
   </header>
 
-  <main>
-    <!-- Home content -->
-    <section id="home-section">
-      <div class="section-title" data-i18n="food_schedule">Food Pantry Schedule</div>
+  <div class="section-title">Food Pantry Schedule</div>
+  <div class="content">
+    <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQWWT3x-BhrfljF9HRuKeh4ihWVyuoNLSpdUDZ6-CEBVU3G0JkX-ulPl7oYNZTLaemqipSZfYb10S90/pubembed?start=true&loop=true&delayms=3000" allowfullscreen></iframe>
 
-      <div id="carousel" aria-live="polite" aria-label="Image carousel">
-        <!-- Imágenes cargadas dinámicamente -->
-      </div>
+    <div class="calendar-button">
+      <a href="https://calendar.google.com/calendar/u/0/r?cid=12baf7956a73eca76931c5613c175e6efba3f8f9705a769a33b6772fcd1014ca@group.calendar.google.com" target="_blank">
+        ➕ Add to Google Calendar
+      </a>
+    </div>
 
-      <div class="content" id="announcements-section">
-        <div class="section-title" data-i18n="announcements">Announcements</div>
-        <ul id="announcements-list" aria-live="polite" aria-atomic="true"></ul>
-      </div>
+    <p><strong>📍 Location:</strong> New Life Church, 507 W Marion Ave, Punta Gorda, FL</p>
+    <p>📸 First-time visitors must bring a valid photo ID.</p>
+  </div>
 
-      <div class="content">
-        <p><strong data-i18n="location_label">Location:</strong> New Life Church, 507 W Marion Ave, Punta Gorda, FL</p>
-        <p data-i18n="id_notice">First-time visitors must bring a valid photo ID.</p>
-      </div>
+  <div class="section-title">About Us</div>
+  <div class="content">
+    <p><strong>Founded in 2020</strong>, Bountiful Blessings of Charlotte County Inc. is a 100% volunteer-run nonprofit organization dedicated to fighting hunger and serving our neighbors in need.</p>
+    <p>We collect, store, and distribute nutritious food—fresh produce, dairy, proteins, and dry goods. Our focus is on logistics, supply, and outreach to maximize every donation and help families across Charlotte County.</p>
+  </div>
 
-      <div class="private-access">
-        <p data-i18n="private_access_question">Are you a resident of Varanda 1, 2, 3, Golf Breeze, or a visitor of Victory Church?</p>
-        <a href="#" id="private-access-btn" data-i18n="private_access_link">Click here for private access</a>
-      </div>
-    </section>
-
-    <!-- Admin login section -->
-    <section id="admin-section" style="display:none; max-width: 600px; margin: 40px auto;">
-      <h2 data-i18n="admin_login_title">Admin Login</h2>
-      <form id="login-form" aria-label="Admin login form">
-        <label for="email-input" data-i18n="email_label">Email:</label><br />
-        <input type="email" id="email-input" required autocomplete="username" style="width:100%; padding: 8px; margin-bottom:12px;" /><br />
-
-        <label for="password-input" data-i18n="password_label">Password:</label><br />
-        <input type="password" id="password-input" required autocomplete="current-password" style="width:100%; padding: 8px; margin-bottom:12px;" /><br />
-
-        <button type="submit" style="background:#f9a45c; border:none; padding:12px 20px; border-radius: 24px; font-weight:700; color:#fff; cursor:pointer;">Login</button>
-      </form>
-      <p id="login-error" style="color:red; margin-top:12px;"></p>
-    </section>
-  </main>
+  <div class="private-access">
+    <p><strong>Are you a resident of Varanda 1, 2, 3, Golf Breeze, or a visitor of Victory Church?</strong></p>
+    <a href="/private">Click here for private access</a>
+  </div>
 
   <footer>
-    <p>📧 <a href="mailto:aguilesa@gmail.com">aguilesa@gmail.com</a></p>
+    <p>📧 Contact us at <a href="mailto:aguilesa@gmail.com">aguilesa@gmail.com</a></p>
     <p>© 2020 Bountiful Blessings of Charlotte County Inc.</p>
   </footer>
 
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/12.0.0/firebase-storage.js"></script>
-
-  <!-- Tu configuración Firebase -->
   <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyA3mMfuz8T-VdV5slRAoO4d2mV2cjglEzU",
-      authDomain: "bountifulblessingscc-a2787.firebaseapp.com",
-      projectId: "bountifulblessingscc-a2787",
-      storageBucket: "bountifulblessingscc-a2787.appspot.com",
-      messagingSenderId: "154507345848",
-      appId: "1:154507345848:web:c87225f2065ab5662d594d",
-      measurementId: "G-DFKTEPT8GH"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-    const storage = firebase.storage();
-  </script>
+    const maintenanceMode = true; // Change to true to activate maintenance mode
 
-  <!-- Código JS personalizado -->
-  <script>
-    // Variables para carrusel e announcements
-    let carouselImages = [];
-    let currentIndex = 0;
-    let carouselInterval = null;
+    if (maintenanceMode) {
+      document.body.innerHTML = `
+        <style>
+          body {
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            flex-direction: column;
+            text-align: center;
+            color: #f9a45c;
+          }
+          img {
+            max-width: 90%;
+            max-height: 300px;
+            margin-bottom: 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+          }
+          h1 {
+            font-size: 2.5em;
+            margin: 0;
+            font-weight: 700;
+          }
+          p {
+            font-size: 1.2em;
+            color: #555;
+            margin-top: 10px;
+          }
+        </style>
 
-    // Traducciones
-    const translations = {
-      en: {
-        title: "Bountiful Blessings of Charlotte County Inc.",
-        subtitle: "Our goal is that no one in Charlotte County goes to bed hungry.",
-        menu_home: "Home",
-        menu_admin: "Admin",
-        food_schedule: "Food Pantry Schedule",
-        announcements: "Announcements",
-        location_label: "Location:",
-        id_notice: "First-time visitors must bring a valid photo ID.",
-        private_access_question: "Are you a resident of Varanda 1, 2, 3, Golf Breeze, or a visitor of Victory Church?",
-        private_access_link: "Click here for private access",
-        admin_login_title: "Admin Login",
-        email_label: "Email:",
-        password_label: "Password:"
-      },
-      es: {
-        title: "Bountiful Blessings of Charlotte County Inc.",
-        subtitle: "Nuestra meta es que nadie en Charlotte County se acueste con hambre.",
-        menu_home: "Inicio",
-        menu_admin: "Administración",
-        food_schedule: "Horario de la despensa",
-        announcements: "Anuncios",
-        location_label: "Ubicación:",
-        id_notice: "Los visitantes primerizos deben traer una identificación con foto válida.",
-        private_access_question: "¿Eres residente de Varanda 1, 2, 3, Golf Breeze o visitante de Victory Church?",
-        private_access_link: "Haz clic aquí para acceso privado",
-        admin_login_title: "Inicio de sesión Admin",
-        email_label: "Correo electrónico:",
-        password_label: "Contraseña:"
-      },
-      ru: {
-        title: "Bountiful Blessings of Charlotte County Inc.",
-        subtitle: "Наша цель - чтобы никто в округе Шарлотт не ложился спать голодным.",
-        menu_home: "Главная",
-        menu_admin: "Админ",
-        food_schedule: "Расписание продовольственного склада",
-        announcements: "Объявления",
-        location_label: "Место:",
-        id_notice: "Новым посетителям необходимо иметь действительное удостоверение личности с фотографией.",
-        private_access_question: "Вы житель Varanda 1, 2, 3, Golf Breeze или посетитель Victory Church?",
-        private_access_link: "Нажмите здесь для приватного доступа",
-        admin_login_title: "Вход администратора",
-        email_label: "Электронная почта:",
-        password_label: "Пароль:"
-      },
-      ht: {
-        title: "Bountiful Blessings of Charlotte County Inc.",
-        subtitle: "Objektif nou se pou pèsonn nan Charlotte County pa dòmi grangou.",
-        menu_home: "Akèy",
-        menu_admin: "Admin",
-        food_schedule: "Orè Gwo Depo Manje",
-        announcements: "Anons",
-        location_label: "Kote:",
-        id_notice: "Vizitè premye fwa yo dwe pote yon ID foto valab.",
-        private_access_question: "Èske w se yon rezidan Varanda 1, 2, 3, Golf Breeze oswa yon vizitè Victory Church?",
-        private_access_link: "Klike isit la pou aksè prive",
-        admin_login_title: "Ouvèti sesyon Admin",
-        email_label: "Imèl:",
-        password_label: "Modpas:"
-      }
-    };
-
-    // Traduce texto segun idioma
-    function translatePage(lang) {
-      document.querySelectorAll("[data-i18n]").forEach(el => {
-        const key = el.getAttribute("data-i18n");
-        if (translations[lang] && translations[lang][key]) {
-          el.textContent = translations[lang][key];
-        }
-      });
+        <img src="maintenance.png" alt="Under Maintenance" />
+        <h1>We'll Be Right Back</h1>
+        <p>Bountiful Blessings is currently under maintenance. Please come back soon!</p>
+      `;
     }
-
-    // Manejo menú hamburguesa en móviles
-    const menuBtn = document.getElementById("menu-btn");
-    const menuList = document.get
+  </script>
+</body>
+</html>
