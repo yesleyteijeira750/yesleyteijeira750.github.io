@@ -2,65 +2,312 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Site Under Maintenance</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bountiful Blessings of Charlotte County Inc.</title>
+
+  <link rel="icon" type="image/png" href="logo.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
     body {
-      background-color: #f8f9fa;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
+      margin: 0;
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(to right, #fff8f0, #f5faff);
+      color: #222;
       text-align: center;
-      color: #333;
-      padding: 20px;
     }
-    img {
-      max-width: 300px;
-      margin-bottom: 20px;
+    header {
+      background: #FFB27F;
+      color: white;
+      padding: 40px 20px;
+      border-bottom: 5px solid #e09760;
     }
-    h1 {
-      font-size: 2.5rem;
+    header img {
+      width: 120px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       margin-bottom: 10px;
     }
-    p {
-      font-size: 1.2rem;
-      max-width: 600px;
-      margin-bottom: 40px;
+    header h1 {
+      margin: 0;
+      font-size: 2.5em;
+      font-weight: 700;
     }
-    .signature {
-      font-style: italic;
+    nav {
+      margin-top: 1rem;
+    }
+    nav a {
+      display: inline-block;
+      margin: 0 10px;
+      padding: 10px 20px;
+      border-radius: 30px;
+      background-color: white;
+      color: #f9a45c;
       font-weight: 600;
-      font-size: 1.1rem;
-      color: #555;
-      margin-top: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
+      text-decoration: none;
+      border: 2px solid #f9a45c;
+      transition: 0.3s;
     }
-    .signature img {
-      max-width: 120px;
+    nav a:hover {
+      background-color: #f9a45c;
+      color: white;
+    }
+    .section-title {
+      font-size: 2em;
+      margin: 40px 0 20px;
+      color: #f9a45c;
+      position: relative;
+    }
+    .section-title::after {
+      content: "";
+      width: 60px;
+      height: 4px;
+      background: #70a47b;
+      display: block;
+      margin: 12px auto 0;
+      border-radius: 4px;
+    }
+    .content {
+      margin: 20px auto;
+      max-width: 900px;
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 30px 20px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+      text-align: left;
+    }
+    /* Carrusel estilos */
+    .carousel {
+      margin: 20px auto 40px;
+      max-width: 900px;
+      position: relative;
+      overflow: hidden;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+      height: 350px; /* fijo para evitar salto */
+    }
+    .carousel img {
+      width: 100%;
+      height: 350px;
+      object-fit: cover;
+      display: none;
+      border-radius: 16px;
+      transition: opacity 1s ease-in-out;
+      position: absolute;
+      top: 0; left: 0;
+    }
+    .carousel img.active {
+      display: block;
+      position: relative;
+      opacity: 1;
+      z-index: 1;
+    }
+    .carousel img.fade-out {
+      opacity: 0;
+      z-index: 0;
+    }
+    .calendar-button {
+      text-align: center;
+      margin-top: 30px;
+    }
+    .calendar-button a {
+      background-color: #FFB27F;
+      padding: 12px 28px;
+      border-radius: 30px;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1.05em;
+      display: inline-block;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .calendar-button a:hover {
+      background: #f79960;
+    }
+    .private-access {
+      margin-top: 40px;
+      padding: 24px;
+      background: #fff8f0;
+      border-top: 2px solid #f9a45c;
       border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .private-access p {
+      font-size: 1.1em;
+      margin-bottom: 14px;
+      color: #444;
+    }
+    .private-access a {
+      display: inline-block;
+      padding: 12px 24px;
+      border-radius: 28px;
+      background-color: #f9a45c;
+      color: white;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .private-access a:hover {
+      background-color: #e0884f;
+    }
+    footer {
+      background-color: #222;
+      color: white;
+      padding: 20px;
+      margin-top: 40px;
+    }
+    footer a {
+      color: #ffb347;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 1.7em;
+      }
+      .section-title {
+        font-size: 1.4em;
+      }
+      .carousel {
+        height: 200px;
+      }
+      .carousel img {
+        height: 200px;
+      }
     }
   </style>
+
+  <!-- Firebase JS SDKs -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getStorage, ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyA3mMfuz8T-VdV5slRAoO4d2mV2cjglEzU",
+      authDomain: "bountifulblessingscc-a2787.firebaseapp.com",
+      projectId: "bountifulblessingscc-a2787",
+      storageBucket: "bountifulblessingscc-a2787.appspot.com",
+      messagingSenderId: "154507345848",
+      appId: "1:154507345848:web:c87225f2065ab5662d594d",
+      measurementId: "G-DFKTEPT8GH"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+
+    // Elementos en la página
+    const scheduleContentDiv = document.getElementById('schedule-content');
+    const carouselDiv = document.getElementById('gallery-carousel');
+
+    // Variables para carrusel
+    let images = [];
+    let currentIndex = 0;
+    let intervalId;
+
+    function showImage(index) {
+      const imgs = carouselDiv.querySelectorAll('img');
+      imgs.forEach((img, i) => {
+        if(i === index){
+          img.classList.add('active');
+          img.classList.remove('fade-out');
+        } else {
+          img.classList.remove('active');
+          img.classList.add('fade-out');
+        }
+      });
+    }
+
+    function startCarousel(){
+      if(intervalId) clearInterval(intervalId);
+      intervalId = setInterval(() => {
+        currentIndex = (currentIndex + 1) % images.length;
+        showImage(currentIndex);
+      }, 4000);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      // Escuchar Firestore en "siteData" documento "foodPantrySection"
+      const scheduleRef = doc(db, "siteData", "foodPantrySection");
+      onSnapshot(scheduleRef, (docSnap) => {
+        if(docSnap.exists()){
+          const data = docSnap.data();
+          scheduleContentDiv.innerHTML = data.textContent || "<p>No schedule information available.</p>";
+        } else {
+          scheduleContentDiv.innerHTML = "<p>No schedule information available.</p>";
+        }
+      });
+
+      // Escuchar Firestore en "siteData" documento "gallerySection"
+      const galleryRef = doc(db, "siteData", "gallerySection");
+      onSnapshot(galleryRef, async (docSnap) => {
+        if(docSnap.exists()){
+          const data = docSnap.data();
+          images = data.carouselImages || [];
+          carouselDiv.innerHTML = '';
+
+          if(images.length > 0){
+            for(const path of images){
+              try {
+                const url = await getDownloadURL(ref(storage, path));
+                const img = document.createElement('img');
+                img.src = url;
+                carouselDiv.appendChild(img);
+              } catch(e) {
+                console.error('Error loading carousel image:', e);
+              }
+            }
+            currentIndex = 0;
+            showImage(currentIndex);
+            startCarousel();
+          } else {
+            carouselDiv.innerHTML = '<p>No images in gallery.</p>';
+            if(intervalId) clearInterval(intervalId);
+          }
+        } else {
+          carouselDiv.innerHTML = '<p>No images in gallery.</p>';
+          if(intervalId) clearInterval(intervalId);
+        }
+      });
+    });
+  </script>
 </head>
 <body>
-  <img src="maintenance.png" alt="Maintenance Image" />
-  <h1>We’ll be back soon!</h1>
-  <p>Sorry for the inconvenience. We're performing some maintenance at the moment. We'll be back online shortly!</p>
 
-  <div class="signature">
-    <img src="logo.png" alt="Bountiful Blessings Logo" />
-    — Bountiful Blessings of Charlotte County
+  <header>
+    <img src="logo.png" alt="Logo" />
+    <h1>Bountiful Blessings of Charlotte County Inc.</h1>
+    <p><span style="font-size: 1.4em;">Our goal is that no one in Charlotte County goes to bed hungry.</span></p>
+    <nav>
+      <a href="mailto:aguilesa@gmail.com?subject=I want to volunteer">Volunteer</a>
+      <a href="mailto:aguilesa@gmail.com?subject=Donate to Bountiful Blessings">Donate</a>
+      <a href="https://www.facebook.com/share/g/1BPajU3Der/" target="_blank">Facebook Group</a>
+      <a href="admin.html">Admin</a>
+    </nav>
+  </header>
+
+  <div class="section-title">Food Pantry Schedule</div>
+  <div class="content" id="schedule-content">
+    <p>Loading schedule...</p>
   </div>
+
+  <div class="section-title">Gallery</div>
+  <div class="carousel" id="gallery-carousel">
+    <p>Loading gallery...</p>
+  </div>
+
+  <div class="private-access">
+    <p><strong>Are you a resident of Varanda 1, 2, 3, Golf Breeze, or a visitor of Victory Church?</strong></p>
+    <a href="/private">Click here for private access</a>
+  </div>
+
+  <footer>
+    <p>📧 Contact us at <a href="mailto:aguilesa@gmail.com">aguilesa@gmail.com</a></p>
+    <p>© 2020 Bountiful Blessings of Charlotte County Inc.</p>
+  </footer>
+  
 </body>
 </html>
