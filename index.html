@@ -20,6 +20,7 @@
       min-height: 100vh;
       text-align: center;
       color: #333;
+      padding: 20px;
     }
     img {
       max-width: 300px;
@@ -32,6 +33,23 @@
     p {
       font-size: 1.2rem;
       max-width: 600px;
+      margin-bottom: 40px;
+    }
+    .signature {
+      font-style: italic;
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: #555;
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    .signature img {
+      max-width: 120px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
   </style>
 </head>
@@ -39,5 +57,10 @@
   <img src="maintenance.png" alt="Maintenance Image" />
   <h1>We’ll be back soon!</h1>
   <p>Sorry for the inconvenience. We're performing some maintenance at the moment. We'll be back online shortly!</p>
+
+  <div class="signature">
+    <img src="logo.png" alt="Bountiful Blessings Logo" />
+    — Bountiful Blessings of Charlotte County
+  </div>
 </body>
 </html>
