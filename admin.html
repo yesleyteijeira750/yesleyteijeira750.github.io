@@ -8,92 +8,67 @@
     body {
       font-family: Arial, sans-serif;
       margin: 20px;
-      max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
+      background: #fff8f0;
+      color: #333;
     }
     h1 {
-      text-align: center;
       color: #f9a45c;
     }
-    label {
-      display: block;
-      margin-top: 15px;
-      font-weight: bold;
+    .hidden {
+      display: none;
     }
-    input[type="email"], input[type="password"], textarea, input[type="text"] {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      box-sizing: border-box;
-      border-radius: 6px;
-      border: 1px solid #ccc;
+    input, textarea, button {
+      display: block;
+      margin: 10px 0 20px;
+      padding: 10px;
+      width: 300px;
       font-size: 1em;
     }
     button {
-      margin-top: 20px;
+      width: 150px;
       background-color: #f9a45c;
       border: none;
-      padding: 12px 20px;
-      border-radius: 30px;
+      color: white;
       font-weight: bold;
       cursor: pointer;
-      color: white;
-      font-size: 1.1em;
+      border-radius: 6px;
       transition: background-color 0.3s;
     }
     button:hover {
       background-color: #e0884f;
     }
-    #status, #error {
-      margin-top: 20px;
+    label {
       font-weight: bold;
     }
-    #status {
-      color: green;
-    }
-    #error {
+    #message {
       color: red;
-    }
-    #adminPanel {
-      display: none;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
 
-  <h1>Admin Panel Login</h1>
+  <h1>Admin Panel</h1>
 
-  <div id="loginForm">
-    <label for="emailInput">Email:</label>
-    <input type="email" id="emailInput" placeholder="Enter your email" />
-
-    <label for="passwordInput">Password:</label>
-    <input type="password" id="passwordInput" placeholder="Enter your password" />
-
-    <button id="loginBtn">Log In</button>
-    <div id="loginStatus"></div>
+  <div id="login-section">
+    <label for="email">Email:</label>
+    <input id="email" type="email" placeholder="Enter email" />
+    <label for="password">Password:</label>
+    <input id="password" type="password" placeholder="Enter password" />
+    <button id="login-btn">Login</button>
+    <div id="message"></div>
   </div>
 
-  <div id="adminPanel">
-    <h1>Admin Panel</h1>
+  <div id="admin-section" class="hidden">
+    <button id="logout-btn">Logout</button>
 
-    <button id="logoutBtn" style="float: right; background-color:#e0884f;">Log Out</button>
+    <h2>Update Announcement</h2>
+    <textarea id="announcement-text" rows="4" placeholder="Write announcement here..."></textarea>
+    <button id="save-announcement-btn">Save Announcement</button>
 
-    <div>
-      <label for="announcementInput">Edit Announcement:</label>
-      <textarea id="announcementInput" rows="4" placeholder="Write your announcement here..."></textarea>
-      <button id="saveAnnouncementBtn">Save Announcement</button>
-    </div>
-
-    <div>
-      <label for="imageUrlInput">Add Image to Carousel (Image URL):</label>
-      <input type="text" id="imageUrlInput" placeholder="Paste image URL here" />
-      <button id="uploadImageBtn">Add Image</button>
-    </div>
-
-    <div id="status"></div>
-    <div id="error"></div>
+    <h2>Upload Carousel Image</h2>
+    <input type="file" id="image-upload" accept="image/*" />
+    <button id="upload-image-btn">Upload Image</button>
   </div>
 
   <script type="module">
@@ -101,134 +76,121 @@
 
     const supabaseUrl = 'https://npqwopijwhutnvbbbmdd.supabase.co'
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5wcXdvcGlqd2h1dG52YmJibWRkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4MjI1OTAsImV4cCI6MjA2OTM5ODU5MH0.2aZzvYvnTvfInul_P7jnDbtVP6aaoCXGC8b29nHsOII'
-
     const supabase = createClient(supabaseUrl, supabaseKey)
 
-    const loginForm = document.getElementById('loginForm')
-    const adminPanel = document.getElementById('adminPanel')
-    const emailInput = document.getElementById('emailInput')
-    const passwordInput = document.getElementById('passwordInput')
-    const loginBtn = document.getElementById('loginBtn')
-    const loginStatus = document.getElementById('loginStatus')
+    const loginSection = document.getElementById('login-section')
+    const adminSection = document.getElementById('admin-section')
+    const messageDiv = document.getElementById('message')
 
-    const announcementInput = document.getElementById('announcementInput')
-    const saveAnnouncementBtn = document.getElementById('saveAnnouncementBtn')
-    const imageUrlInput = document.getElementById('imageUrlInput')
-    const uploadImageBtn = document.getElementById('uploadImageBtn')
-    const statusDiv = document.getElementById('status')
-    const errorDiv = document.getElementById('error')
-    const logoutBtn = document.getElementById('logoutBtn')
+    const emailInput = document.getElementById('email')
+    const passwordInput = document.getElementById('password')
+    const loginBtn = document.getElementById('login-btn')
+    const logoutBtn = document.getElementById('logout-btn')
 
-    // Check if user is already logged in on page load
-    async function checkUser() {
-      const user = supabase.auth.user()
-      if (user) {
-        showAdminPanel()
+    const announcementText = document.getElementById('announcement-text')
+    const saveAnnouncementBtn = document.getElementById('save-announcement-btn')
+
+    const imageUploadInput = document.getElementById('image-upload')
+    const uploadImageBtn = document.getElementById('upload-image-btn')
+
+    async function checkSession() {
+      const { data, error } = await supabase.auth.getSession()
+      if (data?.session) {
+        showAdmin()
+        loadAnnouncement()
+      } else {
+        showLogin()
       }
     }
 
-    function showAdminPanel() {
-      loginForm.style.display = 'none'
-      adminPanel.style.display = 'block'
-      loadAnnouncement()
+    function showLogin() {
+      loginSection.classList.remove('hidden')
+      adminSection.classList.add('hidden')
+      messageDiv.textContent = ''
     }
 
-    function showLoginForm() {
-      loginForm.style.display = 'block'
-      adminPanel.style.display = 'none'
-      loginStatus.textContent = ''
+    function showAdmin() {
+      loginSection.classList.add('hidden')
+      adminSection.classList.remove('hidden')
+      messageDiv.textContent = ''
     }
 
     loginBtn.addEventListener('click', async () => {
-      loginStatus.textContent = 'Logging in...'
-      const { user, error } = await supabase.auth.signIn({
-        email: emailInput.value,
-        password: passwordInput.value,
-      })
-
+      messageDiv.textContent = 'Logging in...'
+      const email = emailInput.value
+      const password = passwordInput.value
+      if (!email || !password) {
+        messageDiv.textContent = 'Please enter email and password'
+        return
+      }
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password })
       if (error) {
-        loginStatus.textContent = 'Login failed: ' + error.message
+        messageDiv.textContent = 'Login failed: ' + error.message
       } else {
-        loginStatus.textContent = 'Login successful!'
-        showAdminPanel()
+        messageDiv.textContent = ''
+        showAdmin()
+        loadAnnouncement()
       }
     })
 
     logoutBtn.addEventListener('click', async () => {
       await supabase.auth.signOut()
-      showLoginForm()
+      showLogin()
     })
 
-    // Load the current announcement (last saved)
     async function loadAnnouncement() {
       const { data, error } = await supabase
         .from('announcements')
-        .select('*')
-        .order('id', { ascending: false })
+        .select('text')
+        .order('created_at', { ascending: false })
         .limit(1)
         .single()
-
-      if (error) {
-        errorDiv.textContent = 'Error loading announcement: ' + error.message
+      if (error && error.code !== 'PGRST116') { // PGRST116 means no rows found
+        messageDiv.textContent = 'Error loading announcement: ' + error.message
         return
       }
-
-      if (data) {
-        announcementInput.value = data.text
-      }
+      announcementText.value = data?.text || ''
     }
 
-    // Save announcement (insert new record)
     saveAnnouncementBtn.addEventListener('click', async () => {
-      errorDiv.textContent = ''
-      statusDiv.textContent = 'Saving announcement...'
-
-      const text = announcementInput.value.trim()
+      const text = announcementText.value.trim()
       if (!text) {
-        errorDiv.textContent = 'Announcement cannot be empty.'
-        statusDiv.textContent = ''
+        alert('Announcement cannot be empty')
         return
       }
-
       const { error } = await supabase
         .from('announcements')
         .insert([{ text }])
-
       if (error) {
-        errorDiv.textContent = 'Error saving announcement: ' + error.message
-        statusDiv.textContent = ''
+        alert('Failed to save announcement: ' + error.message)
       } else {
-        statusDiv.textContent = 'Announcement saved successfully.'
+        alert('Announcement saved successfully')
       }
     })
 
-    // Add image to carousel (insert URL)
     uploadImageBtn.addEventListener('click', async () => {
-      errorDiv.textContent = ''
-      statusDiv.textContent = 'Adding image...'
-
-      const url = imageUrlInput.value.trim()
-      if (!url) {
-        errorDiv.textContent = 'Image URL cannot be empty.'
-        statusDiv.textContent = ''
+      const file = imageUploadInput.files[0]
+      if (!file) {
+        alert('Please select an image file')
         return
       }
+      const fileExt = file.name.split('.').pop()
+      const fileName = `${Date.now()}.${fileExt}`
+      const filePath = `carousel/${fileName}`
 
-      const { error } = await supabase
-        .from('carousel_images')
-        .insert([{ url }])
+      const { data, error } = await supabase.storage
+        .from('carousel-images')
+        .upload(filePath, file)
 
       if (error) {
-        errorDiv.textContent = 'Error adding image: ' + error.message
-        statusDiv.textContent = ''
-      } else {
-        statusDiv.textContent = 'Image added successfully.'
-        imageUrlInput.value = ''
+        alert('Upload failed: ' + error.message)
+        return
       }
+      alert('Image uploaded successfully')
+      imageUploadInput.value = ''
     })
 
-    // On page load, check auth state
-    checkUser()
+    checkSession()
   </script>
 
 </body>
