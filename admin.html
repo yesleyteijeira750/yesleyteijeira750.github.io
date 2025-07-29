@@ -6,228 +6,229 @@
   <title>Admin Panel - Bountiful Blessings</title>
   <style>
     body {
-      font-family: 'Montserrat', sans-serif;
+      font-family: Arial, sans-serif;
+      margin: 20px;
       max-width: 600px;
-      margin: 40px auto;
-      padding: 0 20px;
-      background: #fff8f0;
-      color: #222;
+      margin-left: auto;
+      margin-right: auto;
     }
     h1 {
-      color: #f9a45c;
       text-align: center;
+      color: #f9a45c;
     }
     label {
       display: block;
-      margin: 15px 0 5px;
-      font-weight: 600;
+      margin-top: 15px;
+      font-weight: bold;
     }
-    input[type="email"],
-    input[type="password"],
-    textarea {
+    input[type="email"], input[type="password"], textarea, input[type="text"] {
       width: 100%;
       padding: 8px;
+      margin-top: 5px;
+      box-sizing: border-box;
       border-radius: 6px;
       border: 1px solid #ccc;
       font-size: 1em;
-      resize: vertical;
     }
     button {
+      margin-top: 20px;
       background-color: #f9a45c;
       border: none;
-      color: white;
-      padding: 12px 25px;
-      margin-top: 15px;
+      padding: 12px 20px;
       border-radius: 30px;
-      font-weight: 700;
+      font-weight: bold;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      color: white;
+      font-size: 1.1em;
+      transition: background-color 0.3s;
     }
     button:hover {
       background-color: #e0884f;
     }
-    .hidden {
+    #status, #error {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+    #status {
+      color: green;
+    }
+    #error {
+      color: red;
+    }
+    #adminPanel {
       display: none;
-    }
-    #logout {
-      float: right;
-      background-color: #e0884f;
-    }
-    #images-list img {
-      max-width: 80px;
-      margin: 5px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
-    .section {
-      margin-top: 30px;
-      background: white;
-      padding: 20px;
-      border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
   </style>
 </head>
 <body>
 
-  <h1>Admin Panel</h1>
+  <h1>Admin Panel Login</h1>
 
-  <!-- Login form -->
-  <div id="login-section">
-    <label for="email">Email</label>
-    <input type="email" id="email" autocomplete="username" />
-    <label for="password">Password</label>
-    <input type="password" id="password" autocomplete="current-password" />
-    <button id="login-btn">Login</button>
-    <p id="login-error" style="color: red;"></p>
+  <div id="loginForm">
+    <label for="emailInput">Email:</label>
+    <input type="email" id="emailInput" placeholder="Enter your email" />
+
+    <label for="passwordInput">Password:</label>
+    <input type="password" id="passwordInput" placeholder="Enter your password" />
+
+    <button id="loginBtn">Log In</button>
+    <div id="loginStatus"></div>
   </div>
 
-  <!-- Admin content -->
-  <div id="admin-content" class="hidden">
-    <button id="logout">Logout</button>
+  <div id="adminPanel">
+    <h1>Admin Panel</h1>
 
-    <div class="section">
-      <h2>Update Announcement</h2>
-      <textarea id="announcement-text" rows="3" placeholder="Enter announcement here..."></textarea>
-      <button id="save-announcement">Save Announcement</button>
-      <p id="announce-status"></p>
+    <button id="logoutBtn" style="float: right; background-color:#e0884f;">Log Out</button>
+
+    <div>
+      <label for="announcementInput">Edit Announcement:</label>
+      <textarea id="announcementInput" rows="4" placeholder="Write your announcement here..."></textarea>
+      <button id="saveAnnouncementBtn">Save Announcement</button>
     </div>
 
-    <div class="section">
-      <h2>Upload Image to Carousel</h2>
-      <input type="file" id="image-upload" accept="image/*" />
-      <button id="upload-image">Upload Image</button>
-      <p id="upload-status"></p>
-      <div id="images-list"></div>
+    <div>
+      <label for="imageUrlInput">Add Image to Carousel (Image URL):</label>
+      <input type="text" id="imageUrlInput" placeholder="Paste image URL here" />
+      <button id="uploadImageBtn">Add Image</button>
     </div>
+
+    <div id="status"></div>
+    <div id="error"></div>
   </div>
 
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-    const SUPABASE_URL = 'https://npqwopijwhutnvbbbmdd.supabase.co'
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5wcXdvcGlqd2h1dGJibWRkZCIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzUzODIyNTkwLCJleHAiOjIwNjkzOTg1OTB9.2aZzvYvnTvfInul_P7jnDbtVP6aaoCXGC8b29nHsOII'
+    const supabaseUrl = 'https://npqwopijwhutnvbbbmdd.supabase.co'
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5wcXdvcGlqd2h1dG52YmJibWRkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4MjI1OTAsImV4cCI6MjA2OTM5ODU5MH0.2aZzvYvnTvfInul_P7jnDbtVP6aaoCXGC8b29nHsOII'
 
-    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
+    const supabase = createClient(supabaseUrl, supabaseKey)
 
-    // Elements
-    const loginSection = document.getElementById('login-section')
-    const adminContent = document.getElementById('admin-content')
-    const emailInput = document.getElementById('email')
-    const passwordInput = document.getElementById('password')
-    const loginBtn = document.getElementById('login-btn')
-    const loginError = document.getElementById('login-error')
-    const logoutBtn = document.getElementById('logout')
+    const loginForm = document.getElementById('loginForm')
+    const adminPanel = document.getElementById('adminPanel')
+    const emailInput = document.getElementById('emailInput')
+    const passwordInput = document.getElementById('passwordInput')
+    const loginBtn = document.getElementById('loginBtn')
+    const loginStatus = document.getElementById('loginStatus')
 
-    const announcementText = document.getElementById('announcement-text')
-    const saveAnnouncementBtn = document.getElementById('save-announcement')
-    const announceStatus = document.getElementById('announce-status')
+    const announcementInput = document.getElementById('announcementInput')
+    const saveAnnouncementBtn = document.getElementById('saveAnnouncementBtn')
+    const imageUrlInput = document.getElementById('imageUrlInput')
+    const uploadImageBtn = document.getElementById('uploadImageBtn')
+    const statusDiv = document.getElementById('status')
+    const errorDiv = document.getElementById('error')
+    const logoutBtn = document.getElementById('logoutBtn')
 
-    const imageUpload = document.getElementById('image-upload')
-    const uploadImageBtn = document.getElementById('upload-image')
-    const uploadStatus = document.getElementById('upload-status')
-    const imagesList = document.getElementById('images-list')
-
-    // Check auth state
-    supabase.auth.onAuthStateChange((event, session) => {
-      if (session) {
-        loginSection.classList.add('hidden')
-        adminContent.classList.remove('hidden')
-        loadAnnouncement()
-        loadImages()
-      } else {
-        loginSection.classList.remove('hidden')
-        adminContent.classList.add('hidden')
+    // Check if user is already logged in on page load
+    async function checkUser() {
+      const user = supabase.auth.user()
+      if (user) {
+        showAdminPanel()
       }
-    })
+    }
 
-    // Login
+    function showAdminPanel() {
+      loginForm.style.display = 'none'
+      adminPanel.style.display = 'block'
+      loadAnnouncement()
+    }
+
+    function showLoginForm() {
+      loginForm.style.display = 'block'
+      adminPanel.style.display = 'none'
+      loginStatus.textContent = ''
+    }
+
     loginBtn.addEventListener('click', async () => {
-      loginError.textContent = ''
-      const email = emailInput.value
-      const password = passwordInput.value
-      const { error } = await supabase.auth.signInWithPassword({ email, password })
+      loginStatus.textContent = 'Logging in...'
+      const { user, error } = await supabase.auth.signIn({
+        email: emailInput.value,
+        password: passwordInput.value,
+      })
+
       if (error) {
-        loginError.textContent = error.message
+        loginStatus.textContent = 'Login failed: ' + error.message
+      } else {
+        loginStatus.textContent = 'Login successful!'
+        showAdminPanel()
       }
     })
 
-    // Logout
     logoutBtn.addEventListener('click', async () => {
       await supabase.auth.signOut()
+      showLoginForm()
     })
 
-    // Load announcement from DB (assume table: announcements with a single row, id=1)
+    // Load the current announcement (last saved)
     async function loadAnnouncement() {
       const { data, error } = await supabase
         .from('announcements')
-        .select('text')
-        .eq('id', 1)
+        .select('*')
+        .order('id', { ascending: false })
+        .limit(1)
         .single()
+
       if (error) {
-        announceStatus.textContent = 'Error loading announcement'
+        errorDiv.textContent = 'Error loading announcement: ' + error.message
         return
       }
-      announcementText.value = data.text || ''
+
+      if (data) {
+        announcementInput.value = data.text
+      }
     }
 
-    // Save announcement text
+    // Save announcement (insert new record)
     saveAnnouncementBtn.addEventListener('click', async () => {
-      announceStatus.textContent = 'Saving...'
-      const text = announcementText.value.trim()
+      errorDiv.textContent = ''
+      statusDiv.textContent = 'Saving announcement...'
+
+      const text = announcementInput.value.trim()
       if (!text) {
-        announceStatus.textContent = 'Announcement cannot be empty.'
+        errorDiv.textContent = 'Announcement cannot be empty.'
+        statusDiv.textContent = ''
         return
       }
-      // Upsert announcement with id=1
+
       const { error } = await supabase
         .from('announcements')
-        .upsert({ id: 1, text })
+        .insert([{ text }])
+
       if (error) {
-        announceStatus.textContent = 'Failed to save announcement.'
-        return
+        errorDiv.textContent = 'Error saving announcement: ' + error.message
+        statusDiv.textContent = ''
+      } else {
+        statusDiv.textContent = 'Announcement saved successfully.'
       }
-      announceStatus.textContent = 'Announcement saved!'
     })
 
-    // Upload image to Storage
+    // Add image to carousel (insert URL)
     uploadImageBtn.addEventListener('click', async () => {
-      uploadStatus.textContent = ''
-      const file = imageUpload.files[0]
-      if (!file) {
-        uploadStatus.textContent = 'Please select an image file.'
-        return
-      }
-      const fileExt = file.name.split('.').pop()
-      const fileName = `${Date.now()}.${fileExt}`
-      const filePath = `carousel/${fileName}`
+      errorDiv.textContent = ''
+      statusDiv.textContent = 'Adding image...'
 
-      const { error } = await supabase.storage.from('images').upload(filePath, file)
-      if (error) {
-        uploadStatus.textContent = 'Upload failed: ' + error.message
+      const url = imageUrlInput.value.trim()
+      if (!url) {
+        errorDiv.textContent = 'Image URL cannot be empty.'
+        statusDiv.textContent = ''
         return
       }
-      uploadStatus.textContent = 'Upload successful!'
-      imageUpload.value = ''
-      loadImages()
+
+      const { error } = await supabase
+        .from('carousel_images')
+        .insert([{ url }])
+
+      if (error) {
+        errorDiv.textContent = 'Error adding image: ' + error.message
+        statusDiv.textContent = ''
+      } else {
+        statusDiv.textContent = 'Image added successfully.'
+        imageUrlInput.value = ''
+      }
     })
 
-    // Load images from Storage and list them
-    async function loadImages() {
-      imagesList.innerHTML = ''
-      const { data, error } = await supabase.storage.from('images').list('carousel')
-      if (error) {
-        imagesList.textContent = 'Error loading images.'
-        return
-      }
-      for (const file of data) {
-        const url = supabase.storage.from('images').getPublicUrl(`carousel/${file.name}`).publicURL
-        const img = document.createElement('img')
-        img.src = url
-        img.alt = file.name
-        imagesList.appendChild(img)
-      }
-    }
+    // On page load, check auth state
+    checkUser()
   </script>
 
 </body>
