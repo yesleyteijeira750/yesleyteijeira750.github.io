@@ -4,15 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Admin Panel - Bountiful Blessings</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
   <style>
     body {
       font-family: 'Montserrat', sans-serif;
-      max-width: 700px;
-      margin: 2rem auto;
-      padding: 1rem;
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 0 20px;
       background: #fff8f0;
-      color: #333;
+      color: #222;
     }
     h1 {
       color: #f9a45c;
@@ -20,226 +19,216 @@
     }
     label {
       display: block;
-      margin-top: 1rem;
+      margin: 15px 0 5px;
       font-weight: 600;
     }
-    input[type="email"], input[type="password"], textarea {
+    input[type="email"],
+    input[type="password"],
+    textarea {
       width: 100%;
       padding: 8px;
-      margin-top: 6px;
-      border-radius: 8px;
+      border-radius: 6px;
       border: 1px solid #ccc;
-      box-sizing: border-box;
       font-size: 1em;
+      resize: vertical;
     }
     button {
-      margin-top: 1rem;
-      padding: 12px 24px;
-      border: none;
       background-color: #f9a45c;
+      border: none;
       color: white;
-      font-weight: 700;
+      padding: 12px 25px;
+      margin-top: 15px;
       border-radius: 30px;
+      font-weight: 700;
       cursor: pointer;
-      font-size: 1em;
+      transition: background-color 0.3s ease;
     }
     button:hover {
       background-color: #e0884f;
     }
-    #login-section, #admin-section {
-      margin-top: 2rem;
+    .hidden {
+      display: none;
     }
-    #carousel-images {
-      margin-top: 1rem;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
+    #logout {
+      float: right;
+      background-color: #e0884f;
     }
-    #carousel-images img {
-      height: 80px;
+    #images-list img {
+      max-width: 80px;
+      margin: 5px;
       border-radius: 8px;
-      object-fit: cover;
-      cursor: pointer;
-      border: 2px solid transparent;
+      border: 1px solid #ccc;
     }
-    #carousel-images img.selected {
-      border-color: #f9a45c;
-    }
-    .message {
-      margin-top: 1rem;
-      color: green;
-    }
-    .error {
-      color: red;
+    .section {
+      margin-top: 30px;
+      background: white;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
   </style>
 </head>
 <body>
 
-<h1>Admin Panel</h1>
+  <h1>Admin Panel</h1>
 
-<section id="login-section">
-  <label for="email">Email:</label>
-  <input type="email" id="email" placeholder="Enter your email" />
-  <label for="password">Password:</label>
-  <input type="password" id="password" placeholder="Enter your password" />
-  <button id="login-btn">Log In</button>
-  <p id="login-message" class="error"></p>
-</section>
+  <!-- Login form -->
+  <div id="login-section">
+    <label for="email">Email</label>
+    <input type="email" id="email" autocomplete="username" />
+    <label for="password">Password</label>
+    <input type="password" id="password" autocomplete="current-password" />
+    <button id="login-btn">Login</button>
+    <p id="login-error" style="color: red;"></p>
+  </div>
 
-<section id="admin-section" style="display:none;">
-  <button id="logout-btn" style="float:right;">Log Out</button>
-  <h2>Edit Food Pantry Schedule Text</h2>
-  <textarea id="schedule-text" rows="5" placeholder="Edit the Food Pantry Schedule text here..."></textarea>
-  <button id="save-schedule-btn">Save Schedule Text</button>
-  <p id="schedule-message" class="message"></p>
+  <!-- Admin content -->
+  <div id="admin-content" class="hidden">
+    <button id="logout">Logout</button>
 
-  <h2>Manage Carousel Images</h2>
-  <input type="file" id="image-upload" accept="image/*" multiple />
-  <button id="upload-images-btn">Upload Images</button>
-  <p id="upload-message" class="message"></p>
+    <div class="section">
+      <h2>Update Announcement</h2>
+      <textarea id="announcement-text" rows="3" placeholder="Enter announcement here..."></textarea>
+      <button id="save-announcement">Save Announcement</button>
+      <p id="announce-status"></p>
+    </div>
 
-  <div id="carousel-images"></div>
-</section>
+    <div class="section">
+      <h2>Upload Image to Carousel</h2>
+      <input type="file" id="image-upload" accept="image/*" />
+      <button id="upload-image">Upload Image</button>
+      <p id="upload-status"></p>
+      <div id="images-list"></div>
+    </div>
+  </div>
 
-<!-- Firebase SDK -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc, setDoc, collection, addDoc, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-  import { getStorage, ref, uploadBytes, getDownloadURL, listAll, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyA3mMfuz8T-VdV5slRAoO4d2mV2cjglEzU",
-    authDomain: "bountifulblessingscc-a2787.firebaseapp.com",
-    projectId: "bountifulblessingscc-a2787",
-    storageBucket: "bountifulblessingscc-a2787.appspot.com",
-    messagingSenderId: "154507345848",
-    appId: "1:154507345848:web:c87225f2065ab5662d594d",
-    measurementId: "G-DFKTEPT8GH"
-  };
+    const SUPABASE_URL = 'https://npqwopijwhutnvbbbmdd.supabase.co'
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5wcXdvcGlqd2h1dGJibWRkZCIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzUzODIyNTkwLCJleHAiOjIwNjkzOTg1OTB9.2aZzvYvnTvfInul_P7jnDbtVP6aaoCXGC8b29nHsOII'
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-  const storage = getStorage(app);
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
 
-  const loginSection = document.getElementById('login-section');
-  const adminSection = document.getElementById('admin-section');
-  const loginBtn = document.getElementById('login-btn');
-  const logoutBtn = document.getElementById('logout-btn');
-  const loginMessage = document.getElementById('login-message');
+    // Elements
+    const loginSection = document.getElementById('login-section')
+    const adminContent = document.getElementById('admin-content')
+    const emailInput = document.getElementById('email')
+    const passwordInput = document.getElementById('password')
+    const loginBtn = document.getElementById('login-btn')
+    const loginError = document.getElementById('login-error')
+    const logoutBtn = document.getElementById('logout')
 
-  const emailInput = document.getElementById('email');
-  const passwordInput = document.getElementById('password');
+    const announcementText = document.getElementById('announcement-text')
+    const saveAnnouncementBtn = document.getElementById('save-announcement')
+    const announceStatus = document.getElementById('announce-status')
 
-  const scheduleTextArea = document.getElementById('schedule-text');
-  const saveScheduleBtn = document.getElementById('save-schedule-btn');
-  const scheduleMessage = document.getElementById('schedule-message');
+    const imageUpload = document.getElementById('image-upload')
+    const uploadImageBtn = document.getElementById('upload-image')
+    const uploadStatus = document.getElementById('upload-status')
+    const imagesList = document.getElementById('images-list')
 
-  const imageUploadInput = document.getElementById('image-upload');
-  const uploadImagesBtn = document.getElementById('upload-images-btn');
-  const uploadMessage = document.getElementById('upload-message');
-  const carouselImagesDiv = document.getElementById('carousel-images');
+    // Check auth state
+    supabase.auth.onAuthStateChange((event, session) => {
+      if (session) {
+        loginSection.classList.add('hidden')
+        adminContent.classList.remove('hidden')
+        loadAnnouncement()
+        loadImages()
+      } else {
+        loginSection.classList.remove('hidden')
+        adminContent.classList.add('hidden')
+      }
+    })
 
-  // Auth state listener
-  onAuthStateChanged(auth, user => {
-    if (user) {
-      loginSection.style.display = 'none';
-      adminSection.style.display = 'block';
-      loginMessage.textContent = '';
-      loadScheduleText();
-      loadCarouselImages();
-    } else {
-      loginSection.style.display = 'block';
-      adminSection.style.display = 'none';
+    // Login
+    loginBtn.addEventListener('click', async () => {
+      loginError.textContent = ''
+      const email = emailInput.value
+      const password = passwordInput.value
+      const { error } = await supabase.auth.signInWithPassword({ email, password })
+      if (error) {
+        loginError.textContent = error.message
+      }
+    })
+
+    // Logout
+    logoutBtn.addEventListener('click', async () => {
+      await supabase.auth.signOut()
+    })
+
+    // Load announcement from DB (assume table: announcements with a single row, id=1)
+    async function loadAnnouncement() {
+      const { data, error } = await supabase
+        .from('announcements')
+        .select('text')
+        .eq('id', 1)
+        .single()
+      if (error) {
+        announceStatus.textContent = 'Error loading announcement'
+        return
+      }
+      announcementText.value = data.text || ''
     }
-  });
 
-  // Login handler
-  loginBtn.addEventListener('click', () => {
-    const email = emailInput.value.trim();
-    const password = passwordInput.value.trim();
-    loginMessage.textContent = '';
-    signInWithEmailAndPassword(auth, email, password)
-      .catch(error => {
-        loginMessage.textContent = error.message;
-      });
-  });
+    // Save announcement text
+    saveAnnouncementBtn.addEventListener('click', async () => {
+      announceStatus.textContent = 'Saving...'
+      const text = announcementText.value.trim()
+      if (!text) {
+        announceStatus.textContent = 'Announcement cannot be empty.'
+        return
+      }
+      // Upsert announcement with id=1
+      const { error } = await supabase
+        .from('announcements')
+        .upsert({ id: 1, text })
+      if (error) {
+        announceStatus.textContent = 'Failed to save announcement.'
+        return
+      }
+      announceStatus.textContent = 'Announcement saved!'
+    })
 
-  // Logout handler
-  logoutBtn.addEventListener('click', () => {
-    signOut(auth);
-  });
+    // Upload image to Storage
+    uploadImageBtn.addEventListener('click', async () => {
+      uploadStatus.textContent = ''
+      const file = imageUpload.files[0]
+      if (!file) {
+        uploadStatus.textContent = 'Please select an image file.'
+        return
+      }
+      const fileExt = file.name.split('.').pop()
+      const fileName = `${Date.now()}.${fileExt}`
+      const filePath = `carousel/${fileName}`
 
-  // Load schedule text from Firestore
-  async function loadScheduleText() {
-    const docRef = doc(db, 'content', 'scheduleText');
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      scheduleTextArea.value = docSnap.data().text;
-    } else {
-      scheduleTextArea.value = '';
+      const { error } = await supabase.storage.from('images').upload(filePath, file)
+      if (error) {
+        uploadStatus.textContent = 'Upload failed: ' + error.message
+        return
+      }
+      uploadStatus.textContent = 'Upload successful!'
+      imageUpload.value = ''
+      loadImages()
+    })
+
+    // Load images from Storage and list them
+    async function loadImages() {
+      imagesList.innerHTML = ''
+      const { data, error } = await supabase.storage.from('images').list('carousel')
+      if (error) {
+        imagesList.textContent = 'Error loading images.'
+        return
+      }
+      for (const file of data) {
+        const url = supabase.storage.from('images').getPublicUrl(`carousel/${file.name}`).publicURL
+        const img = document.createElement('img')
+        img.src = url
+        img.alt = file.name
+        imagesList.appendChild(img)
+      }
     }
-  }
-
-  // Save schedule text
-  saveScheduleBtn.addEventListener('click', async () => {
-    const text = scheduleTextArea.value.trim();
-    await setDoc(doc(db, 'content', 'scheduleText'), { text });
-    scheduleMessage.textContent = 'Schedule text saved!';
-    setTimeout(() => scheduleMessage.textContent = '', 3000);
-  });
-
-  // Load carousel images
-  async function loadCarouselImages() {
-    carouselImagesDiv.innerHTML = '';
-    const listRef = ref(storage, 'carousel/');
-    const res = await listAll(listRef);
-    for (const itemRef of res.items) {
-      const url = await getDownloadURL(itemRef);
-      const img = document.createElement('img');
-      img.src = url;
-      img.title = itemRef.name;
-      img.dataset.fullPath = itemRef.fullPath;
-      img.addEventListener('click', () => {
-        if (confirm('Delete this image?')) {
-          deleteImage(itemRef.fullPath);
-        }
-      });
-      carouselImagesDiv.appendChild(img);
-    }
-  }
-
-  // Upload images handler
-  uploadImagesBtn.addEventListener('click', async () => {
-    const files = imageUploadInput.files;
-    if (!files.length) {
-      uploadMessage.textContent = 'Please select one or more images.';
-      return;
-    }
-    uploadMessage.textContent = 'Uploading...';
-    for (const file of files) {
-      const storageRef = ref(storage, 'carousel/' + file.name);
-      await uploadBytes(storageRef, file);
-    }
-    uploadMessage.textContent = 'Upload complete!';
-    imageUploadInput.value = '';
-    loadCarouselImages();
-    setTimeout(() => uploadMessage.textContent = '', 3000);
-  });
-
-  // Delete image from storage
-  async function deleteImage(path) {
-    const imageRef = ref(storage, path);
-    try {
-      await deleteObject(imageRef);
-      loadCarouselImages();
-    } catch (error) {
-      alert('Error deleting image: ' + error.message);
-    }
-  }
-</script>
+  </script>
 
 </body>
 </html>
