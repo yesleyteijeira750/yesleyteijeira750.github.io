@@ -13,36 +13,30 @@
       color: #222;
       text-align: center;
     }
-
     header {
       background: #FFB27F;
       color: white;
       padding: 40px 20px;
       border-bottom: 5px solid #e09760;
     }
-
     header img {
       width: 120px;
       border-radius: 16px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       margin-bottom: 10px;
     }
-
     header h1 {
       margin: 0;
       font-size: 2.5em;
       font-weight: 700;
     }
-
     header p {
       font-size: 1.2em;
       margin-top: 10px;
     }
-
     nav {
       margin-top: 1rem;
     }
-
     nav a {
       display: inline-block;
       margin: 6px 5px;
@@ -56,19 +50,16 @@
       transition: 0.3s;
       font-size: 0.95em;
     }
-
     nav a:hover {
       background-color: #f9a45c;
       color: white;
     }
-
     .section-title {
       font-size: 2em;
       margin: 40px 0 20px;
       color: #f9a45c;
       position: relative;
     }
-
     .section-title::after {
       content: "";
       width: 60px;
@@ -78,7 +69,6 @@
       margin: 12px auto 0;
       border-radius: 4px;
     }
-
     .content {
       margin: 20px auto;
       max-width: 900px;
@@ -88,7 +78,6 @@
       box-shadow: 0 8px 24px rgba(0,0,0,0.05);
       text-align: left;
     }
-
     #carousel {
       position: relative;
       width: 100%;
@@ -97,7 +86,6 @@
       border-radius: 12px;
       margin-bottom: 20px;
     }
-
     #carousel img {
       width: 100%;
       height: 500px;
@@ -106,22 +94,18 @@
       opacity: 0;
       transition: opacity 1s ease-in-out;
     }
-
     #carousel img.active {
       opacity: 1;
     }
-
     .content p {
       font-size: 1.1em;
       line-height: 1.6;
       margin: 12px 0;
     }
-
     .calendar-button {
       text-align: center;
       margin-top: 20px;
     }
-
     .calendar-button a {
       background-color: white;
       color: #f9a45c;
@@ -133,12 +117,10 @@
       transition: 0.3s;
       font-size: 0.95em;
     }
-
     .calendar-button a:hover {
       background: #f9a45c;
       color: white;
     }
-
     .private-access {
       margin-top: 40px;
       padding: 24px;
@@ -146,13 +128,11 @@
       border-top: 2px solid #f9a45c;
       border-radius: 12px;
     }
-
     .private-access p {
       font-size: 1.1em;
       margin-bottom: 14px;
       color: #444;
     }
-
     .private-access a {
       display: inline-block;
       padding: 12px 24px;
@@ -162,28 +142,23 @@
       font-weight: 600;
       text-decoration: none;
     }
-
     .private-access a:hover {
       background-color: #e0884f;
     }
-
     footer {
       background-color: #222;
       color: white;
       padding: 20px;
       margin-top: 40px;
     }
-
     footer a {
       color: #ffb347;
       text-decoration: none;
       font-weight: 600;
     }
-
     footer a:hover {
       text-decoration: underline;
     }
-
     @media (max-width: 600px) {
       header h1 {
         font-size: 1.7em;
@@ -237,17 +212,16 @@
     <p>© 2020 Bountiful Blessings of Charlotte County Inc.</p>
   </footer>
 
-  <!-- Load announcement and carousel -->
   <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
     const supabase = createClient(
       'https://npqwopijwhutnvbbbmdd.supabase.co',
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5wcXdvcGlqd2h1dG52YmJibWRkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4MjI1OTAsImV4cCI6MjA2OTM5ODU5MH0.2aZzvYvnTvfInul_P7jnDbtVP6aaoCXGC8b29nHsOII'
-    )
+    );
 
-    const announcementDiv = document.getElementById('announcement')
-    const carousel = document.getElementById('carousel')
+    const announcementDiv = document.getElementById('announcement');
+    const carousel = document.getElementById('carousel');
 
     async function loadAnnouncement() {
       const { data, error } = await supabase
@@ -255,39 +229,38 @@
         .select('text')
         .order('created_at', { ascending: false })
         .limit(1)
-        .single()
-      announcementDiv.textContent = data?.text || 'No announcements at the moment.'
+        .single();
+      announcementDiv.textContent = data?.text || 'No announcements at the moment.';
     }
 
     async function loadCarouselImages() {
-      const { data, error } = await supabase.storage.from('images').list('', { limit: 50 })
-      if (error || !data.length) {
-        carousel.innerHTML = '<p>No images available.</p>'
-        return
+      const { data, error } = await supabase.storage.from('images').list('', { limit: 50 });
+      if (error || !data || data.length === 0) {
+        carousel.innerHTML = '<p>No images available.</p>';
+        return;
       }
 
-      const urls = await Promise.all(
-        data.map(file => supabase.storage.from('images').getPublicUrl(file.name).data.publicUrl)
-      )
+      const urls = data.map(file =>
+        `https://npqwopijwhutnvbbbmdd.supabase.co/storage/v1/object/public/images/${file.name}`
+      );
 
       urls.forEach((url, i) => {
-        const img = document.createElement('img')
-        img.src = url
-        img.className = i === 0 ? 'active' : ''
-        carousel.appendChild(img)
-      })
+        const img = document.createElement('img');
+        img.src = url;
+        img.className = i === 0 ? 'active' : '';
+        carousel.appendChild(img);
+      });
 
-      // Auto carousel
-      let index = 0
+      let index = 0;
       setInterval(() => {
-        const images = carousel.querySelectorAll('img')
-        images.forEach((img, i) => img.classList.toggle('active', i === index))
-        index = (index + 1) % images.length
-      }, 5000)
+        const images = carousel.querySelectorAll('img');
+        images.forEach((img, i) => img.classList.toggle('active', i === index));
+        index = (index + 1) % images.length;
+      }, 5000);
     }
 
-    loadAnnouncement()
-    loadCarouselImages()
+    loadAnnouncement();
+    loadCarouselImages();
   </script>
 </body>
 </html>
