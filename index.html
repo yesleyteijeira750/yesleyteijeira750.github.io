@@ -42,6 +42,7 @@
     nav {
       margin-top: 1rem;
     }
+
     nav a {
       display: inline-block;
       margin: 6px 5px;
@@ -55,6 +56,7 @@
       transition: 0.3s;
       font-size: 0.95em;
     }
+
     nav a:hover {
       background-color: #f9a45c;
       color: white;
@@ -197,7 +199,7 @@
   <header>
     <img src="logo.png" alt="Logo" />
     <h1>Bountiful Blessings of Charlotte County Inc.</h1>
-    <p>Our goal is to no one go to bed hungry.</p>
+    <p>Our goal is that no one goes to bed hungry.</p>
     <nav>
       <a href="mailto:aguilesa@gmail.com?subject=I want to volunteer">Volunteer</a>
       <a href="mailto:aguilesa@gmail.com?subject=Donate to Bountiful Blessings">Donate</a>
@@ -216,9 +218,7 @@
 
   <div class="section-title">Gallery</div>
   <div class="content">
-    <div id="carousel">
-      <!-- Las imágenes del carrusel se cargarán aquí dinámicamente -->
-    </div>
+    <div id="carousel"></div>
   </div>
 
   <div class="section-title">About Us</div>
@@ -237,8 +237,57 @@
     <p>© 2020 Bountiful Blessings of Charlotte County Inc.</p>
   </footer>
 
-  <!-- Aquí puedes enlazar luego el JS para cargar anuncio e imágenes -->
-  <script type="module" src="app.js"></script>
+  <!-- Load announcement and carousel -->
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
+    const supabase = createClient(
+      'https://npqwopijwhutnvbbbmdd.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5wcXdvcGlqd2h1dG52YmJibWRkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4MjI1OTAsImV4cCI6MjA2OTM5ODU5MH0.2aZzvYvnTvfInul_P7jnDbtVP6aaoCXGC8b29nHsOII'
+    )
+
+    const announcementDiv = document.getElementById('announcement')
+    const carousel = document.getElementById('carousel')
+
+    async function loadAnnouncement() {
+      const { data, error } = await supabase
+        .from('announcements')
+        .select('text')
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single()
+      announcementDiv.textContent = data?.text || 'No announcements at the moment.'
+    }
+
+    async function loadCarouselImages() {
+      const { data, error } = await supabase.storage.from('images').list('', { limit: 50 })
+      if (error || !data.length) {
+        carousel.innerHTML = '<p>No images available.</p>'
+        return
+      }
+
+      const urls = await Promise.all(
+        data.map(file => supabase.storage.from('images').getPublicUrl(file.name).data.publicUrl)
+      )
+
+      urls.forEach((url, i) => {
+        const img = document.createElement('img')
+        img.src = url
+        img.className = i === 0 ? 'active' : ''
+        carousel.appendChild(img)
+      })
+
+      // Auto carousel
+      let index = 0
+      setInterval(() => {
+        const images = carousel.querySelectorAll('img')
+        images.forEach((img, i) => img.classList.toggle('active', i === index))
+        index = (index + 1) % images.length
+      }, 5000)
+    }
+
+    loadAnnouncement()
+    loadCarouselImages()
+  </script>
 </body>
 </html>
