@@ -213,15 +213,15 @@
   </footer>
 
   <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
     const supabase = createClient(
       'https://npqwopijwhutnvbbbmdd.supabase.co',
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5wcXdvcGlqd2h1dG52YmJibWRkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4MjI1OTAsImV4cCI6MjA2OTM5ODU5MH0.2aZzvYvnTvfInul_P7jnDbtVP6aaoCXGC8b29nHsOII'
-    );
+    )
 
-    const announcementDiv = document.getElementById('announcement');
-    const carousel = document.getElementById('carousel');
+    const announcementDiv = document.getElementById('announcement')
+    const carousel = document.getElementById('carousel')
 
     async function loadAnnouncement() {
       const { data, error } = await supabase
@@ -229,38 +229,45 @@
         .select('text')
         .order('created_at', { ascending: false })
         .limit(1)
-        .single();
-      announcementDiv.textContent = data?.text || 'No announcements at the moment.';
+        .single()
+
+      if (error) {
+        announcementDiv.textContent = 'No announcements at the moment.'
+        return
+      }
+
+      announcementDiv.textContent = data?.text || 'No announcements at the moment.'
     }
 
     async function loadCarouselImages() {
-      const { data, error } = await supabase.storage.from('images').list('', { limit: 50 });
-      if (error || !data || data.length === 0) {
-        carousel.innerHTML = '<p>No images available.</p>';
-        return;
+      const { data, error } = await supabase.storage.from('images').list('', { limit: 50 })
+      if (error || !data.length) {
+        carousel.innerHTML = '<p>No images available.</p>'
+        return
       }
 
       const urls = data.map(file =>
         `https://npqwopijwhutnvbbbmdd.supabase.co/storage/v1/object/public/images/${file.name}`
-      );
+      )
 
       urls.forEach((url, i) => {
-        const img = document.createElement('img');
-        img.src = url;
-        img.className = i === 0 ? 'active' : '';
-        carousel.appendChild(img);
-      });
+        const img = document.createElement('img')
+        img.src = url
+        img.className = i === 0 ? 'active' : ''
+        carousel.appendChild(img)
+      })
 
-      let index = 0;
+      // Auto carousel every 5 seconds
+      let index = 0
       setInterval(() => {
-        const images = carousel.querySelectorAll('img');
-        images.forEach((img, i) => img.classList.toggle('active', i === index));
-        index = (index + 1) % images.length;
-      }, 5000);
+        const images = carousel.querySelectorAll('img')
+        images.forEach((img, i) => img.classList.toggle('active', i === index))
+        index = (index + 1) % images.length
+      }, 5000)
     }
 
-    loadAnnouncement();
-    loadCarouselImages();
+    loadAnnouncement()
+    loadCarouselImages()
   </script>
 </body>
 </html>
