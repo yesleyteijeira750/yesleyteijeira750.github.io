@@ -97,6 +97,18 @@
     ul li button:hover {
       background-color: #b33030;
     }
+    .announcement-container {
+      max-width: 600px;
+      margin-bottom: 10px;
+    }
+    .announcement-footer {
+      font-style: italic;
+      color: #666;
+      font-family: 'Georgia', serif;
+      margin-top: 10px;
+      font-size: 1em;
+      letter-spacing: 0.06em;
+    }
   </style>
 </head>
 <body>
@@ -123,15 +135,18 @@
 
     <section>
       <h2>Update Announcement</h2>
-      <textarea id="announcement-text" rows="4" placeholder="Write your announcement here..."></textarea>
+      <div class="announcement-container">
+        <textarea id="announcement-text" rows="4" placeholder="Write your announcement here..."></textarea>
+        <div class="announcement-footer">— The staff of Bountiful Blessings of CC</div>
+      </div>
       <button id="save-announcement-btn">Save Announcement</button>
       <div id="announcement-message"></div>
     </section>
 
     <section>
-      <h2>Upload Carousel Image</h2>
-      <input type="file" id="image-upload" accept="image/*" />
-      <button id="upload-image-btn">Upload Image</button>
+      <h2>Upload Carousel Images</h2>
+      <input type="file" id="image-upload" accept="image/*" multiple />
+      <button id="upload-image-btn">Upload Images</button>
       <h3>Uploaded Images</h3>
       <ul id="images-list"></ul>
     </section>
@@ -293,24 +308,30 @@
       })
     }
 
-    // Upload image handler
+    // Upload multiple images handler
     uploadImageBtn.addEventListener('click', async () => {
-      const file = imageUploadInput.files[0]
-      if (!file) {
-        alert('Please select an image file')
+      const files = imageUploadInput.files
+      if (!files.length) {
+        alert('Please select at least one image file')
         return
       }
-      const fileExt = file.name.split('.').pop()
-      const fileName = `${Date.now()}.${fileExt}`
-      const filePath = `images/${fileName}`
 
-      const { data, error } = await supabase.storage.from('images').upload(filePath, file)
+      let errors = []
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i]
+        const fileExt = file.name.split('.').pop()
+        const fileName = `${Date.now()}-${i}.${fileExt}`
+        const filePath = `images/${fileName}`
 
-      if (error) {
-        alert('Upload failed: ' + error.message)
-        return
+        const { error } = await supabase.storage.from('images').upload(filePath, file)
+        if (error) errors.push(`${file.name}: ${error.message}`)
       }
-      showTempMessage(messageDiv, 'Image uploaded successfully')
+
+      if (errors.length) {
+        alert('Some uploads failed:\n' + errors.join('\n'))
+      } else {
+        showTempMessage(messageDiv, 'Image(s) uploaded successfully')
+      }
       imageUploadInput.value = ''
       loadImages()
     })
