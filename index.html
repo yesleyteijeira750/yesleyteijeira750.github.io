@@ -105,7 +105,7 @@
     .announcement-footer {
       font-style: italic;
       font-family: 'Georgia', serif;
-      margin-top: 12px;
+      margin-top: 40px;
       color: #666;
       font-size: 1em;
       text-align: center;
@@ -243,15 +243,13 @@
     }
 
     async function loadCarouselImages() {
-      const { data, error } = await supabase.storage.from('images').list('', { limit: 50 })
+      const { data, error } = await supabase.storage.from('images').list('images', { limit: 50 })
       if (error || !data.length) {
         carousel.innerHTML = '<p>No images available.</p>'
         return
       }
 
-      const urls = data.map(file => 
-        `https://npqwopijwhutnvbbbmdd.supabase.co/storage/v1/object/public/images/${file.name}`
-      )
+      const urls = data.map(file => `https://npqwopijwhutnvbbbmdd.supabase.co/storage/v1/object/public/images/images/${file.name}`)
 
       urls.forEach((url, i) => {
         const img = document.createElement('img')
