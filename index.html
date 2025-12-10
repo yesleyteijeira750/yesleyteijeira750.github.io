@@ -1,273 +1,386 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Bountiful Blessings of Charlotte County Inc.</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nike Studio | Tienda oficial de calzado</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg: #0c0c0f;
+      --card: #13131a;
+      --accent: #ff3b30;
+      --text: #f5f5f7;
+      --muted: #a0a0ad;
+      --border: rgba(255, 255, 255, 0.08);
+    }
+    * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: 'Montserrat', sans-serif;
-      background: linear-gradient(to right, #fff8f0, #f5faff);
-      color: #222;
-      text-align: center;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: radial-gradient(circle at 20% 20%, rgba(255,59,48,0.08), transparent 25%),
+                  radial-gradient(circle at 80% 0%, rgba(255,255,255,0.08), transparent 30%),
+                  var(--bg);
+      color: var(--text);
+      min-height: 100vh;
     }
     header {
-      background: #FFB27F;
-      color: white;
-      padding: 40px 20px;
-      border-bottom: 5px solid #e09760;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(12px);
+      background: rgba(12,12,15,0.82);
+      border-bottom: 1px solid var(--border);
     }
-    header img {
-      width: 120px;
-      border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      margin-bottom: 10px;
+    .nav {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 22px;
     }
-    header h1 {
-      margin: 0;
-      font-size: 2.5em;
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
       font-weight: 700;
+      letter-spacing: 0.4px;
     }
-    header p {
-      font-size: 1.2em;
-      margin-top: 10px;
+    .logo span {
+      font-size: 1.2rem;
     }
-    nav {
-      margin-top: 1rem;
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--card);
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.95rem;
     }
     nav a {
-      display: inline-block;
-      margin: 6px 5px;
-      padding: 10px 18px;
-      border-radius: 30px;
-      background-color: white;
-      color: #f9a45c;
-      font-weight: 600;
+      color: var(--text);
       text-decoration: none;
-      border: 2px solid #f9a45c;
-      transition: 0.3s;
-      font-size: 0.95em;
+      margin-left: 18px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      position: relative;
+      padding-bottom: 6px;
     }
-    nav a:hover {
-      background-color: #f9a45c;
-      color: white;
+    nav a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 0;
+      height: 2px;
+      background: var(--accent);
+      transition: width 0.25s ease;
+    }
+    nav a:hover::after { width: 100%; }
+    .cta {
+      background: linear-gradient(120deg, #ff5f57, #ff3b30);
+      color: #0c0c0f;
+      border: none;
+      font-weight: 700;
+      padding: 12px 18px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 10px 30px rgba(255,59,48,0.35);
+    }
+    .cta:hover { transform: translateY(-1px); }
+    main { max-width: 1200px; margin: 0 auto; padding: 30px 20px 80px; }
+    .hero {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 28px;
+      align-items: center;
+      margin-top: 28px;
+    }
+    .hero-copy h1 {
+      font-size: clamp(2.4rem, 4vw, 3.2rem);
+      margin: 0 0 16px;
+      line-height: 1.1;
+    }
+    .hero-copy p {
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.6;
+      margin-bottom: 22px;
+    }
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .hero-card {
+      position: relative;
+      background: linear-gradient(145deg, #15151d, #0f0f15);
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+      isolation: isolate;
+    }
+    .hero-card img {
+      width: 100%;
+      display: block;
+      mix-blend-mode: screen;
+      filter: drop-shadow(0 20px 50px rgba(255,59,48,0.35));
+    }
+    .hero-card .label {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      background: #111;
+      color: var(--text);
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-weight: 700;
+      border: 1px solid var(--border);
+    }
+    .hero-card .price {
+      position: absolute;
+      bottom: 16px;
+      right: 16px;
+      background: var(--accent);
+      color: #0c0c0f;
+      font-weight: 800;
+      padding: 10px 14px;
+      border-radius: 12px;
+      box-shadow: 0 12px 30px rgba(255,59,48,0.35);
     }
     .section-title {
-      font-size: 2em;
-      margin: 40px 0 20px;
-      color: #f9a45c;
-      position: relative;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 48px 0 18px;
     }
-    .section-title::after {
-      content: "";
-      width: 60px;
-      height: 4px;
-      background: #70a47b;
-      display: block;
-      margin: 12px auto 0;
-      border-radius: 4px;
+    .section-title h2 {
+      margin: 0;
+      letter-spacing: 0.3px;
     }
-    .content {
-      margin: 20px auto;
-      max-width: 900px;
-      background: #ffffff;
+    .section-title p { margin: 0; color: var(--muted); }
+    .grid {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
+    .card {
+      background: var(--card);
       border-radius: 16px;
-      padding: 30px 20px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.05);
-      text-align: left;
+      border: 1px solid var(--border);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: transform 0.2s ease, border-color 0.2s ease;
     }
-    #carousel {
-      position: relative;
-      width: 100%;
-      height: 500px;
-      overflow: hidden;
-      border-radius: 12px;
-      margin-bottom: 20px;
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255,59,48,0.35);
     }
-    #carousel img {
-      width: 100%;
-      height: 500px;
-      object-fit: cover;
-      position: absolute;
-      opacity: 0;
-      transition: opacity 1s ease-in-out;
-    }
-    #carousel img.active {
-      opacity: 1;
-    }
-    .content p {
-      font-size: 1.1em;
-      line-height: 1.6;
-      margin: 12px 0;
-    }
-    .announcement-footer {
-      font-style: italic;
-      font-family: 'Georgia', serif;
-      margin-top: 40px;
-      color: #666;
-      font-size: 1em;
-      text-align: center;
-    }
-    .calendar-button {
-      text-align: center;
-      margin-top: 20px;
-    }
-    .calendar-button a {
-      background-color: white;
-      color: #f9a45c;
-      padding: 10px 20px;
-      border-radius: 30px;
-      text-decoration: none;
-      font-weight: 600;
-      border: 2px solid #f9a45c;
-      transition: 0.3s;
-      font-size: 0.95em;
-    }
-    .calendar-button a:hover {
-      background: #f9a45c;
-      color: white;
-    }
-    .private-access {
-      margin-top: 40px;
-      padding: 24px;
-      background: #fff8f0;
-      border-top: 2px solid #f9a45c;
-      border-radius: 12px;
-    }
-    .private-access p {
-      font-size: 1.1em;
-      margin-bottom: 14px;
-      color: #444;
-    }
-    .private-access a {
+    .tag {
       display: inline-block;
-      padding: 12px 24px;
-      border-radius: 28px;
-      background-color: #f9a45c;
-      color: white;
-      font-weight: 600;
-      text-decoration: none;
+      padding: 6px 10px;
+      border-radius: 10px;
+      background: rgba(255,59,48,0.12);
+      color: var(--text);
+      font-weight: 700;
+      font-size: 0.85rem;
+      width: fit-content;
     }
-    .private-access a:hover {
-      background-color: #e0884f;
+    .card h3 { margin: 4px 0 0; }
+    .card p { margin: 0; color: var(--muted); line-height: 1.4; }
+    .card .price { font-size: 1.15rem; font-weight: 700; }
+    .card button {
+      margin-top: auto;
+      background: #fff;
+      color: #0c0c0f;
+      border: none;
+      padding: 12px;
+      border-radius: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s ease;
     }
-    footer {
-      background-color: #222;
-      color: white;
-      padding: 20px;
-      margin-top: 40px;
+    .card button:hover { transform: translateY(-2px); }
+    .highlight {
+      background: linear-gradient(120deg, rgba(255,59,48,0.25), rgba(255,255,255,0.08));
+      border: 1px solid rgba(255,59,48,0.45);
     }
-    footer a {
-      color: #ffb347;
-      text-decoration: none;
-      font-weight: 600;
+    .benefits {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-top: 12px;
     }
-    footer a:hover {
-      text-decoration: underline;
+    .benefits .item {
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: #101017;
     }
-    @media (max-width: 600px) {
-      header h1 {
-        font-size: 1.7em;
-      }
-      .section-title {
-        font-size: 1.4em;
-      }
+    .benefits strong { display: block; margin-bottom: 6px; }
+    .footer {
+      margin-top: 60px;
+      padding: 28px 0;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      text-align: center;
+      font-size: 0.95rem;
+    }
+    @media (max-width: 720px) {
+      nav { display: none; }
+      .nav { justify-content: space-between; }
     }
   </style>
 </head>
 <body>
-
   <header>
-    <img src="logo.png" alt="Logo" />
-    <h1>Bountiful Blessings of Charlotte County Inc.</h1>
-    <p>Our goal is that no one goes to bed hungry.</p>
-    <nav>
-      <a href="mailto:aguilesa@gmail.com?subject=I want to volunteer">Volunteer</a>
-      <a href="mailto:aguilesa@gmail.com?subject=Donate to Bountiful Blessings">Donate</a>
-      <a href="https://www.facebook.com/share/g/1BPajU3Der/" target="_blank">Facebook Group</a>
-      <a href="admin.html">🔒 Admin</a>
-      <a href="https://calendar.google.com/calendar/u/0/r?cid=12baf7956a73eca76931c5613c175e6efba3f8f9705a769a33b6772fcd1014ca@group.calendar.google.com" target="_blank">➕ Add Calendar</a>
-    </nav>
+    <div class="nav">
+      <div class="logo">
+        <svg width="32" height="20" viewBox="0 0 32 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M31.3 0.9C21.3 5.2 11.2 9.1 1 12.6c-0.5 0.2-0.4 0.9 0.2 0.9 3.5 0.4 6.5 0.3 9.2-0.5 3-0.9 5.6-2.6 8.2-4.5 1.9-1.4 4-2.9 6.4-3.9 2.5-1 4.7-1.3 6.2-1.1 0.6 0.1 0.7-0.7 0.1-0.9z" fill="white"/>
+        </svg>
+        <span>Nike Studio</span>
+        <div class="pill">Drops exclusivos · Envíos gratis 24h</div>
+      </div>
+      <nav>
+        <a href="#nuevos">Lanzamientos</a>
+        <a href="#populares">Más vendidos</a>
+        <a href="#beneficios">Beneficios</a>
+      </nav>
+      <button class="cta">Comprar ahora</button>
+    </div>
   </header>
 
-  <div class="section-title">Announcements</div>
-  <div class="content">
-    <div id="announcement" style="font-size: 1.2em; padding: 10px 0; font-weight: bold; color: #444;">
-      Loading announcement...
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="pill" style="margin-left:0; width: fit-content;">Colección 2024 · Air Dynamics</div>
+        <h1>Impulsa cada paso con los últimos Nike para correr, entrenar y brillar.</h1>
+        <p>Combina tecnología React, amortiguación ZoomX y materiales reciclados con diseños premium. Descubre ofertas limitadas, envíos express y personalización en la tienda oficial.</p>
+        <div class="badges">
+          <span class="pill">Envío gratis en pedidos +$80</span>
+          <span class="pill">Devoluciones 60 días</span>
+          <span class="pill">Hasta 12 cuotas sin interés</span>
+        </div>
+        <div style="margin-top: 18px; display: flex; gap: 12px; flex-wrap: wrap;">
+          <button class="cta">Ver novedades</button>
+          <button class="card" style="background:transparent; color:var(--text); border:1px solid var(--border); padding:12px 16px;">Encuentra tu talla</button>
+        </div>
+      </div>
+      <div class="hero-card" aria-hidden="true">
+        <div class="label">Edición limitada</div>
+        <img src="https://images.unsplash.com/photo-1528701800489-20be9c1cd1e8?auto=format&fit=crop&w=1200&q=80" alt="Zapatillas Nike rojas en fondo oscuro">
+        <div class="price">$189</div>
+      </div>
+    </section>
+
+    <div class="section-title" id="nuevos">
+      <h2>Lanzamientos destacados</h2>
+      <p>Series Air, Zoom y Pegasus listos para salir a la calle.</p>
     </div>
-    <div class="announcement-footer">— The staff of Bountiful Blessings of CC</div>
-  </div>
+    <div class="grid">
+      <article class="card highlight">
+        <span class="tag">Nuevo</span>
+        <h3>Nike Air Max Pulse</h3>
+        <p>Amortiguación Air visible con upper knit transpirable y detalles reflectivos.</p>
+        <div class="price">$210</div>
+        <button>Agregar al carrito</button>
+      </article>
+      <article class="card">
+        <span class="tag">Running</span>
+        <h3>ZoomX Vaporfly 3</h3>
+        <p>Placa de carbono y espuma ZoomX para romper tus marcas personales.</p>
+        <div class="price">$250</div>
+        <button>Agregar al carrito</button>
+      </article>
+      <article class="card">
+        <span class="tag">Lifestyle</span>
+        <h3>Air Force 1 Shadow</h3>
+        <p>Capas dobles, perfil chunky y acabados premium para tu día a día.</p>
+        <div class="price">$145</div>
+        <button>Agregar al carrito</button>
+      </article>
+      <article class="card">
+        <span class="tag">Training</span>
+        <h3>Metcon 9</h3>
+        <p>Base estable, tracción multidireccional y soporte para levantamientos pesados.</p>
+        <div class="price">$170</div>
+        <button>Agregar al carrito</button>
+      </article>
+    </div>
 
-  <div class="section-title">Gallery</div>
-  <div class="content">
-    <div id="carousel"></div>
-  </div>
+    <div class="section-title" id="populares" style="margin-top:56px;">
+      <h2>Más vendidos</h2>
+      <p>Colores icónicos que regresan por demanda popular.</p>
+    </div>
+    <div class="grid">
+      <article class="card">
+        <span class="tag">Retro</span>
+        <h3>Blazer Mid '77</h3>
+        <p>Cuero suave, Swoosh oversize y suela retro para un look atemporal.</p>
+        <div class="price">$120</div>
+        <button>Agregar al carrito</button>
+      </article>
+      <article class="card highlight">
+        <span class="tag">Top</span>
+        <h3>Dunk Low Panda</h3>
+        <p>La combinación blanco y negro más solicitada, lista para cualquier outfit.</p>
+        <div class="price">$115</div>
+        <button>Agregar al carrito</button>
+      </article>
+      <article class="card">
+        <span class="tag">Air</span>
+        <h3>Air Jordan 1 High</h3>
+        <p>Colores OG, piel granulada y el legado del jumpman en cada paso.</p>
+        <div class="price">$190</div>
+        <button>Agregar al carrito</button>
+      </article>
+      <article class="card">
+        <span class="tag">Skate</span>
+        <h3>SB Dunk High</h3>
+        <p>Colarín acolchado, suela flexible y agarre superior para tus sesiones.</p>
+        <div class="price">$140</div>
+        <button>Agregar al carrito</button>
+      </article>
+    </div>
 
-  <div class="section-title">About Us</div>
-  <div class="content">
-    <p><strong>Founded in 2020</strong>, Bountiful Blessings of Charlotte County Inc. is a 100% volunteer-run nonprofit organization dedicated to fighting hunger and serving our neighbors in need.</p>
-    <p>We collect, store, and distribute nutritious food—fresh produce, dairy, proteins, and dry goods. Our focus is on logistics, supply, and outreach to maximize every donation and help families across Charlotte County.</p>
-  </div>
+    <div class="section-title" id="beneficios" style="margin-top:56px;">
+      <h2>Beneficios de comprar en Nike Studio</h2>
+      <p>Servicio oficial, envíos rápidos y soporte premium.</p>
+    </div>
+    <div class="benefits">
+      <div class="item">
+        <strong>Personalización gratuita</strong>
+        <span>Graba tus iniciales o agrega parches exclusivos en modelos seleccionados.</span>
+      </div>
+      <div class="item">
+        <strong>Prueba 60 días</strong>
+        <span>Corre, entrena o úsalo a diario. Si no te convence, devuélvelo sin costo.</span>
+      </div>
+      <div class="item">
+        <strong>Atención 24/7</strong>
+        <span>Especialistas en calzado deportivo listos para ayudarte a elegir tu talla y modelo.</span>
+      </div>
+      <div class="item">
+        <strong>Programa Members</strong>
+        <span>Acumula puntos, recibe accesos anticipados y drops limitados cada mes.</span>
+      </div>
+    </div>
 
-  <div class="private-access">
-    <p><strong>Are you a resident of Varanda 1, 2, 3, Golf Breeze, or a visitor of Victory Church?</strong></p>
-    <a href="/private">Click here for private access</a>
-  </div>
-
-  <footer>
-    <p>📧 Contact us at <a href="mailto:aguilesa@gmail.com">aguilesa@gmail.com</a></p>
-    <p>© 2025 Bountiful Blessings of Charlotte County Inc.</p>
-  </footer>
-
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
-
-    const supabase = createClient(
-      'https://npqwopijwhutnvbbbmdd.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5wcXdvcGlqd2h1dG52YmJibWRkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4MjI1OTAsImV4cCI6MjA2OTM5ODU5MH0.2aZzvYvnTvfInul_P7jnDbtVP6aaoCXGC8b29nHsOII'
-    )
-
-    const announcementDiv = document.getElementById('announcement')
-    const carousel = document.getElementById('carousel')
-
-    async function loadAnnouncement() {
-      const { data, error } = await supabase
-        .from('announcements')
-        .select('text')
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .single()
-      announcementDiv.textContent = data?.text || 'No announcements at the moment.'
-    }
-
-    async function loadCarouselImages() {
-      const { data, error } = await supabase.storage.from('images').list('images', { limit: 50 })
-      if (error || !data.length) {
-        carousel.innerHTML = '<p>No images available.</p>'
-        return
-      }
-
-      const urls = data.map(file => `https://npqwopijwhutnvbbbmdd.supabase.co/storage/v1/object/public/images/images/${file.name}`)
-
-      urls.forEach((url, i) => {
-        const img = document.createElement('img')
-        img.src = url
-        img.className = i === 0 ? 'active' : ''
-        carousel.appendChild(img)
-      })
-
-      let index = 0
-      setInterval(() => {
-        const images = carousel.querySelectorAll('img')
-        images.forEach((img, i) => img.classList.toggle('active', i === index))
-        index = (index + 1) % images.length
-      }, 5000)
-    }
-
-    loadAnnouncement()
-    loadCarouselImages()
-  </script>
+    <section class="footer">
+      © 2024 Nike Studio. Todos los derechos reservados · Términos y privacidad · Envíos internacionales disponibles.
+    </section>
+  </main>
 </body>
 </html>
