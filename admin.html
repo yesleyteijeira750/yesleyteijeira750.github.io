@@ -5,59 +5,88 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Admin Panel - Bountiful Blessings</title>
   <style>
+    :root {
+      --peach: #ffb27f;
+      --peach-deep: #e09760;
+      --sage: #70a47b;
+      --ink: #1f2937;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-      background: #fff8f0;
+      font-family: 'Montserrat', 'Arial', sans-serif;
+      margin: 0;
+      background: linear-gradient(135deg, #f5faff, #fff4ea);
       color: #333;
+      padding: 24px 12px 48px;
     }
+
+    .shell {
+      max-width: 960px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+      padding: 28px 26px 34px;
+      border: 1px solid #f2e7dd;
+    }
+
+    h1, h2, h3 {
+      color: var(--ink);
+      margin-top: 0;
+    }
+
     h1 {
-      color: #f9a45c;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
-    .hidden {
-      display: none;
+
+    .badge {
+      background: #fff1e5;
+      color: var(--peach-deep);
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.9rem;
     }
-    input, textarea, button {
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    input, textarea, button, label, select {
+      font-family: inherit;
+    }
+
+    input, textarea {
       display: block;
-      margin: 10px 0 20px;
-      padding: 10px;
-      width: 300px;
+      margin: 8px 0 16px;
+      padding: 12px;
+      width: 100%;
       font-size: 1em;
-      border-radius: 6px;
-      border: 1px solid #ccc;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      background: #fbfbfc;
     }
-    button {
-      width: 150px;
-      background-color: #f9a45c;
-      border: none;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      border-radius: 6px;
-      transition: background-color 0.3s;
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
     }
-    button:hover {
-      background-color: #e0884f;
-    }
-    label {
-      font-weight: bold;
-    }
-    #message {
-      color: red;
-      font-weight: bold;
-    }
+
     .password-container {
       position: relative;
-      width: 300px;
     }
+
     .password-container input {
-      width: 100%;
-      padding-right: 40px;
-      box-sizing: border-box;
+      padding-right: 44px;
     }
+
     .toggle-password {
       position: absolute;
-      right: 10px;
+      right: 12px;
       top: 50%;
       transform: translateY(-50%);
       cursor: pointer;
@@ -66,91 +95,160 @@
       color: #888;
       transition: color 0.3s;
     }
+
     .toggle-password:hover {
-      color: #f9a45c;
+      color: var(--peach-deep);
     }
+
+    button {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 16px;
+      background-color: var(--peach-deep);
+      border: none;
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+      border-radius: 10px;
+      transition: background-color 0.3s, transform 0.2s;
+      box-shadow: 0 10px 20px rgba(224, 151, 96, 0.28);
+    }
+
+    button:hover {
+      background-color: var(--peach);
+      transform: translateY(-1px);
+    }
+
+    .ghost {
+      background: #eef4ef;
+      color: #2d6a4f;
+      border: 1px solid #cfe4d5;
+      box-shadow: none;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    #message, #announcement-message, #images-status {
+      color: #b91c1c;
+      font-weight: 700;
+      margin-top: 8px;
+    }
+
+    .success {
+      color: #065f46;
+    }
+
     ul {
       list-style: none;
       padding: 0;
     }
+
     ul li {
       margin-bottom: 8px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      max-width: 400px;
-      background: #f5f0e6;
-      padding: 8px 12px;
-      border-radius: 6px;
+      max-width: 480px;
+      background: #f8fbff;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #e5ebf5;
     }
+
     ul li button {
       width: auto;
       padding: 6px 12px;
       background-color: #e04848;
       border: none;
-      border-radius: 4px;
+      border-radius: 6px;
       font-size: 0.9em;
       color: white;
       cursor: pointer;
       transition: background-color 0.3s;
+      box-shadow: none;
     }
+
     ul li button:hover {
       background-color: #b33030;
     }
-    .announcement-container {
-      max-width: 600px;
-      margin-bottom: 10px;
-    }
+
     .announcement-footer {
       font-style: italic;
-      color: #666;
+      color: #6b7280;
       font-family: 'Georgia', serif;
       margin-top: 10px;
-      font-size: 1em;
+      font-size: 0.95em;
       letter-spacing: 0.06em;
+    }
+
+    .info-box {
+      background: #fff7ec;
+      border: 1px solid #fde0bd;
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+    }
+
+    .section-card {
+      background: #fdfefe;
+      border: 1px solid #ecf0f3;
+      border-radius: 14px;
+      padding: 18px 16px 10px;
+      margin: 14px 0;
     }
   </style>
 </head>
 <body>
+  <div class="shell">
+    <h1>Admin Panel <span class="badge">Staff access</span></h1>
+    <p class="info-box">Log in to post announcements and manage carousel images shown on the public site.</p>
 
-  <h1>Admin Panel</h1>
+    <div id="login-section">
+      <label for="email">Email</label>
+      <input id="email" type="email" placeholder="you@example.com" autocomplete="email" required />
 
-  <div id="login-section">
-    <label for="email">Email:</label>
-    <input id="email" type="email" placeholder="Enter your email" autocomplete="email" required />
-    
-    <label for="password">Password:</label>
-    <div class="password-container">
-      <input id="password" type="password" placeholder="Enter your password" autocomplete="current-password" required />
-      <span id="toggle-password" class="toggle-password" title="Show/Hide password">&#128065;</span>
-    </div>
-    
-    <button id="login-btn">Login</button>
-    <div id="message"></div>
-  </div>
-
-  <div id="admin-section" class="hidden">
-
-    <button id="logout-btn">Logout</button>
-
-    <section>
-      <h2>Update Announcement</h2>
-      <div class="announcement-container">
-        <textarea id="announcement-text" rows="4" placeholder="Write your announcement here..."></textarea>
-        <div class="announcement-footer">— The staff of Bountiful Blessings of CC</div>
+      <label for="password">Password</label>
+      <div class="password-container">
+        <input id="password" type="password" placeholder="Enter your password" autocomplete="current-password" required />
+        <span id="toggle-password" class="toggle-password" title="Show/Hide password">&#128065;</span>
       </div>
-      <button id="save-announcement-btn">Save Announcement</button>
-      <div id="announcement-message"></div>
-    </section>
 
-    <section>
-      <h2>Upload Carousel Images</h2>
-      <input type="file" id="image-upload" accept="image/*" multiple />
-      <button id="upload-image-btn">Upload Images</button>
-      <h3>Uploaded Images</h3>
-      <ul id="images-list"></ul>
-    </section>
+      <button id="login-btn">Login</button>
+      <div id="message" aria-live="polite"></div>
+    </div>
 
+    <div id="admin-section" class="hidden">
+      <div class="grid" style="align-items: start;">
+        <div class="section-card">
+          <h2>Update Announcement</h2>
+          <div class="announcement-container">
+            <textarea id="announcement-text" rows="4" placeholder="Write your announcement here..."></textarea>
+            <div class="announcement-footer">— The staff of Bountiful Blessings of CC</div>
+          </div>
+          <button id="save-announcement-btn">Save announcement</button>
+          <div id="announcement-message" aria-live="polite"></div>
+        </div>
+
+        <div class="section-card">
+          <h2>Account</h2>
+          <p>Stay signed in while working. Log out when finished.</p>
+          <button class="ghost" id="logout-btn">Logout</button>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <h2>Upload Carousel Images</h2>
+        <p>Images are displayed on the homepage in the order uploaded.</p>
+        <input type="file" id="image-upload" accept="image/*" multiple />
+        <button id="upload-image-btn">Upload Images</button>
+        <div id="images-status" aria-live="polite"></div>
+        <h3>Uploaded Images</h3>
+        <ul id="images-list"></ul>
+      </div>
+    </div>
   </div>
 
   <script type="module">
@@ -176,8 +274,8 @@
     const imageUploadInput = document.getElementById('image-upload')
     const uploadImageBtn = document.getElementById('upload-image-btn')
     const imagesList = document.getElementById('images-list')
+    const imagesStatus = document.getElementById('images-status')
 
-    // Toggle password visibility
     const togglePassword = document.getElementById('toggle-password')
     togglePassword.addEventListener('click', () => {
       if (passwordInput.type === 'password') {
@@ -189,15 +287,15 @@
       }
     })
 
-    // Show temporary messages
-    function showTempMessage(element, msg, time = 3000) {
+    function showTempMessage(element, msg, isError = true, time = 3000) {
       element.textContent = msg
+      element.classList.toggle('success', !isError)
       setTimeout(() => {
         element.textContent = ''
+        element.classList.remove('success')
       }, time)
     }
 
-    // Check if user session exists
     async function checkSession() {
       const { data } = await supabase.auth.getSession()
       if (data?.session) {
@@ -223,7 +321,6 @@
       messageDiv.textContent = ''
     }
 
-    // Login handler
     loginBtn.addEventListener('click', async () => {
       messageDiv.textContent = 'Logging in...'
       const email = emailInput.value.trim()
@@ -232,7 +329,7 @@
         messageDiv.textContent = 'Please enter email and password'
         return
       }
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+      const { error } = await supabase.auth.signInWithPassword({ email, password })
       if (error) {
         messageDiv.textContent = 'Login failed: ' + error.message
       } else {
@@ -243,30 +340,32 @@
       }
     })
 
-    // Logout handler
     logoutBtn.addEventListener('click', async () => {
       await supabase.auth.signOut()
       showLogin()
     })
 
-    // Load latest announcement
     async function loadAnnouncement() {
-      const { data, error } = await supabase
-        .from('announcements')
-        .select('text')
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .single()
+      announcementMessage.textContent = ''
+      try {
+        const { data, error } = await supabase
+          .from('announcements')
+          .select('text')
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .single()
 
-      if (error) {
+        if (error) throw error
+        announcementText.value = data?.text || ''
+        if (!data?.text) {
+          showTempMessage(announcementMessage, 'No announcement saved yet.', false)
+        }
+      } catch (error) {
         announcementText.value = ''
         showTempMessage(announcementMessage, 'Error loading announcement: ' + error.message)
-        return
       }
-      announcementText.value = data?.text || ''
     }
 
-    // Save announcement
     saveAnnouncementBtn.addEventListener('click', async () => {
       const text = announcementText.value.trim()
       if (!text) {
@@ -277,38 +376,42 @@
       if (error) {
         alert('Failed to save announcement: ' + error.message)
       } else {
-        showTempMessage(announcementMessage, 'Announcement saved')
+        showTempMessage(announcementMessage, 'Announcement saved', false)
         loadAnnouncement()
       }
     })
 
-    // Load images list
     async function loadImages() {
-      const { data, error } = await supabase.storage.from('images').list('', { limit: 100 })
+      imagesStatus.textContent = 'Loading images...'
       imagesList.innerHTML = ''
-      if (error) {
-        showTempMessage(messageDiv, 'Error loading images: ' + error.message)
-        return
-      }
-      if (!data.length) {
-        imagesList.innerHTML = '<li>No images uploaded yet.</li>'
-        return
-      }
-      data.forEach(file => {
-        const li = document.createElement('li')
-        li.textContent = file.name
+      try {
+        const { data, error } = await supabase.storage.from('images').list('', { limit: 100 })
+        if (error) throw error
 
-        const deleteBtn = document.createElement('button')
-        deleteBtn.textContent = 'Delete'
-        deleteBtn.title = `Delete ${file.name}`
-        deleteBtn.addEventListener('click', () => deleteImage(file.name))
+        if (!data.length) {
+          imagesList.innerHTML = '<li>No images uploaded yet.</li>'
+          imagesStatus.textContent = ''
+          return
+        }
 
-        li.appendChild(deleteBtn)
-        imagesList.appendChild(li)
-      })
+        data.forEach(file => {
+          const li = document.createElement('li')
+          li.textContent = file.name
+
+          const deleteBtn = document.createElement('button')
+          deleteBtn.textContent = 'Delete'
+          deleteBtn.title = `Delete ${file.name}`
+          deleteBtn.addEventListener('click', () => deleteImage(file.name))
+
+          li.appendChild(deleteBtn)
+          imagesList.appendChild(li)
+        })
+        imagesStatus.textContent = ''
+      } catch (error) {
+        showTempMessage(imagesStatus, 'Error loading images: ' + error.message)
+      }
     }
 
-    // Upload multiple images handler
     uploadImageBtn.addEventListener('click', async () => {
       const files = imageUploadInput.files
       if (!files.length) {
@@ -330,13 +433,12 @@
       if (errors.length) {
         alert('Some uploads failed:\n' + errors.join('\n'))
       } else {
-        showTempMessage(messageDiv, 'Image(s) uploaded successfully')
+        showTempMessage(imagesStatus, 'Image(s) uploaded successfully', false)
       }
       imageUploadInput.value = ''
       loadImages()
     })
 
-    // Delete image handler
     async function deleteImage(filename) {
       if (!confirm(`Are you sure you want to delete "${filename}"?`)) return
       const { error } = await supabase.storage.from('images').remove([`images/${filename}`])
@@ -344,11 +446,10 @@
         alert('Failed to delete image: ' + error.message)
         return
       }
-      showTempMessage(messageDiv, 'Image deleted')
+      showTempMessage(imagesStatus, 'Image deleted', false)
       loadImages()
     }
 
-    // Allow "Enter" key to submit login
     passwordInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
         loginBtn.click()
@@ -357,6 +458,5 @@
 
     checkSession()
   </script>
-
 </body>
 </html>

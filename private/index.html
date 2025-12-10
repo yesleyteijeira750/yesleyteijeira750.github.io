@@ -2,10 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Private Access - Bountiful Blessings</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --peach: #ffb27f;
+      --peach-deep: #e09760;
+      --sage: #70a47b;
+      --ink: #1f2937;
+    }
+
     body {
       font-family: 'Montserrat', sans-serif;
       background: linear-gradient(to right, #fff8f0, #f5faff);
@@ -14,41 +21,67 @@
       margin: 0;
       padding: 0;
     }
+
     .container {
-      max-width: 700px;
-      margin: 60px auto;
+      max-width: 760px;
+      margin: 50px auto;
       background: #fff;
-      padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+      padding: 32px;
+      border-radius: 18px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+      border: 1px solid #f1e6dc;
     }
+
+    h2 {
+      margin-top: 0;
+      color: var(--ink);
+    }
+
+    p.description {
+      margin-bottom: 18px;
+      color: #374151;
+    }
+
     input, select {
-      width: 90%;
+      width: 100%;
       padding: 12px;
-      margin: 10px 0;
+      margin: 10px 0 4px;
       font-size: 1em;
       border: 1px solid #ccc;
-      border-radius: 8px;
+      border-radius: 10px;
+      background: #fbfbfc;
     }
+
     button {
       padding: 12px 28px;
-      background-color: #FFB27F;
+      background-color: var(--peach-deep);
       color: white;
       font-size: 1em;
       border: none;
       border-radius: 30px;
       cursor: pointer;
       font-weight: 600;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      margin-top: 10px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      margin-top: 12px;
+      transition: background-color 0.25s ease, transform 0.2s ease;
     }
+
     button:hover {
-      background-color: #f79960;
+      background-color: var(--peach);
+      transform: translateY(-1px);
     }
+
     .error {
-      color: red;
+      color: #b91c1c;
       margin-top: 10px;
+      font-weight: 700;
+      min-height: 20px;
     }
+
+    .success {
+      color: #065f46;
+    }
+
     iframe {
       width: 100%;
       height: 600px;
@@ -56,24 +89,32 @@
       border-radius: 12px;
       margin-top: 20px;
     }
+
+    .hint {
+      background: #fff3e8;
+      border: 1px solid #ffd7b8;
+      padding: 10px 12px;
+      border-radius: 12px;
+      color: #8b5a32;
+      margin-top: 10px;
+      text-align: left;
+    }
   </style>
 </head>
 <body>
 
-  <!-- STEP 1: PASSWORD -->
   <div class="container" id="auth-container">
     <h2>Private Access</h2>
-    <p>Please enter the access password to continue:</p>
+    <p class="description">Residents of Varanda 1, 2, 3, Gulf Breeze, and Victory Church visitors can view our private updates.</p>
     <input type="password" id="password" placeholder="Enter password" />
-    <br />
     <button onclick="checkPassword()">Continue</button>
-    <div class="error" id="error-message"></div>
+    <div class="error" id="error-message" aria-live="polite"></div>
+    <p class="hint">Need help? Contact aguilesa@gmail.com for support.</p>
   </div>
 
-  <!-- STEP 2: FORM -->
   <div class="container" id="form-container" style="display:none">
     <h2>Quick Verification</h2>
-    <p>To continue, please enter your name and confirm your residence:</p>
+    <p class="description">Confirm your details to proceed.</p>
     <input type="text" id="name" placeholder="Your full name" required />
     <select id="residence" required>
       <option value="">Select your residence</option>
@@ -84,13 +125,13 @@
       <option value="Victory Church">Victory Church</option>
     </select>
     <button onclick="submitForm()">Submit</button>
-    <div class="error" id="form-error"></div>
+    <div class="error" id="form-error" aria-live="polite"></div>
   </div>
 
-  <!-- STEP 3: PRIVATE CONTENT -->
   <div class="container" id="content-container" style="display:none">
     <h2>Welcome to the Residents' Portal</h2>
-    <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQUlsBjGyFOn6K5lJwZuCkgcBwhWLnIDj-kbprtEZa-1rpYw3MlgtN_uyqnGt1mEbcjEghY4JMJepQr/pubembed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
+    <p class="description">Thank you for verifying! Scroll through the updates below.</p>
+    <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQUlsBjGyFOn6K5lJwZuCkgcBwhWLnIDj-kbprtEZa-1rpYw3MlgtN_uyqnGt1mEbcjEghY4JMJepQr/pubembed?start=false&loop=false&delayms=3000" allowfullscreen title="Residents presentation"></iframe>
   </div>
 
   <script>
@@ -101,33 +142,32 @@
     const authContainer = document.getElementById("auth-container");
     const formContainer = document.getElementById("form-container");
     const contentContainer = document.getElementById("content-container");
+    const errorMessage = document.getElementById("error-message");
+    const formError = document.getElementById("form-error");
 
-    // STEP 1: Password Check
     function checkPassword() {
-      const input = document.getElementById("password").value;
-      const error = document.getElementById("error-message");
+      const input = document.getElementById("password").value.trim();
+      errorMessage.textContent = "";
       if (input === PASSWORD) {
         localStorage.setItem(AUTH_KEY, "true");
         authContainer.style.display = "none";
-
         if (localStorage.getItem(FORM_KEY) === "true") {
           contentContainer.style.display = "block";
         } else {
           formContainer.style.display = "block";
         }
       } else {
-        error.innerText = "⚠️ The password you entered is incorrect. Please try again.";
+        errorMessage.textContent = "⚠️ The password you entered is incorrect. Please try again.";
       }
     }
 
-    // STEP 2: Submit Form to Google Sheet
     function submitForm() {
       const name = document.getElementById("name").value.trim();
       const residence = document.getElementById("residence").value;
-      const error = document.getElementById("form-error");
+      formError.textContent = "";
 
       if (!name || !residence) {
-        error.innerText = "Please complete all fields.";
+        formError.textContent = "Please complete all fields.";
         return;
       }
 
@@ -139,18 +179,17 @@
         method: "POST",
         body: formData
       })
-      .then(response => response.text())
-      .then(result => {
+      .then(() => {
         localStorage.setItem(FORM_KEY, "true");
         formContainer.style.display = "none";
         contentContainer.style.display = "block";
+        formError.textContent = "";
       })
       .catch(() => {
-        error.innerText = "There was a problem submitting the form. Please try again.";
+        formError.textContent = "There was a problem submitting the form. Please try again.";
       });
     }
 
-    // STEP 0: Autoload if already authenticated and form completed
     window.onload = () => {
       const auth = localStorage.getItem(AUTH_KEY);
       const formDone = localStorage.getItem(FORM_KEY);

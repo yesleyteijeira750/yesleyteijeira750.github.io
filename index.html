@@ -2,177 +2,327 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bountiful Blessings of Charlotte County Inc.</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --peach: #ffb27f;
+      --peach-deep: #e09760;
+      --sage: #70a47b;
+      --ink: #1f2937;
+      --sand: #fff8f0;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       font-family: 'Montserrat', sans-serif;
-      background: linear-gradient(to right, #fff8f0, #f5faff);
-      color: #222;
+      background: linear-gradient(120deg, #f5faff 0%, #fff8f0 100%);
+      color: var(--ink);
       text-align: center;
+      line-height: 1.6;
     }
+
     header {
-      background: #FFB27F;
+      background: var(--peach);
       color: white;
-      padding: 40px 20px;
-      border-bottom: 5px solid #e09760;
+      padding: 36px 20px 28px;
+      border-bottom: 6px solid var(--peach-deep);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
     }
+
     header img {
-      width: 120px;
+      width: 116px;
       border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      margin-bottom: 10px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+      margin-bottom: 12px;
     }
+
     header h1 {
       margin: 0;
-      font-size: 2.5em;
+      font-size: 2.3rem;
       font-weight: 700;
+      letter-spacing: 0.02em;
     }
+
     header p {
-      font-size: 1.2em;
-      margin-top: 10px;
+      font-size: 1.1rem;
+      margin: 12px auto 0;
+      max-width: 760px;
     }
+
     nav {
-      margin-top: 1rem;
+      margin-top: 1.2rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
     }
+
     nav a {
-      display: inline-block;
-      margin: 6px 5px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
       padding: 10px 18px;
       border-radius: 30px;
       background-color: white;
-      color: #f9a45c;
+      color: var(--peach-deep);
       font-weight: 600;
       text-decoration: none;
-      border: 2px solid #f9a45c;
-      transition: 0.3s;
-      font-size: 0.95em;
+      border: 2px solid var(--peach-deep);
+      transition: 0.3s ease;
+      font-size: 0.95rem;
     }
+
     nav a:hover {
-      background-color: #f9a45c;
+      background-color: var(--peach-deep);
       color: white;
+      transform: translateY(-1px);
     }
-    .section-title {
-      font-size: 2em;
-      margin: 40px 0 20px;
-      color: #f9a45c;
-      position: relative;
+
+    main {
+      max-width: 1100px;
+      margin: 30px auto 0;
+      padding: 0 16px 40px;
     }
-    .section-title::after {
-      content: "";
-      width: 60px;
-      height: 4px;
-      background: #70a47b;
-      display: block;
-      margin: 12px auto 0;
-      border-radius: 4px;
-    }
-    .content {
-      margin: 20px auto;
-      max-width: 900px;
-      background: #ffffff;
+
+    .card {
+      background: white;
       border-radius: 16px;
-      padding: 30px 20px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+      padding: 26px 24px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.06);
+      margin: 18px 0;
       text-align: left;
     }
-    #carousel {
+
+    .section-title {
+      font-size: 2rem;
+      margin: 36px 0 14px;
+      color: var(--peach-deep);
+      font-family: 'Playfair Display', serif;
       position: relative;
-      width: 100%;
-      height: 500px;
-      overflow: hidden;
+      display: inline-block;
+      letter-spacing: 0.01em;
+    }
+
+    .section-title::after {
+      content: "";
+      width: 72px;
+      height: 4px;
+      background: var(--sage);
+      display: block;
+      margin: 12px auto 0;
+      border-radius: 999px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      align-items: center;
+      text-align: left;
+    }
+
+    .hero h2 {
+      margin: 0 0 10px;
+      font-size: 1.5rem;
+      color: var(--ink);
+    }
+
+    .hero p {
+      margin: 0 0 14px;
+      color: #374151;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: #fff0e6;
+      color: var(--peach-deep);
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 11px 18px;
       border-radius: 12px;
-      margin-bottom: 20px;
+      border: none;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: 0.25s ease;
+      font-size: 0.95rem;
     }
-    #carousel img {
-      width: 100%;
-      height: 500px;
-      object-fit: cover;
-      position: absolute;
-      opacity: 0;
-      transition: opacity 1s ease-in-out;
+
+    .button.primary {
+      background: var(--peach-deep);
+      color: white;
+      box-shadow: 0 10px 24px rgba(224, 151, 96, 0.35);
     }
-    #carousel img.active {
-      opacity: 1;
+
+    .button.secondary {
+      background: #f0f6f2;
+      color: var(--sage);
+      border: 2px solid var(--sage);
     }
-    .content p {
-      font-size: 1.1em;
-      line-height: 1.6;
-      margin: 12px 0;
+
+    .button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.08);
     }
+
+    .announcement-box {
+      display: grid;
+      gap: 12px;
+      align-items: start;
+    }
+
+    .announcement-text {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #2f3136;
+    }
+
     .announcement-footer {
       font-style: italic;
       font-family: 'Georgia', serif;
-      margin-top: 40px;
-      color: #666;
-      font-size: 1em;
-      text-align: center;
+      margin-top: 6px;
+      color: #6b7280;
+      font-size: 0.95rem;
+      text-align: left;
+      letter-spacing: 0.05em;
     }
-    .calendar-button {
-      text-align: center;
-      margin-top: 20px;
+
+    #announcement-status,
+    #carousel-status {
+      color: #6b7280;
+      font-size: 0.95rem;
     }
-    .calendar-button a {
-      background-color: white;
-      color: #f9a45c;
-      padding: 10px 20px;
-      border-radius: 30px;
-      text-decoration: none;
-      font-weight: 600;
-      border: 2px solid #f9a45c;
-      transition: 0.3s;
-      font-size: 0.95em;
+
+    #carousel {
+      position: relative;
+      width: 100%;
+      min-height: 320px;
+      border-radius: 14px;
+      overflow: hidden;
+      background: linear-gradient(135deg, #fdf0e7, #e8f3ec);
+      display: grid;
+      place-items: center;
     }
-    .calendar-button a:hover {
-      background: #f9a45c;
-      color: white;
+
+    #carousel img {
+      width: 100%;
+      height: 420px;
+      object-fit: cover;
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
     }
+
+    #carousel img.active {
+      opacity: 1;
+    }
+
+    .pill-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px;
+      margin-top: 10px;
+    }
+
+    .pill-card {
+      background: #f8fbff;
+      border: 1px solid #e5ebf5;
+      border-radius: 14px;
+      padding: 16px;
+      text-align: left;
+    }
+
+    .pill-card strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin: 18px 0 6px;
+    }
+
+    .stat {
+      background: #f0f6f2;
+      border-radius: 14px;
+      padding: 14px;
+      font-weight: 700;
+      border: 1px solid #dce7de;
+      text-align: left;
+    }
+
+    .stat span {
+      display: block;
+      font-size: 2rem;
+      color: var(--peach-deep);
+      margin-bottom: 4px;
+    }
+
     .private-access {
-      margin-top: 40px;
-      padding: 24px;
-      background: #fff8f0;
-      border-top: 2px solid #f9a45c;
-      border-radius: 12px;
+      margin-top: 32px;
+      padding: 22px;
+      background: #fff3e8;
+      border: 1px solid #ffd7b8;
+      border-radius: 16px;
+      text-align: left;
+      display: grid;
+      gap: 10px;
     }
-    .private-access p {
-      font-size: 1.1em;
-      margin-bottom: 14px;
-      color: #444;
-    }
-    .private-access a {
-      display: inline-block;
-      padding: 12px 24px;
-      border-radius: 28px;
-      background-color: #f9a45c;
-      color: white;
-      font-weight: 600;
-      text-decoration: none;
-    }
-    .private-access a:hover {
-      background-color: #e0884f;
-    }
+
     footer {
-      background-color: #222;
+      background-color: #111827;
       color: white;
-      padding: 20px;
-      margin-top: 40px;
+      padding: 24px 16px 32px;
+      margin-top: 50px;
     }
+
     footer a {
-      color: #ffb347;
+      color: #ffcf9f;
       text-decoration: none;
-      font-weight: 600;
+      font-weight: 700;
     }
+
     footer a:hover {
       text-decoration: underline;
     }
-    @media (max-width: 600px) {
+
+    @media (max-width: 640px) {
       header h1 {
-        font-size: 1.7em;
+        font-size: 1.8rem;
       }
+
       .section-title {
-        font-size: 1.4em;
+        font-size: 1.5rem;
+      }
+
+      #carousel img {
+        height: 300px;
       }
     }
   </style>
@@ -180,41 +330,110 @@
 <body>
 
   <header>
-    <img src="logo.png" alt="Logo" />
+    <img src="logo.png" alt="Bountiful Blessings logo" />
     <h1>Bountiful Blessings of Charlotte County Inc.</h1>
-    <p>Our goal is that no one goes to bed hungry.</p>
-    <nav>
-      <a href="mailto:aguilesa@gmail.com?subject=I want to volunteer">Volunteer</a>
-      <a href="mailto:aguilesa@gmail.com?subject=Donate to Bountiful Blessings">Donate</a>
-      <a href="https://www.facebook.com/share/g/1BPajU3Der/" target="_blank">Facebook Group</a>
+    <p>Volunteers helping neighbors with fresh food, storage, and logistics so no one goes to bed hungry.</p>
+    <nav aria-label="Site">
+      <a href="#announcements">Announcements</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#about">About</a>
+      <a href="#help">Get Involved</a>
+      <a href="#contact">Contact</a>
+      <a href="https://www.facebook.com/share/g/1BPajU3Der/" target="_blank" rel="noreferrer noopener">Facebook Group</a>
       <a href="admin.html">🔒 Admin</a>
-      <a href="https://calendar.google.com/calendar/u/0/r?cid=12baf7956a73eca76931c5613c175e6efba3f8f9705a769a33b6772fcd1014ca@group.calendar.google.com" target="_blank">➕ Add Calendar</a>
+      <a href="https://calendar.google.com/calendar/u/0/r?cid=12baf7956a73eca76931c5613c175e6efba3f8f9705a769a33b6772fcd1014ca@group.calendar.google.com" target="_blank" rel="noreferrer noopener">➕ Add Calendar</a>
     </nav>
   </header>
 
-  <div class="section-title">Announcements</div>
-  <div class="content">
-    <div id="announcement" style="font-size: 1.2em; padding: 10px 0; font-weight: bold; color: #444;">
-      Loading announcement...
-    </div>
-    <div class="announcement-footer">— The staff of Bountiful Blessings of CC</div>
-  </div>
+  <main>
+    <section class="card hero" aria-labelledby="hero-title">
+      <div>
+        <p class="badge">100% Volunteer-led • Charlotte County</p>
+        <h2 id="hero-title">Food, dignity, and care for every family</h2>
+        <p>We collect, store, and deliver nutritious food to neighbors across Charlotte County. Your time and generosity keep the fridges stocked and the trucks moving.</p>
+        <div class="actions">
+          <a class="button primary" href="mailto:aguilesa@gmail.com?subject=I want to volunteer">Become a volunteer</a>
+          <a class="button secondary" href="mailto:aguilesa@gmail.com?subject=Donate to Bountiful Blessings">Make a donation</a>
+        </div>
+      </div>
+      <div class="pill-card" aria-label="Quick facts">
+        <strong>What we focus on</strong>
+        <ul class="pill-grid" style="list-style:none; padding:0; margin:0;">
+          <li class="pill-card"><strong>Logistics</strong>Coordinating pick-ups, storage, and delivery.</li>
+          <li class="pill-card"><strong>Fresh food</strong>Produce, dairy, proteins, and pantry staples.</li>
+          <li class="pill-card"><strong>Outreach</strong>Partnering with churches and community leaders.</li>
+        </ul>
+      </div>
+    </section>
 
-  <div class="section-title">Gallery</div>
-  <div class="content">
-    <div id="carousel"></div>
-  </div>
+    <section id="announcements" aria-labelledby="announcements-title">
+      <h2 class="section-title" id="announcements-title">Announcements</h2>
+      <div class="card announcement-box">
+        <div id="announcement-status" aria-live="polite">Loading the latest update…</div>
+        <div id="announcement" class="announcement-text"></div>
+        <div class="announcement-footer">— The staff of Bountiful Blessings of CC</div>
+      </div>
+    </section>
 
-  <div class="section-title">About Us</div>
-  <div class="content">
-    <p><strong>Founded in 2020</strong>, Bountiful Blessings of Charlotte County Inc. is a 100% volunteer-run nonprofit organization dedicated to fighting hunger and serving our neighbors in need.</p>
-    <p>We collect, store, and distribute nutritious food—fresh produce, dairy, proteins, and dry goods. Our focus is on logistics, supply, and outreach to maximize every donation and help families across Charlotte County.</p>
-  </div>
+    <section id="gallery" aria-labelledby="gallery-title">
+      <h2 class="section-title" id="gallery-title">Gallery</h2>
+      <div class="card">
+        <div id="carousel" aria-live="polite" aria-label="Community images">
+          <p id="carousel-status">Loading images…</p>
+        </div>
+      </div>
+    </section>
 
-  <div class="private-access">
-    <p><strong>Are you a resident of Varanda 1, 2, 3, Golf Breeze, or a visitor of Victory Church?</strong></p>
-    <a href="/private">Click here for private access</a>
-  </div>
+    <section id="about" aria-labelledby="about-title">
+      <h2 class="section-title" id="about-title">About Us</h2>
+      <div class="card">
+        <p><strong>Founded in 2020</strong>, Bountiful Blessings of Charlotte County Inc. is a 100% volunteer-run nonprofit organization dedicated to fighting hunger and serving neighbors in need.</p>
+        <p>We receive and distribute nutritious food—fresh produce, dairy, proteins, and dry goods. Our focus is on logistics, storage, and outreach to maximize every donation and help families across Charlotte County.</p>
+        <div class="stats" aria-label="Impact at a glance">
+          <div class="stat"><span>12+</span>monthly distribution events coordinated with partners.</div>
+          <div class="stat"><span>100%</span>volunteer-powered effort—no paid staff.</div>
+          <div class="stat"><span>Countless</span>families supported through community generosity.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="help" aria-labelledby="help-title">
+      <h2 class="section-title" id="help-title">How You Can Help</h2>
+      <div class="card">
+        <div class="pill-grid">
+          <div class="pill-card"><strong>Volunteer shifts</strong>Assist with packing, loading, delivery, and sign-in.</div>
+          <div class="pill-card"><strong>Donate supplies</strong>Coolers, boxes, shelving, and storage totes are always useful.</div>
+          <div class="pill-card"><strong>Share the calendar</strong>Stay up to date with upcoming drives and distribution days.</div>
+        </div>
+        <div class="actions" style="margin-top:16px;">
+          <a class="button primary" href="mailto:aguilesa@gmail.com?subject=I want to volunteer">Sign up to serve</a>
+          <a class="button secondary" href="https://calendar.google.com/calendar/u/0/r?cid=12baf7956a73eca76931c5613c175e6efba3f8f9705a769a33b6772fcd1014ca@group.calendar.google.com" target="_blank" rel="noreferrer noopener">Add events to your calendar</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="card private-access" aria-labelledby="residents-title">
+      <div>
+        <h3 id="residents-title" style="margin:0;">Residents & Friends</h3>
+        <p><strong>Are you a resident of Varanda 1, 2, 3, Gulf Breeze, or a visitor of Victory Church?</strong></p>
+        <p>Access our private portal for community updates and resources.</p>
+      </div>
+      <div>
+        <a class="button primary" href="/private">Go to private portal</a>
+      </div>
+    </section>
+
+    <section id="contact" aria-labelledby="contact-title">
+      <h2 class="section-title" id="contact-title">Contact</h2>
+      <div class="card">
+        <p>We love hearing from neighbors, donors, and new volunteers. Reach out anytime.</p>
+        <div class="actions">
+          <a class="button primary" href="mailto:aguilesa@gmail.com">Email us</a>
+          <a class="button secondary" href="https://www.facebook.com/share/g/1BPajU3Der/" target="_blank" rel="noreferrer noopener">Join our Facebook group</a>
+        </div>
+      </div>
+    </section>
+  </main>
 
   <footer>
     <p>📧 Contact us at <a href="mailto:aguilesa@gmail.com">aguilesa@gmail.com</a></p>
@@ -230,40 +449,78 @@
     )
 
     const announcementDiv = document.getElementById('announcement')
+    const announcementStatus = document.getElementById('announcement-status')
     const carousel = document.getElementById('carousel')
+    const carouselStatus = document.getElementById('carousel-status')
+
+    const showStatus = (element, message) => {
+      if (element) {
+        element.textContent = message
+      }
+    }
 
     async function loadAnnouncement() {
-      const { data, error } = await supabase
-        .from('announcements')
-        .select('text')
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .single()
-      announcementDiv.textContent = data?.text || 'No announcements at the moment.'
+      showStatus(announcementStatus, 'Loading the latest update…')
+      announcementDiv.textContent = ''
+      try {
+        const { data, error } = await supabase
+          .from('announcements')
+          .select('text')
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .single()
+
+        if (error) {
+          throw error
+        }
+
+        announcementDiv.textContent = data?.text || 'No announcements at the moment.'
+        showStatus(announcementStatus, data?.text ? 'Latest update loaded' : 'No announcements yet')
+      } catch (err) {
+        announcementDiv.textContent = 'Unable to load announcements right now. Please check back soon.'
+        showStatus(announcementStatus, 'Error loading updates')
+        console.error('Announcement error', err)
+      }
     }
 
     async function loadCarouselImages() {
-      const { data, error } = await supabase.storage.from('images').list('images', { limit: 50 })
-      if (error || !data.length) {
-        carousel.innerHTML = '<p>No images available.</p>'
-        return
+      showStatus(carouselStatus, 'Loading images…')
+      try {
+        const { data, error } = await supabase.storage.from('images').list('images', { limit: 50 })
+
+        if (error) {
+          throw error
+        }
+
+        if (!data || !data.length) {
+          carousel.innerHTML = '<p style="margin:12px 0;">No images available yet.</p>'
+          return
+        }
+
+        const urls = data.map(file => `https://npqwopijwhutnvbbbmdd.supabase.co/storage/v1/object/public/images/images/${file.name}`)
+
+        urls.forEach((url, i) => {
+          const img = document.createElement('img')
+          img.src = url
+          img.loading = 'lazy'
+          img.alt = 'Community event photo'
+          img.className = i === 0 ? 'active' : ''
+          carousel.appendChild(img)
+        })
+
+        let index = 0
+        setInterval(() => {
+          const images = carousel.querySelectorAll('img')
+          if (!images.length) return
+          images.forEach((img, i) => img.classList.toggle('active', i === index))
+          index = (index + 1) % images.length
+        }, 5000)
+
+        showStatus(carouselStatus, '')
+      } catch (err) {
+        carousel.innerHTML = '<p style="margin:12px 0;">Unable to load images right now.</p>'
+        console.error('Carousel error', err)
       }
-
-      const urls = data.map(file => `https://npqwopijwhutnvbbbmdd.supabase.co/storage/v1/object/public/images/images/${file.name}`)
-
-      urls.forEach((url, i) => {
-        const img = document.createElement('img')
-        img.src = url
-        img.className = i === 0 ? 'active' : ''
-        carousel.appendChild(img)
-      })
-
-      let index = 0
-      setInterval(() => {
-        const images = carousel.querySelectorAll('img')
-        images.forEach((img, i) => img.classList.toggle('active', i === index))
-        index = (index + 1) % images.length
-      }, 5000)
     }
 
     loadAnnouncement()
