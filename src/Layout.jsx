@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Bell, Shield, Menu, X, Home, Info, Phone, CreditCard } from "lucide-react";
+import { Bell, Shield, Menu, X, Home, Info, Phone, CreditCard, Heart } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import ChatBot from "./components/chat/ChatBot";
 import { Button } from "@/components/ui/button";
