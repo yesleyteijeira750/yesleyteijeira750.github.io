@@ -58,11 +58,8 @@ const categoryConfig = {
 
 const DEFAULT_IMAGE = "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68e4114143e84ad0df65d068/61281850d_Clipped_image_20251006_150708.png";
 
-export default function AnnouncementCard({ announcement, index, onDelete }) {
+export default function AnnouncementCard({ announcement, index, onDelete, user }) {
   const [showConfirmDialog, setShowConfirmDialog] = React.useState(false);
-  const [showPasswordDialog, setShowPasswordDialog] = React.useState(false);
-  const [password, setPassword] = React.useState("");
-  const [passwordError, setPasswordError] = React.useState("");
   const { toast } = useToast();
 
   const config = categoryConfig[announcement.category] || categoryConfig.news;
@@ -85,28 +82,24 @@ export default function AnnouncementCard({ announcement, index, onDelete }) {
   const handleDeleteClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    
+    if (user?.role !== 'admin') {
+      toast({
+        title: "⛔ Access Denied",
+        description: "Only administrators can delete announcements.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     setShowConfirmDialog(true);
   };
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     setShowConfirmDialog(false);
-    setShowPasswordDialog(true);
-    setPassword("");
-    setPasswordError("");
-  };
-
-  const handlePasswordSubmit = async (e) => {
-    e.preventDefault();
     
-    if (password !== "123456789Q") {
-      setPasswordError("Incorrect password. Access denied.");
-      setPassword("");
-      return;
-    }
-
     try {
       await base44.entities.Announcement.delete(announcement.id);
-      setShowPasswordDialog(false);
       toast({
         title: "✅ Announcement deleted",
         description: "The announcement has been removed successfully.",
@@ -139,14 +132,16 @@ export default function AnnouncementCard({ announcement, index, onDelete }) {
         transition={{ duration: 0.3, delay: index * 0.1 }}
         className="relative group"
       >
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={handleDeleteClick}
-          className="absolute top-4 right-4 z-20 bg-white/90 hover:bg-red-50 text-red-600 hover:text-red-700 shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
-        >
-          <Trash2 className="w-4 h-4" />
-        </Button>
+        {user?.role === 'admin' && (
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleDeleteClick}
+            className="absolute top-4 right-4 z-20 bg-white/90 hover:bg-red-50 text-red-600 hover:text-red-700 shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
+          >
+            <Trash2 className="w-4 h-4" />
+          </Button>
+        )}
 
         <Link to={createPageUrl(`AnnouncementDetail?id=${announcement.id}`)}>
           <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 border-amber-200 bg-white backdrop-blur-sm relative h-full flex flex-col">
@@ -264,57 +259,6 @@ export default function AnnouncementCard({ announcement, index, onDelete }) {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-
-      {/* Password Dialog */}
-      <Dialog open={showPasswordDialog} onOpenChange={setShowPasswordDialog}>
-        <DialogContent className="sm:max-w-md bg-[#F5EFE6]">
-          <DialogHeader>
-            <DialogTitle className="text-[#5C2E0F]">
-              🔐 Administrator Access Required
-            </DialogTitle>
-            <DialogDescription className="text-[#8B4513]">
-              Enter the administrator password to delete this announcement
-            </DialogDescription>
-          </DialogHeader>
-          <form onSubmit={handlePasswordSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Input
-                type="password"
-                placeholder="Enter password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className={`border-amber-300 focus:border-[#8B4513] bg-white ${
-                  passwordError ? "border-red-500" : ""
-                }`}
-                autoFocus
-              />
-              {passwordError && (
-                <p className="text-sm text-red-600 font-medium">{passwordError}</p>
-              )}
-            </div>
-            <div className="flex gap-3">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => {
-                  setShowPasswordDialog(false);
-                  setPasswordError("");
-                  setPassword("");
-                }}
-                className="flex-1 border-[#8B4513] text-[#8B4513] hover:bg-amber-100"
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                className="flex-1 bg-gradient-to-r from-[#8B4513] to-[#D2691E] hover:from-[#5C2E0F] hover:to-[#A0522D]"
-              >
-                Submit
-              </Button>
-            </div>
-          </form>
-        </DialogContent>
-      </Dialog>
     </>
   );
 }

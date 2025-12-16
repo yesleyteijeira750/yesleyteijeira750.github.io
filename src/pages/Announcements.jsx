@@ -484,6 +484,7 @@ export default function AnnouncementsPage() {
                 announcement={announcement}
                 index={index}
                 onDelete={loadData}
+                user={user}
               />
             ))}
           </div>
