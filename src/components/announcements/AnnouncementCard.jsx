@@ -1,0 +1,320 @@
+import React from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Calendar, Package, Users, DollarSign, Newspaper, ArrowRight, Pin, Trash2, Shield, MapPin, Clock } from "lucide-react";
+import { format } from "date-fns";
+import { Link } from "react-router-dom";
+import { createPageUrl } from "@/utils";
+import { motion } from "framer-motion";
+import { base44 } from "@/api/base44Client";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/use-toast";
+
+const categoryConfig = {
+  food_distribution: {
+    label: "Food Distribution",
+    icon: Package,
+    color: "bg-green-100 text-green-700 border-green-200"
+  },
+  community_event: {
+    label: "Community Event",
+    icon: Users,
+    color: "bg-blue-100 text-blue-700 border-blue-200"
+  },
+  volunteer: {
+    label: "Volunteer Opportunity",
+    icon: Users,
+    color: "bg-purple-100 text-purple-700 border-purple-200"
+  },
+  donation_drive: {
+    label: "Donation Drive",
+    icon: DollarSign,
+    color: "bg-amber-100 text-amber-700 border-amber-200"
+  },
+  news: {
+    label: "News & Updates",
+    icon: Newspaper,
+    color: "bg-orange-100 text-orange-700 border-orange-200"
+  }
+};
+
+const DEFAULT_IMAGE = "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68e4114143e84ad0df65d068/61281850d_Clipped_image_20251006_150708.png";
+
+export default function AnnouncementCard({ announcement, index, onDelete }) {
+  const [showConfirmDialog, setShowConfirmDialog] = React.useState(false);
+  const [showPasswordDialog, setShowPasswordDialog] = React.useState(false);
+  const [password, setPassword] = React.useState("");
+  const [passwordError, setPasswordError] = React.useState("");
+  const { toast } = useToast();
+
+  const config = categoryConfig[announcement.category] || categoryConfig.news;
+  const CategoryIcon = config.icon;
+  const displayImage = announcement.image_url || DEFAULT_IMAGE;
+
+  const formatTime = (time) => {
+    if (!time) return '';
+    try {
+      return new Date(`2000-01-01T${time}`).toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+      });
+    } catch {
+      return time;
+    }
+  };
+
+  const handleDeleteClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setShowConfirmDialog(true);
+  };
+
+  const handleConfirmDelete = () => {
+    setShowConfirmDialog(false);
+    setShowPasswordDialog(true);
+    setPassword("");
+    setPasswordError("");
+  };
+
+  const handlePasswordSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (password !== "123456789Q") {
+      setPasswordError("Incorrect password. Access denied.");
+      setPassword("");
+      return;
+    }
+
+    try {
+      await base44.entities.Announcement.delete(announcement.id);
+      setShowPasswordDialog(false);
+      toast({
+        title: "✅ Announcement deleted",
+        description: "The announcement has been removed successfully.",
+      });
+      onDelete();
+    } catch (error) {
+      console.error("Error deleting announcement:", error);
+      toast({
+        title: "❌ Error",
+        description: "Failed to delete announcement. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleMapClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (announcement.address) {
+      const mapsUrl = `https://www.google.com/maps?q=${encodeURIComponent(announcement.address)}`;
+      window.open(mapsUrl, '_blank');
+    }
+  };
+
+  return (
+    <>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, delay: index * 0.1 }}
+        className="relative group"
+      >
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={handleDeleteClick}
+          className="absolute top-4 right-4 z-20 bg-white/90 hover:bg-red-50 text-red-600 hover:text-red-700 shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
+        >
+          <Trash2 className="w-4 h-4" />
+        </Button>
+
+        <Link to={createPageUrl(`AnnouncementDetail?id=${announcement.id}`)}>
+          <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 border-amber-200 bg-white backdrop-blur-sm relative h-full flex flex-col">
+            {announcement.is_pinned && (
+              <div className="absolute top-4 left-4 z-10">
+                <Badge className="bg-[#8B4513] text-white border-none shadow-lg">
+                  <Pin className="w-3 h-3 mr-1 fill-white" />
+                  Pinned
+                </Badge>
+              </div>
+            )}
+            
+            <div className="relative h-48 overflow-hidden bg-gradient-to-br from-amber-100 to-[#F5EFE6]">
+              <img
+                src={displayImage}
+                alt={announcement.title}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+            </div>
+
+            <CardContent className="p-6 flex flex-col flex-1">
+              <div className="flex items-start justify-between gap-3 mb-3">
+                <Badge variant="outline" className={`${config.color} border font-medium text-xs sm:text-sm`}>
+                  <CategoryIcon className="w-3 h-3 mr-1" />
+                  {config.label}
+                </Badge>
+                <div className="flex items-center gap-1 text-xs sm:text-sm text-[#8B4513]">
+                  <Calendar className="w-4 h-4" />
+                  {format(new Date(announcement.date), "MMM d, yyyy")}
+                </div>
+              </div>
+
+              {(announcement.start_time || announcement.end_time) && (
+                <div className="flex items-center gap-2 text-sm text-[#8B4513] mb-3 bg-blue-50 px-3 py-2 rounded-lg border border-blue-200">
+                  <Clock className="w-4 h-4 text-blue-600" />
+                  <span className="font-medium">
+                    {announcement.start_time && formatTime(announcement.start_time)}
+                    {announcement.start_time && announcement.end_time && ' - '}
+                    {announcement.end_time && formatTime(announcement.end_time)}
+                  </span>
+                </div>
+              )}
+
+              <h3 className="text-lg sm:text-xl font-bold text-[#5C2E0F] mb-3 group-hover:text-[#8B4513] transition-colors line-clamp-2 break-words">
+                {announcement.title}
+              </h3>
+
+              <p className="text-[#8B4513]/80 line-clamp-3 mb-4 leading-relaxed text-sm sm:text-base break-words flex-1">
+                {announcement.description}
+              </p>
+
+              {announcement.address && (
+                <Button
+                  onClick={handleMapClick}
+                  variant="outline"
+                  size="sm"
+                  className="w-full mb-4 border-green-300 text-green-700 hover:bg-green-50 hover:border-green-400 transition-all"
+                >
+                  <MapPin className="w-4 h-4 mr-2" />
+                  View on Map
+                </Button>
+              )}
+
+              <div className="flex items-center justify-between pt-4 border-t border-amber-200 mt-auto">
+                <div className="flex flex-col gap-2">
+                  <span className="text-xs text-[#8B4513]/60">
+                    Posted {format(new Date(announcement.created_date), "MMM d")}
+                  </span>
+                  {announcement.created_by && (
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-base sm:text-lg font-bold text-[#5C2E0F]">
+                        Posted by {announcement.created_by}
+                      </span>
+                      <Badge className="bg-gradient-to-r from-[#8B4513] to-[#D2691E] text-white border-none shadow-md hover:shadow-lg transition-shadow">
+                        <Shield className="w-3 h-3 mr-1" />
+                        Admin
+                      </Badge>
+                    </div>
+                  )}
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-[#8B4513] hover:text-[#5C2E0F] hover:bg-amber-100 group-hover:gap-2 gap-1 transition-all text-sm flex-shrink-0 ml-2"
+                >
+                  Read More
+                  <ArrowRight className="w-4 h-4" />
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </Link>
+      </motion.div>
+
+      {/* Confirmation Dialog */}
+      <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
+        <AlertDialogContent className="bg-[#F5EFE6]">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-[#5C2E0F]">Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription className="text-[#8B4513]">
+              This will permanently delete the announcement "{announcement.title}". This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="border-[#8B4513] text-[#8B4513] hover:bg-amber-100">
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleConfirmDelete}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Password Dialog */}
+      <Dialog open={showPasswordDialog} onOpenChange={setShowPasswordDialog}>
+        <DialogContent className="sm:max-w-md bg-[#F5EFE6]">
+          <DialogHeader>
+            <DialogTitle className="text-[#5C2E0F]">
+              🔐 Administrator Access Required
+            </DialogTitle>
+            <DialogDescription className="text-[#8B4513]">
+              Enter the administrator password to delete this announcement
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handlePasswordSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Input
+                type="password"
+                placeholder="Enter password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className={`border-amber-300 focus:border-[#8B4513] bg-white ${
+                  passwordError ? "border-red-500" : ""
+                }`}
+                autoFocus
+              />
+              {passwordError && (
+                <p className="text-sm text-red-600 font-medium">{passwordError}</p>
+              )}
+            </div>
+            <div className="flex gap-3">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  setShowPasswordDialog(false);
+                  setPasswordError("");
+                  setPassword("");
+                }}
+                className="flex-1 border-[#8B4513] text-[#8B4513] hover:bg-amber-100"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                className="flex-1 bg-gradient-to-r from-[#8B4513] to-[#D2691E] hover:from-[#5C2E0F] hover:to-[#A0522D]"
+              >
+                Submit
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}
