@@ -36,12 +36,18 @@ export default function GalleryPage() {
     try {
       const currentUser = await base44.auth.me();
       setUser(currentUser);
+    } catch (error) {
+      console.error("Error loading user:", error);
+      setUser(null);
+    }
+    
+    try {
       const data = await base44.entities.Photo.list('-created_date');
       setPhotos(data);
     } catch (error) {
       console.error("Error loading photos:", error);
-      setUser(null);
     }
+    
     setIsLoading(false);
   };
 
