@@ -9,6 +9,8 @@ import Calendar from './pages/Calendar';
 import Dashboard from './pages/Dashboard';
 import Volunteers from './pages/Volunteers';
 import Resources from './pages/Resources';
+import Gallery from './pages/Gallery';
+import Stories from './pages/Stories';
 import __Layout from './Layout.jsx';
 
 
@@ -24,6 +26,8 @@ export const PAGES = {
     "Dashboard": Dashboard,
     "Volunteers": Volunteers,
     "Resources": Resources,
+    "Gallery": Gallery,
+    "Stories": Stories,
 }
 
 export const pagesConfig = {
