@@ -11,6 +11,8 @@ import Volunteers from './pages/Volunteers';
 import Resources from './pages/Resources';
 import Gallery from './pages/Gallery';
 import Stories from './pages/Stories';
+import CheckInSystem from './pages/CheckInSystem';
+import Analytics from './pages/Analytics';
 import __Layout from './Layout.jsx';
 
 
@@ -28,6 +30,8 @@ export const PAGES = {
     "Resources": Resources,
     "Gallery": Gallery,
     "Stories": Stories,
+    "CheckInSystem": CheckInSystem,
+    "Analytics": Analytics,
 }
 
 export const pagesConfig = {
