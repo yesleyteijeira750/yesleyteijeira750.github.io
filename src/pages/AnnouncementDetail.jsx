@@ -60,10 +60,6 @@ export default function AnnouncementDetailPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
-  const [showPasswordDialog, setShowPasswordDialog] = useState(false);
-  const [showEditPasswordDialog, setShowEditPasswordDialog] = useState(false);
-  const [password, setPassword] = useState("");
-  const [passwordError, setPasswordError] = useState("");
   const { toast } = useToast();
 
   useEffect(() => {
@@ -110,23 +106,15 @@ export default function AnnouncementDetailPage() {
   };
 
   const handleEditClick = () => {
-    setShowEditPasswordDialog(true);
-    setPassword("");
-    setPasswordError("");
-  };
-
-  const handleEditPasswordSubmit = (e) => {
-    e.preventDefault();
-    
-    if (password !== "123456789Q") {
-      setPasswordError("Incorrect password. Access denied.");
-      setPassword("");
-      return;
+    if (user?.role === 'admin') {
+      setIsEditing(true);
+    } else {
+      toast({
+        title: "⛔ Access Denied",
+        description: "Only administrators can edit announcements.",
+        variant: "destructive"
+      });
     }
-
-    setShowEditPasswordDialog(false);
-    setIsEditing(true);
-    setPasswordError("");
   };
 
   const handleUpdate = async (data) => {
@@ -149,25 +137,20 @@ export default function AnnouncementDetailPage() {
   };
 
   const handleDeleteClick = () => {
-    setShowConfirmDialog(true);
-  };
-
-  const handleConfirmDelete = () => {
-    setShowConfirmDialog(false);
-    setShowPasswordDialog(true);
-    setPassword("");
-    setPasswordError("");
-  };
-
-  const handlePasswordSubmit = async (e) => {
-    e.preventDefault();
-    
-    if (password !== "123456789Q") {
-      setPasswordError("Incorrect password. Access denied.");
-      setPassword("");
-      return;
+    if (user?.role === 'admin') {
+      setShowConfirmDialog(true);
+    } else {
+      toast({
+        title: "⛔ Access Denied",
+        description: "Only administrators can delete announcements.",
+        variant: "destructive"
+      });
     }
+  };
 
+  const handleConfirmDelete = async () => {
+    setShowConfirmDialog(false);
+    
     try {
       await base44.entities.Announcement.delete(announcement.id);
       toast({
@@ -298,23 +281,27 @@ export default function AnnouncementDetailPage() {
           <div className="flex flex-wrap gap-3 pt-8 border-t border-amber-200">
             <ShareButton announcement={announcement} />
 
-            <Button
-              variant="outline"
-              onClick={handleEditClick}
-              className="gap-2 border-amber-300 hover:bg-amber-100 hover:text-[#5C2E0F]"
-            >
-              <Edit className="w-4 h-4" />
-              Edit
-            </Button>
-            
-            <Button
-              variant="outline"
-              onClick={handleDeleteClick}
-              className="gap-2 border-red-200 hover:bg-red-50 hover:text-red-700"
-            >
-              <Trash2 className="w-4 h-4" />
-              Delete
-            </Button>
+            {user?.role === 'admin' && (
+              <>
+                <Button
+                  variant="outline"
+                  onClick={handleEditClick}
+                  className="gap-2 border-amber-300 hover:bg-amber-100 hover:text-[#5C2E0F]"
+                >
+                  <Edit className="w-4 h-4" />
+                  Edit
+                </Button>
+                
+                <Button
+                  variant="outline"
+                  onClick={handleDeleteClick}
+                  className="gap-2 border-red-200 hover:bg-red-50 hover:text-red-700"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  Delete
+                </Button>
+              </>
+            )}
           </div>
         </motion.div>
       </div>
@@ -341,108 +328,6 @@ export default function AnnouncementDetailPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-
-      {/* Delete Password Dialog */}
-      <Dialog open={showPasswordDialog} onOpenChange={setShowPasswordDialog}>
-        <DialogContent className="sm:max-w-md bg-[#F5EFE6]">
-          <DialogHeader>
-            <DialogTitle className="text-[#5C2E0F]">
-              🔐 Administrator Access Required
-            </DialogTitle>
-            <DialogDescription className="text-[#8B4513]">
-              Enter the administrator password to delete this announcement
-            </DialogDescription>
-          </DialogHeader>
-          <form onSubmit={handlePasswordSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Input
-                type="password"
-                placeholder="Enter password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className={`border-amber-300 focus:border-[#8B4513] bg-white ${
-                  passwordError ? "border-red-500" : ""
-                }`}
-                autoFocus
-              />
-              {passwordError && (
-                <p className="text-sm text-red-600 font-medium">{passwordError}</p>
-              )}
-            </div>
-            <div className="flex gap-3">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => {
-                  setShowPasswordDialog(false);
-                  setPasswordError("");
-                  setPassword("");
-                }}
-                className="flex-1 border-[#8B4513] text-[#8B4513] hover:bg-amber-100"
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                className="flex-1 bg-gradient-to-r from-[#8B4513] to-[#D2691E] hover:from-[#5C2E0F] hover:to-[#A0522D]"
-              >
-                Submit
-              </Button>
-            </div>
-          </form>
-        </DialogContent>
-      </Dialog>
-
-      {/* Edit Password Dialog */}
-      <Dialog open={showEditPasswordDialog} onOpenChange={setShowEditPasswordDialog}>
-        <DialogContent className="sm:max-w-md bg-[#F5EFE6]">
-          <DialogHeader>
-            <DialogTitle className="text-[#5C2E0F]">
-              🔐 Administrator Access Required
-            </DialogTitle>
-            <DialogDescription className="text-[#8B4513]">
-              Enter the administrator password to edit this announcement
-            </DialogDescription>
-          </DialogHeader>
-          <form onSubmit={handleEditPasswordSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Input
-                type="password"
-                placeholder="Enter password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className={`border-amber-300 focus:border-[#8B4513] bg-white ${
-                  passwordError ? "border-red-500" : ""
-                }`}
-                autoFocus
-              />
-              {passwordError && (
-                <p className="text-sm text-red-600 font-medium">{passwordError}</p>
-              )}
-            </div>
-            <div className="flex gap-3">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => {
-                  setShowEditPasswordDialog(false);
-                  setPasswordError("");
-                  setPassword("");
-                }}
-                className="flex-1 border-[#8B4513] text-[#8B4513] hover:bg-amber-100"
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                className="flex-1 bg-gradient-to-r from-[#8B4513] to-[#D2691E] hover:from-[#5C2E0F] hover:to-[#A0522D]"
-              >
-                Submit
-              </Button>
-            </div>
-          </form>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
