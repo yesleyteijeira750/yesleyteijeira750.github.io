@@ -21,7 +21,6 @@ export default function Layout({ children, currentPageName }) {
   const menuItems = [
     { name: "Home", icon: Home, path: "Announcements" },
     { name: "Dashboard", icon: Home, path: "Dashboard", requireAuth: true },
-    { name: "Announcements", icon: Bell, path: "Announcements" },
     { name: "Calendar", icon: Bell, path: "Calendar" },
     { name: "My ID Card", icon: CreditCard, path: "MyCard", requireAuth: true },
     { name: "Volunteer", icon: Heart, path: "Volunteers" },
@@ -52,7 +51,7 @@ export default function Layout({ children, currentPageName }) {
               <img 
                 src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68e4114143e84ad0df65d068/512622c87_1762982225481.jpg"
                 alt="Bountiful Blessings Food Pantry"
-                className="h-16 sm:h-20 w-auto object-contain transition-transform group-hover:scale-105"
+                className="h-12 sm:h-16 w-auto object-contain transition-transform group-hover:scale-105"
               />
             </Link>
 
