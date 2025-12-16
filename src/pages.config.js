@@ -1,21 +1,21 @@
-import Announcements from './pages/Announcements';
-import AnnouncementDetail from './pages/AnnouncementDetail';
-import Reviews from './pages/Reviews';
-import AdminPortal from './pages/AdminPortal';
 import AboutUs from './pages/AboutUs';
+import AdminPortal from './pages/AdminPortal';
+import AnnouncementDetail from './pages/AnnouncementDetail';
+import Announcements from './pages/Announcements';
 import Contact from './pages/Contact';
 import MyCard from './pages/MyCard';
+import Reviews from './pages/Reviews';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
-    "Announcements": Announcements,
-    "AnnouncementDetail": AnnouncementDetail,
-    "Reviews": Reviews,
-    "AdminPortal": AdminPortal,
     "AboutUs": AboutUs,
+    "AdminPortal": AdminPortal,
+    "AnnouncementDetail": AnnouncementDetail,
+    "Announcements": Announcements,
     "Contact": Contact,
     "MyCard": MyCard,
+    "Reviews": Reviews,
 }
 
 export const pagesConfig = {

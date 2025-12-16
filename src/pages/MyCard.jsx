@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Download, CreditCard, User as UserIcon, Hash } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import Barcode from "react-barcode";
 
 export default function MyCardPage() {
   const [user, setUser] = useState(null);
@@ -148,14 +149,17 @@ export default function MyCardPage() {
             {hasBarcode ? (
               <div className="bg-white rounded-2xl p-6 border-2 border-[#8B4513]/20">
                 <div className="flex flex-col items-center">
-                  <img
-                    src={`https://barcode.tec-it.com/barcode.ashx?data=${encodeURIComponent(user.barcode_number)}&code=Code128&translate-esc=on&dpi=96&imagetype=Gif`}
-                    alt="Barcode"
-                    className="max-w-full h-20 sm:h-24 object-contain mb-3"
+                  <Barcode
+                    value={user.barcode_number}
+                    format="CODE128"
+                    width={2}
+                    height={80}
+                    displayValue={true}
+                    fontSize={16}
+                    background="#FFFFFF"
+                    lineColor="#000000"
+                    margin={10}
                   />
-                  <p className="text-lg font-mono font-bold text-[#5C2E0F] tracking-wider">
-                    {user.barcode_number}
-                  </p>
                 </div>
               </div>
             ) : (
