@@ -5,6 +5,8 @@ import Announcements from './pages/Announcements';
 import Contact from './pages/Contact';
 import MyCard from './pages/MyCard';
 import Reviews from './pages/Reviews';
+import Calendar from './pages/Calendar';
+import Dashboard from './pages/Dashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -16,6 +18,8 @@ export const PAGES = {
     "Contact": Contact,
     "MyCard": MyCard,
     "Reviews": Reviews,
+    "Calendar": Calendar,
+    "Dashboard": Dashboard,
 }
 
 export const pagesConfig = {
