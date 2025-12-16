@@ -20,8 +20,14 @@ export default function Layout({ children, currentPageName }) {
 
   const menuItems = [
     { name: "Home", icon: Home, path: "Announcements" },
+    { name: "Dashboard", icon: Home, path: "Dashboard", requireAuth: true },
     { name: "Announcements", icon: Bell, path: "Announcements" },
+    { name: "Calendar", icon: Bell, path: "Calendar" },
     { name: "My ID Card", icon: CreditCard, path: "MyCard", requireAuth: true },
+    { name: "Volunteer", icon: Heart, path: "Volunteers" },
+    { name: "Resources", icon: Info, path: "Resources" },
+    { name: "Gallery", icon: Info, path: "Gallery" },
+    { name: "Stories", icon: Heart, path: "Stories" },
     { name: "About Us", icon: Info, path: "AboutUs" },
     { name: "Contact", icon: Phone, path: "Contact" }
   ];
@@ -51,80 +57,42 @@ export default function Layout({ children, currentPageName }) {
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center gap-2">
-              <Link
-                to={createPageUrl("Announcements")}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all duration-200 ${
-                  location.pathname === createPageUrl("Announcements")
-                    ? "bg-amber-200 text-[#5C2E0F]"
-                    : "text-[#8B4513] hover:bg-amber-100"
-                }`}
-              >
-                <Bell className="w-4 h-4" />
+            <nav className="hidden lg:flex items-center gap-1">
+              <Link to={createPageUrl("Announcements")} className={`px-3 py-2 rounded-xl font-medium transition-all text-sm ${location.pathname === createPageUrl("Announcements") ? "bg-amber-200 text-[#5C2E0F]" : "text-[#8B4513] hover:bg-amber-100"}`}>
                 Announcements
               </Link>
 
-              <Link
-                to={createPageUrl("Reviews")}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all duration-200 ${
-                  location.pathname === createPageUrl("Reviews")
-                    ? "bg-amber-200 text-[#5C2E0F]"
-                    : "text-[#8B4513] hover:bg-amber-100"
-                }`}
-              >
-                ⭐ Reviews
-              </Link>
-
               {user && (
-                <Link
-                  to={createPageUrl("MyCard")}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all duration-200 ${
-                    location.pathname === createPageUrl("MyCard")
-                      ? "bg-amber-200 text-[#5C2E0F]"
-                      : "text-[#8B4513] hover:bg-amber-100"
-                  }`}
-                >
-                  <CreditCard className="w-4 h-4" />
-                  My ID Card
+                <Link to={createPageUrl("Dashboard")} className={`px-3 py-2 rounded-xl font-medium transition-all text-sm ${location.pathname === createPageUrl("Dashboard") ? "bg-amber-200 text-[#5C2E0F]" : "text-[#8B4513] hover:bg-amber-100"}`}>
+                  Dashboard
                 </Link>
               )}
 
-              <Link
-                to={createPageUrl("AboutUs")}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all duration-200 ${
-                  location.pathname === createPageUrl("AboutUs")
-                    ? "bg-amber-200 text-[#5C2E0F]"
-                    : "text-[#8B4513] hover:bg-amber-100"
-                }`}
-              >
-                <Info className="w-4 h-4" />
-                About Us
+              <Link to={createPageUrl("Calendar")} className={`px-3 py-2 rounded-xl font-medium transition-all text-sm ${location.pathname === createPageUrl("Calendar") ? "bg-amber-200 text-[#5C2E0F]" : "text-[#8B4513] hover:bg-amber-100"}`}>
+                Calendar
               </Link>
 
-              <Link
-                to={createPageUrl("Contact")}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all duration-200 ${
-                  location.pathname === createPageUrl("Contact")
-                    ? "bg-amber-200 text-[#5C2E0F]"
-                    : "text-[#8B4513] hover:bg-amber-100"
-                }`}
-              >
-                <Phone className="w-4 h-4" />
-                Contact
+              <Link to={createPageUrl("Volunteers")} className={`px-3 py-2 rounded-xl font-medium transition-all text-sm ${location.pathname === createPageUrl("Volunteers") ? "bg-amber-200 text-[#5C2E0F]" : "text-[#8B4513] hover:bg-amber-100"}`}>
+                Volunteer
+              </Link>
+
+              <Link to={createPageUrl("Gallery")} className={`px-3 py-2 rounded-xl font-medium transition-all text-sm ${location.pathname === createPageUrl("Gallery") ? "bg-amber-200 text-[#5C2E0F]" : "text-[#8B4513] hover:bg-amber-100"}`}>
+                Gallery
               </Link>
 
               {isAdmin && (
-                <Link
-                  to={createPageUrl("AdminPortal")}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all duration-200 ${
-                    location.pathname === createPageUrl("AdminPortal")
-                      ? "bg-amber-200 text-[#5C2E0F]"
-                      : "text-[#8B4513] hover:bg-amber-100"
-                  }`}
-                >
-                  <Shield className="w-4 h-4" />
-                  Admin
-                </Link>
+                <>
+                  <Link to={createPageUrl("CheckInSystem")} className={`px-3 py-2 rounded-xl font-medium transition-all text-sm ${location.pathname === createPageUrl("CheckInSystem") ? "bg-amber-200 text-[#5C2E0F]" : "text-[#8B4513] hover:bg-amber-100"}`}>
+                    Check-In
+                  </Link>
+                  <Link to={createPageUrl("Analytics")} className={`px-3 py-2 rounded-xl font-medium transition-all text-sm ${location.pathname === createPageUrl("Analytics") ? "bg-amber-200 text-[#5C2E0F]" : "text-[#8B4513] hover:bg-amber-100"}`}>
+                    Analytics
+                  </Link>
+                  <Link to={createPageUrl("AdminPortal")} className={`flex items-center gap-1 px-3 py-2 rounded-xl font-medium transition-all text-sm ${location.pathname === createPageUrl("AdminPortal") ? "bg-amber-200 text-[#5C2E0F]" : "text-[#8B4513] hover:bg-amber-100"}`}>
+                    <Shield className="w-3 h-3" />
+                    Admin
+                  </Link>
+                </>
               )}
 
               {user ? (
