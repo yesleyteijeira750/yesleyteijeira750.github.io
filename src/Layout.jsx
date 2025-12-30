@@ -58,14 +58,8 @@ export default function Layout({ children, currentPageName }) {
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center gap-1">
               <Link to={createPageUrl("Announcements")} className={`px-3 py-2 rounded-xl font-medium transition-all text-sm ${location.pathname === createPageUrl("Announcements") ? "bg-amber-200 text-[#5C2E0F]" : "text-[#8B4513] hover:bg-amber-100"}`}>
-                Announcements
+                Home
               </Link>
-
-              {user && (
-                <Link to={createPageUrl("Dashboard")} className={`px-3 py-2 rounded-xl font-medium transition-all text-sm ${location.pathname === createPageUrl("Dashboard") ? "bg-amber-200 text-[#5C2E0F]" : "text-[#8B4513] hover:bg-amber-100"}`}>
-                  Dashboard
-                </Link>
-              )}
 
               <Link to={createPageUrl("Calendar")} className={`px-3 py-2 rounded-xl font-medium transition-all text-sm ${location.pathname === createPageUrl("Calendar") ? "bg-amber-200 text-[#5C2E0F]" : "text-[#8B4513] hover:bg-amber-100"}`}>
                 Calendar

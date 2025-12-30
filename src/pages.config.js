@@ -1,37 +1,33 @@
 import AboutUs from './pages/AboutUs';
 import AdminPortal from './pages/AdminPortal';
+import Analytics from './pages/Analytics';
 import AnnouncementDetail from './pages/AnnouncementDetail';
 import Announcements from './pages/Announcements';
-import Contact from './pages/Contact';
-import MyCard from './pages/MyCard';
-import Reviews from './pages/Reviews';
 import Calendar from './pages/Calendar';
-import Dashboard from './pages/Dashboard';
-import Volunteers from './pages/Volunteers';
-import Resources from './pages/Resources';
-import Gallery from './pages/Gallery';
-import Stories from './pages/Stories';
 import CheckInSystem from './pages/CheckInSystem';
-import Analytics from './pages/Analytics';
+import Contact from './pages/Contact';
+import Gallery from './pages/Gallery';
+import Resources from './pages/Resources';
+import Reviews from './pages/Reviews';
+import Stories from './pages/Stories';
+import Volunteers from './pages/Volunteers';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "AboutUs": AboutUs,
     "AdminPortal": AdminPortal,
+    "Analytics": Analytics,
     "AnnouncementDetail": AnnouncementDetail,
     "Announcements": Announcements,
-    "Contact": Contact,
-    "MyCard": MyCard,
-    "Reviews": Reviews,
     "Calendar": Calendar,
-    "Dashboard": Dashboard,
-    "Volunteers": Volunteers,
-    "Resources": Resources,
-    "Gallery": Gallery,
-    "Stories": Stories,
     "CheckInSystem": CheckInSystem,
-    "Analytics": Analytics,
+    "Contact": Contact,
+    "Gallery": Gallery,
+    "Resources": Resources,
+    "Reviews": Reviews,
+    "Stories": Stories,
+    "Volunteers": Volunteers,
 }
 
 export const pagesConfig = {
