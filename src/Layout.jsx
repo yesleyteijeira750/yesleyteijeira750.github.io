@@ -20,9 +20,7 @@ export default function Layout({ children, currentPageName }) {
 
   const menuItems = [
     { name: "Home", icon: Home, path: "Announcements" },
-    { name: "Dashboard", icon: Home, path: "Dashboard", requireAuth: true },
     { name: "Calendar", icon: Bell, path: "Calendar" },
-    { name: "My ID Card", icon: CreditCard, path: "MyCard", requireAuth: true },
     { name: "Volunteer", icon: Heart, path: "Volunteers" },
     { name: "Resources", icon: Info, path: "Resources" },
     { name: "Gallery", icon: Info, path: "Gallery" },
