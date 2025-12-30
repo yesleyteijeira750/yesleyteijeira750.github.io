@@ -31,9 +31,6 @@ export default function AnnouncementsPage() {
   const [showForm, setShowForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
-  const [showPasswordDialog, setShowPasswordDialog] = useState(false);
-  const [password, setPassword] = useState("");
-  const [passwordError, setPasswordError] = useState("");
   const [isSendingEmails, setIsSendingEmails] = useState(false);
   const { toast } = useToast();
 
@@ -82,27 +79,7 @@ export default function AnnouncementsPage() {
     setFilteredAnnouncements(filtered);
   };
 
-  const handleNewAnnouncementClick = () => {
-    setShowPasswordDialog(true);
-    setPassword("");
-    setPasswordError("");
-  };
 
-  const handlePasswordSubmit = (e) => {
-    e.preventDefault();
-    if (password === "123456789Q") {
-      setShowPasswordDialog(false);
-      setShowForm(true);
-      setPasswordError("");
-      toast({
-        title: "✅ Access granted",
-        description: "You can now create an announcement.",
-      });
-    } else {
-      setPasswordError("Access denied — only administrators can post announcements.");
-      setPassword("");
-    }
-  };
 
   const scheduleReminderEmail = async (announcement) => {
     if (!announcement.start_time || !announcement.date) return;
@@ -389,65 +366,19 @@ export default function AnnouncementsPage() {
               </SelectContent>
             </Select>
 
-            <Button
-              onClick={handleNewAnnouncementClick}
-              disabled={isSendingEmails}
-              className="bg-gradient-to-r from-[#8B4513] to-[#D2691E] hover:from-[#5C2E0F] hover:to-[#A0522D] text-white shadow-lg hover:shadow-xl transition-all"
-            >
-              <Plus className="w-5 h-5 mr-2" />
-              New Announcement
-            </Button>
+            {user?.role === 'admin' && (
+              <Button
+                onClick={() => setShowForm(true)}
+                disabled={isSendingEmails}
+                className="bg-gradient-to-r from-[#8B4513] to-[#D2691E] hover:from-[#5C2E0F] hover:to-[#A0522D] text-white shadow-lg hover:shadow-xl transition-all"
+              >
+                <Plus className="w-5 h-5 mr-2" />
+                New Announcement
+              </Button>
+            )}
           </div>
         </div>
 
-        {/* Password Dialog */}
-        <Dialog open={showPasswordDialog} onOpenChange={setShowPasswordDialog}>
-          <DialogContent className="sm:max-w-md bg-[#F5EFE6]">
-            <DialogHeader>
-              <DialogTitle className="text-[#5C2E0F]">🔐 Administrator Access Required</DialogTitle>
-              <DialogDescription className="text-[#8B4513]">
-                Please enter the administrator password to create a new announcement.
-              </DialogDescription>
-            </DialogHeader>
-            <form onSubmit={handlePasswordSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Input
-                  type="password"
-                  placeholder="Enter password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className={`border-amber-300 focus:border-[#8B4513] bg-white ${
-                    passwordError ? "border-red-500" : ""
-                  }`}
-                  autoFocus
-                />
-                {passwordError && (
-                  <p className="text-sm text-red-600 font-medium">{passwordError}</p>
-                )}
-              </div>
-              <div className="flex gap-3">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => {
-                    setShowPasswordDialog(false);
-                    setPasswordError("");
-                    setPassword("");
-                  }}
-                  className="flex-1 border-[#8B4513] text-[#8B4513] hover:bg-amber-100"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  className="flex-1 bg-gradient-to-r from-[#8B4513] to-[#D2691E] hover:from-[#5C2E0F] hover:to-[#A0522D]"
-                >
-                  Submit
-                </Button>
-              </div>
-            </form>
-          </DialogContent>
-        </Dialog>
 
         {/* Form Modal */}
         <AnimatePresence>
