@@ -213,9 +213,6 @@ export default function AnnouncementCard({ announcement, index, onDelete, user }
                   </span>
                   {announcement.created_by && (
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-base sm:text-lg font-bold text-[#5C2E0F]">
-                        Posted by {announcement.created_by}
-                      </span>
                       <Badge className="bg-gradient-to-r from-[#8B4513] to-[#D2691E] text-white border-none shadow-md hover:shadow-lg transition-shadow">
                         <Shield className="w-3 h-3 mr-1" />
                         Admin
