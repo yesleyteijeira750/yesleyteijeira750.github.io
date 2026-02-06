@@ -3,11 +3,15 @@ import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Phone, Mail, Globe, MapPin, Plus, Search, Briefcase, Home, Heart, GraduationCap, DollarSign, Scale } from "lucide-react";
+import { Phone, Mail, Globe, MapPin, Plus, Search, Briefcase, Home, Heart, GraduationCap, DollarSign, Scale, Star, CheckCircle, MessageSquare } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import ResponsiveSelect from "@/components/ui/ResponsiveSelect";
 import { SelectItem } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
 
 export default function ResourcesPage() {
   const [resources, setResources] = useState([]);
@@ -198,6 +202,17 @@ export default function ResourcesPage() {
             <SelectItem value="legal">Legal Services</SelectItem>
             <SelectItem value="other">Other</SelectItem>
           </ResponsiveSelect>
+          
+          {resourcesWithAddresses.length > 0 && (
+            <Button
+              variant="outline"
+              onClick={() => setShowMapDialog(true)}
+              className="border-amber-300 dark:border-amber-700"
+            >
+              <MapPin className="w-4 h-4 mr-2" />
+              View Map
+            </Button>
+          )}
         </div>
 
         {/* Resources Grid */}
