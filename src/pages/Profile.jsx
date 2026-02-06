@@ -9,12 +9,11 @@ import {
   LogOut, 
   Moon, 
   Sun, 
-  Monitor, 
   Globe, 
   Shield,
   FileText,
   Trash2,
-  Mail,
+  MessageCircle,
   Calendar as CalendarIcon,
   Info,
   Phone,
@@ -23,6 +22,7 @@ import {
   Camera,
   ChevronRight
 } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
 import {
   Select,
@@ -189,7 +189,10 @@ const translations = {
 export default function ProfilePage() {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [theme, setTheme] = useState(localStorage.getItem("theme") || "system");
+  const [isDarkMode, setIsDarkMode] = useState(
+    localStorage.getItem("theme") === "dark" || 
+    (localStorage.getItem("theme") === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches)
+  );
   const [language, setLanguage] = useState(localStorage.getItem("language") || "en");
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const { toast } = useToast();
@@ -213,26 +216,17 @@ export default function ProfilePage() {
     setIsLoading(false);
   };
 
-  const applyTheme = (newTheme) => {
+  const toggleDarkMode = () => {
+    const newMode = !isDarkMode;
+    setIsDarkMode(newMode);
     const root = document.documentElement;
-    if (newTheme === "dark") {
+    if (newMode) {
       root.classList.add("dark");
-    } else if (newTheme === "light") {
-      root.classList.remove("dark");
+      localStorage.setItem("theme", "dark");
     } else {
-      const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      if (isDark) {
-        root.classList.add("dark");
-      } else {
-        root.classList.remove("dark");
-      }
+      root.classList.remove("dark");
+      localStorage.setItem("theme", "light");
     }
-  };
-
-  const handleThemeChange = (newTheme) => {
-    setTheme(newTheme);
-    localStorage.setItem("theme", newTheme);
-    applyTheme(newTheme);
   };
 
   const handleLanguageChange = (newLanguage) => {
@@ -323,7 +317,16 @@ export default function ProfilePage() {
                   <h1 className="text-2xl font-bold text-[#5C2E0F] dark:text-white mb-1">
                     {user.full_name}
                   </h1>
-                  <p className="text-[#8B4513] dark:text-amber-300">{user.email}</p>
+                  <p className="text-[#8B4513] dark:text-white mb-2">{user.email}</p>
+                  <a 
+                    href="https://wa.me/19413102786" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-sm text-[#8B4513] dark:text-white hover:underline"
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                    Support Chat: +1 (941) 310-2786
+                  </a>
                   {user.role === "admin" && (
                     <div className="mt-2">
                       <span className="inline-flex items-center gap-1 text-xs font-medium text-white bg-gradient-to-r from-[#8B4513] to-[#D2691E] dark:from-amber-600 dark:to-amber-800 px-3 py-1 rounded-full">
@@ -344,37 +347,19 @@ export default function ProfilePage() {
             <CardTitle className="text-[#5C2E0F] dark:text-white">{t.settings}</CardTitle>
           </CardHeader>
           <CardContent className="p-6 space-y-6">
-            {/* Appearance */}
-            <div>
-              <h3 className="text-sm font-medium text-[#5C2E0F] dark:text-white mb-3 flex items-center gap-2">
-                <Monitor className="w-4 h-4" />
-                {t.appearance}
-              </h3>
-              <Select value={theme} onValueChange={handleThemeChange}>
-                <SelectTrigger className="border-amber-300 dark:border-amber-700">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="light">
-                    <div className="flex items-center gap-2">
-                      <Sun className="w-4 h-4" />
-                      {t.light}
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="dark">
-                    <div className="flex items-center gap-2">
-                      <Moon className="w-4 h-4" />
-                      {t.dark}
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="system">
-                    <div className="flex items-center gap-2">
-                      <Monitor className="w-4 h-4" />
-                      {t.system}
-                    </div>
-                  </SelectItem>
-                </SelectContent>
-              </Select>
+            {/* Dark Mode Toggle */}
+            <div className="flex items-center justify-between p-4 rounded-lg border border-amber-200 dark:border-amber-700">
+              <div className="flex items-center gap-3">
+                {isDarkMode ? (
+                  <Moon className="w-5 h-5 text-[#8B4513] dark:text-white" />
+                ) : (
+                  <Sun className="w-5 h-5 text-[#8B4513] dark:text-white" />
+                )}
+                <span className="text-[#5C2E0F] dark:text-white font-medium">
+                  {isDarkMode ? t.dark : t.light}
+                </span>
+              </div>
+              <Switch checked={isDarkMode} onCheckedChange={toggleDarkMode} />
             </div>
 
             {/* Language */}
@@ -388,10 +373,10 @@ export default function ProfilePage() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="en">🇺🇸 {t.english}</SelectItem>
-                  <SelectItem value="es">🇪🇸 {t.spanish}</SelectItem>
-                  <SelectItem value="ht">🇭🇹 {t.creole}</SelectItem>
-                  <SelectItem value="ru">🇷🇺 {t.russian}</SelectItem>
+                  <SelectItem value="en">{t.english}</SelectItem>
+                  <SelectItem value="es">{t.spanish}</SelectItem>
+                  <SelectItem value="ht">{t.creole}</SelectItem>
+                  <SelectItem value="ru">{t.russian}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -431,31 +416,21 @@ export default function ProfilePage() {
         <Button
           onClick={handleLogout}
           variant="outline"
-          className="w-full border-amber-300 dark:border-amber-700 hover:bg-amber-100 dark:hover:bg-gray-800"
+          className="w-full border-amber-300 dark:border-amber-700 hover:bg-amber-100 dark:hover:bg-gray-800 text-[#5C2E0F] dark:text-white"
         >
           <LogOut className="w-5 h-5 mr-2" />
           {t.logout}
         </Button>
 
-        {/* Danger Zone */}
-        <Card className="border-red-200 dark:border-red-900">
-          <CardHeader className="bg-red-50 dark:bg-red-950">
-            <CardTitle className="text-red-700 dark:text-red-400">{t.dangerZone}</CardTitle>
-          </CardHeader>
-          <CardContent className="p-6">
-            <p className="text-sm text-[#8B4513] dark:text-amber-300 mb-4">
-              {t.deleteWarning}
-            </p>
-            <Button
-              onClick={() => setShowDeleteDialog(true)}
-              variant="destructive"
-              className="bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800"
-            >
-              <Trash2 className="w-4 h-4 mr-2" />
-              {t.deleteAccount}
-            </Button>
-          </CardContent>
-        </Card>
+        {/* Delete Account */}
+        <Button
+          onClick={() => setShowDeleteDialog(true)}
+          variant="destructive"
+          className="w-full bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800"
+        >
+          <Trash2 className="w-4 h-4 mr-2" />
+          {t.deleteAccount}
+        </Button>
       </div>
 
       {/* Delete Confirmation Dialog */}
@@ -465,7 +440,7 @@ export default function ProfilePage() {
             <AlertDialogTitle className="text-[#5C2E0F] dark:text-white">
               {t.deleteAccount}
             </AlertDialogTitle>
-            <AlertDialogDescription className="text-[#8B4513] dark:text-amber-300">
+            <AlertDialogDescription className="text-[#8B4513] dark:text-white">
               {t.deleteWarning}
             </AlertDialogDescription>
           </AlertDialogHeader>
