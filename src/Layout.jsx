@@ -1,9 +1,9 @@
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Bell, Shield, Menu, X, Home, Info, Phone, CreditCard, Heart, Settings as SettingsIcon, Calendar as CalendarIcon, ArrowLeft } from "lucide-react";
+import { Bell, Shield, Menu, X, Home, Info, Phone, CreditCard, Heart, Settings as SettingsIcon, Calendar as CalendarIcon, ArrowLeft, BookOpen, Camera } from "lucide-react";
 import { base44 } from "@/api/base44Client";
-import ChatBot from "./components/chat/ChatBot";
+
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -49,8 +49,8 @@ export default function Layout({ children, currentPageName }) {
 
   const bottomTabItems = [
     { name: "Home", icon: Home, path: "Announcements" },
-    { name: "Resources", icon: Info, path: "Resources" },
-    { name: "Gallery", icon: Info, path: "Gallery" },
+    { name: "Resources", icon: BookOpen, path: "Resources" },
+    { name: "Gallery", icon: Camera, path: "Gallery" },
     ...(isAdmin ? [{ name: "Admin", icon: Shield, path: "AdminPortal" }] : []),
     { name: "Profile", icon: SettingsIcon, path: "Profile", requireAuth: true }
   ];
@@ -148,7 +148,7 @@ export default function Layout({ children, currentPageName }) {
         </AnimatePresence>
       </main>
 
-      <ChatBot />
+
 
       {/* Mobile Bottom Tab Bar */}
       {isMobile && !isDetailPage && (
