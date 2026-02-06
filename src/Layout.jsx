@@ -52,7 +52,7 @@ export default function Layout({ children, currentPageName }) {
     { name: "Resources", icon: Info, path: "Resources" },
     { name: "Gallery", icon: Info, path: "Gallery" },
     ...(isAdmin ? [{ name: "Admin", icon: Shield, path: "AdminPortal" }] : []),
-    { name: "Profile", icon: Settings as SettingsIcon, path: "Profile", requireAuth: true }
+    { name: "Profile", icon: SettingsIcon, path: "Profile", requireAuth: true }
   ];
 
   const detailPages = ["AnnouncementDetail", "PrivacyPolicy"];
