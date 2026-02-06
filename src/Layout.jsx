@@ -1,7 +1,7 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Bell, Shield, Menu, X, Home, Info, Phone, CreditCard, Heart } from "lucide-react";
+import { Bell, Shield, Menu, X, Home, Info, Phone, CreditCard, Heart, Settings as SettingsIcon, Calendar as CalendarIcon, ArrowLeft } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import ChatBot from "./components/chat/ChatBot";
 import { Button } from "@/components/ui/button";
@@ -9,18 +9,25 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export default function Layout({ children, currentPageName }) {
   const location = useLocation();
+  const navigate = useNavigate();
   const [user, setUser] = React.useState(null);
   const [menuOpen, setMenuOpen] = React.useState(false);
+  const [isMobile, setIsMobile] = React.useState(false);
 
   React.useEffect(() => {
     base44.auth.me().then(setUser).catch(() => setUser(null));
+    
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   const isAdmin = user?.role === "admin";
 
   const menuItems = [
     { name: "Home", icon: Home, path: "Announcements" },
-    { name: "Calendar", icon: Bell, path: "Calendar" },
+    { name: "Calendar", icon: CalendarIcon, path: "Calendar" },
     { name: "Volunteer", icon: Heart, path: "Volunteers" },
     { name: "Resources", icon: Info, path: "Resources" },
     { name: "Gallery", icon: Info, path: "Gallery" },
@@ -29,72 +36,89 @@ export default function Layout({ children, currentPageName }) {
     { name: "Contact", icon: Phone, path: "Contact" }
   ];
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50">
-      <style>{`
-        :root {
-          --primary: #8B4513;
-          --primary-dark: #5C2E0F;
-          --secondary: #D2691E;
-          --accent: #CD853F;
-          --bg-cream: #FFFBF0;
-        }
-      `}</style>
+  const bottomTabItems = [
+    { name: "Home", icon: Home, path: "Announcements" },
+    { name: "Calendar", icon: CalendarIcon, path: "Calendar" },
+    { name: "Volunteer", icon: Heart, path: "Volunteers" },
+    { name: "ID Card", icon: CreditCard, path: "MyIDCard", requireAuth: true }
+  ];
 
+  const detailPages = ["AnnouncementDetail", "Settings"];
+  const isDetailPage = detailPages.includes(currentPageName);
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 dark:from-gray-900 dark:via-amber-950 dark:to-gray-900">
       {/* Header */}
-      <header className="bg-[#FFFBF0] backdrop-blur-md border-b border-amber-200 sticky top-0 z-50 shadow-md">
+      <header className="bg-[#FFFBF0] dark:bg-card backdrop-blur-md border-b border-amber-200 dark:border-amber-800 sticky top-0 z-50 shadow-md safe-area-top">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-3">
-            <Link to={createPageUrl("Announcements")} className="flex items-center gap-3 group">
-              <img 
-                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68e4114143e84ad0df65d068/512622c87_1762982225481.jpg"
-                alt="Bountiful Blessings Food Pantry"
-                className="h-12 sm:h-16 w-auto object-contain transition-transform group-hover:scale-105"
-              />
-            </Link>
+            {isMobile && isDetailPage ? (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => navigate(-1)}
+                className="text-[#8B4513] dark:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-900/20"
+              >
+                <ArrowLeft className="w-6 h-6" />
+              </Button>
+            ) : (
+              <Link to={createPageUrl("Announcements")} className="flex items-center gap-3 group">
+                <img 
+                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68e4114143e84ad0df65d068/512622c87_1762982225481.jpg"
+                  alt="Bountiful Blessings Food Pantry"
+                  className="h-12 sm:h-16 w-auto object-contain transition-transform group-hover:scale-105"
+                />
+              </Link>
+            )}
 
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center gap-1">
-              <Link to={createPageUrl("Announcements")} className={`px-3 py-2 rounded-xl font-medium transition-all text-sm ${location.pathname === createPageUrl("Announcements") ? "bg-amber-200 text-[#5C2E0F]" : "text-[#8B4513] hover:bg-amber-100"}`}>
+              <Link to={createPageUrl("Announcements")} className={`px-3 py-2 rounded-xl font-medium transition-all text-sm ${location.pathname === createPageUrl("Announcements") ? "bg-amber-200 dark:bg-amber-900 text-[#5C2E0F] dark:text-amber-100" : "text-[#8B4513] dark:text-amber-200 hover:bg-amber-100 dark:hover:bg-amber-900/20"}`}>
                 Home
               </Link>
 
-              <Link to={createPageUrl("Calendar")} className={`px-3 py-2 rounded-xl font-medium transition-all text-sm ${location.pathname === createPageUrl("Calendar") ? "bg-amber-200 text-[#5C2E0F]" : "text-[#8B4513] hover:bg-amber-100"}`}>
+              <Link to={createPageUrl("Calendar")} className={`px-3 py-2 rounded-xl font-medium transition-all text-sm ${location.pathname === createPageUrl("Calendar") ? "bg-amber-200 dark:bg-amber-900 text-[#5C2E0F] dark:text-amber-100" : "text-[#8B4513] dark:text-amber-200 hover:bg-amber-100 dark:hover:bg-amber-900/20"}`}>
                 Calendar
               </Link>
 
-              <Link to={createPageUrl("Volunteers")} className={`px-3 py-2 rounded-xl font-medium transition-all text-sm ${location.pathname === createPageUrl("Volunteers") ? "bg-amber-200 text-[#5C2E0F]" : "text-[#8B4513] hover:bg-amber-100"}`}>
+              <Link to={createPageUrl("Volunteers")} className={`px-3 py-2 rounded-xl font-medium transition-all text-sm ${location.pathname === createPageUrl("Volunteers") ? "bg-amber-200 dark:bg-amber-900 text-[#5C2E0F] dark:text-amber-100" : "text-[#8B4513] dark:text-amber-200 hover:bg-amber-100 dark:hover:bg-amber-900/20"}`}>
                 Volunteer
               </Link>
 
-              <Link to={createPageUrl("Gallery")} className={`px-3 py-2 rounded-xl font-medium transition-all text-sm ${location.pathname === createPageUrl("Gallery") ? "bg-amber-200 text-[#5C2E0F]" : "text-[#8B4513] hover:bg-amber-100"}`}>
+              <Link to={createPageUrl("Gallery")} className={`px-3 py-2 rounded-xl font-medium transition-all text-sm ${location.pathname === createPageUrl("Gallery") ? "bg-amber-200 dark:bg-amber-900 text-[#5C2E0F] dark:text-amber-100" : "text-[#8B4513] dark:text-amber-200 hover:bg-amber-100 dark:hover:bg-amber-900/20"}`}>
                 Gallery
               </Link>
 
               {isAdmin && (
                 <>
-                  <Link to={createPageUrl("CheckInSystem")} className={`px-3 py-2 rounded-xl font-medium transition-all text-sm ${location.pathname === createPageUrl("CheckInSystem") ? "bg-amber-200 text-[#5C2E0F]" : "text-[#8B4513] hover:bg-amber-100"}`}>
+                  <Link to={createPageUrl("CheckInSystem")} className={`px-3 py-2 rounded-xl font-medium transition-all text-sm ${location.pathname === createPageUrl("CheckInSystem") ? "bg-amber-200 dark:bg-amber-900 text-[#5C2E0F] dark:text-amber-100" : "text-[#8B4513] dark:text-amber-200 hover:bg-amber-100 dark:hover:bg-amber-900/20"}`}>
                     Check-In
                   </Link>
-                  <Link to={createPageUrl("Analytics")} className={`px-3 py-2 rounded-xl font-medium transition-all text-sm ${location.pathname === createPageUrl("Analytics") ? "bg-amber-200 text-[#5C2E0F]" : "text-[#8B4513] hover:bg-amber-100"}`}>
+                  <Link to={createPageUrl("Analytics")} className={`px-3 py-2 rounded-xl font-medium transition-all text-sm ${location.pathname === createPageUrl("Analytics") ? "bg-amber-200 dark:bg-amber-900 text-[#5C2E0F] dark:text-amber-100" : "text-[#8B4513] dark:text-amber-200 hover:bg-amber-100 dark:hover:bg-amber-900/20"}`}>
                     Analytics
                   </Link>
-                  <Link to={createPageUrl("AdminPortal")} className={`flex items-center gap-1 px-3 py-2 rounded-xl font-medium transition-all text-sm ${location.pathname === createPageUrl("AdminPortal") ? "bg-amber-200 text-[#5C2E0F]" : "text-[#8B4513] hover:bg-amber-100"}`}>
+                  <Link to={createPageUrl("AdminPortal")} className={`flex items-center gap-1 px-3 py-2 rounded-xl font-medium transition-all text-sm ${location.pathname === createPageUrl("AdminPortal") ? "bg-amber-200 dark:bg-amber-900 text-[#5C2E0F] dark:text-amber-100" : "text-[#8B4513] dark:text-amber-200 hover:bg-amber-100 dark:hover:bg-amber-900/20"}`}>
                     <Shield className="w-3 h-3" />
                     Admin
                   </Link>
                 </>
               )}
 
+              {user && (
+                <Link to={createPageUrl("Settings")} className={`px-3 py-2 rounded-xl font-medium transition-all text-sm ${location.pathname === createPageUrl("Settings") ? "bg-amber-200 dark:bg-amber-900 text-[#5C2E0F] dark:text-amber-100" : "text-[#8B4513] dark:text-amber-200 hover:bg-amber-100 dark:hover:bg-amber-900/20"}`}>
+                  <SettingsIcon className="w-4 h-4" />
+                </Link>
+              )}
+
               {user ? (
-                <div className="flex items-center gap-2 ml-2 pl-2 border-l border-[#8B4513]/20">
-                  <div className="w-8 h-8 bg-gradient-to-br from-[#8B4513] to-[#D2691E] rounded-full flex items-center justify-center">
+                <div className="flex items-center gap-2 ml-2 pl-2 border-l border-[#8B4513]/20 dark:border-amber-700/20">
+                  <div className="w-8 h-8 bg-gradient-to-br from-[#8B4513] to-[#D2691E] dark:from-[#D2691E] dark:to-[#8B4513] rounded-full flex items-center justify-center">
                     <span className="text-white font-semibold text-sm">
                       {user.full_name?.[0] || "U"}
                     </span>
                   </div>
                   {isAdmin && (
-                    <span className="text-xs font-medium text-[#5C2E0F] bg-amber-200 px-2 py-1 rounded-full">
+                    <span className="text-xs font-medium text-[#5C2E0F] dark:text-amber-100 bg-amber-200 dark:bg-amber-900 px-2 py-1 rounded-full">
                       Admin
                     </span>
                   )}
@@ -107,7 +131,7 @@ export default function Layout({ children, currentPageName }) {
               variant="ghost"
               size="icon"
               onClick={() => setMenuOpen(!menuOpen)}
-              className="md:hidden text-[#8B4513] hover:bg-amber-100"
+              className="lg:hidden text-[#8B4513] dark:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-900/20"
             >
               {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </Button>
@@ -121,7 +145,7 @@ export default function Layout({ children, currentPageName }) {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              className="md:hidden border-t border-amber-200 bg-[#FFFBF0]"
+              className="lg:hidden border-t border-amber-200 dark:border-amber-800 bg-[#FFFBF0] dark:bg-card"
             >
               <nav className="px-4 py-4 space-y-2">
                 {menuItems.map((item) => {
@@ -135,8 +159,8 @@ export default function Layout({ children, currentPageName }) {
                       onClick={() => setMenuOpen(false)}
                       className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${
                         location.pathname === createPageUrl(item.path)
-                          ? "bg-amber-200 text-[#5C2E0F]"
-                          : "text-[#8B4513] hover:bg-amber-100"
+                          ? "bg-amber-200 dark:bg-amber-900 text-[#5C2E0F] dark:text-amber-100"
+                          : "text-[#8B4513] dark:text-amber-200 hover:bg-amber-100 dark:hover:bg-amber-900/20"
                       }`}
                     >
                       <Icon className="w-5 h-5" />
@@ -150,12 +174,27 @@ export default function Layout({ children, currentPageName }) {
                   onClick={() => setMenuOpen(false)}
                   className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${
                     location.pathname === createPageUrl("Reviews")
-                      ? "bg-amber-200 text-[#5C2E0F]"
-                      : "text-[#8B4513] hover:bg-amber-100"
+                      ? "bg-amber-200 dark:bg-amber-900 text-[#5C2E0F] dark:text-amber-100"
+                      : "text-[#8B4513] dark:text-amber-200 hover:bg-amber-100 dark:hover:bg-amber-900/20"
                   }`}
                 >
                   ⭐ Reviews
                 </Link>
+
+                {user && (
+                  <Link
+                    to={createPageUrl("Settings")}
+                    onClick={() => setMenuOpen(false)}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${
+                      location.pathname === createPageUrl("Settings")
+                        ? "bg-amber-200 dark:bg-amber-900 text-[#5C2E0F] dark:text-amber-100"
+                        : "text-[#8B4513] dark:text-amber-200 hover:bg-amber-100 dark:hover:bg-amber-900/20"
+                    }`}
+                  >
+                    <SettingsIcon className="w-5 h-5" />
+                    Settings
+                  </Link>
+                )}
 
                 {isAdmin && (
                   <Link
@@ -163,8 +202,8 @@ export default function Layout({ children, currentPageName }) {
                     onClick={() => setMenuOpen(false)}
                     className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${
                       location.pathname === createPageUrl("AdminPortal")
-                        ? "bg-amber-200 text-[#5C2E0F]"
-                        : "text-[#8B4513] hover:bg-amber-100"
+                        ? "bg-amber-200 dark:bg-amber-900 text-[#5C2E0F] dark:text-amber-100"
+                        : "text-[#8B4513] dark:text-amber-200 hover:bg-amber-100 dark:hover:bg-amber-900/20"
                     }`}
                   >
                     <Shield className="w-5 h-5" />
@@ -173,16 +212,16 @@ export default function Layout({ children, currentPageName }) {
                 )}
 
                 {user && (
-                  <div className="flex items-center gap-3 px-4 py-3 mt-4 border-t border-amber-200">
-                    <div className="w-10 h-10 bg-gradient-to-br from-[#8B4513] to-[#D2691E] rounded-full flex items-center justify-center">
+                  <div className="flex items-center gap-3 px-4 py-3 mt-4 border-t border-amber-200 dark:border-amber-800">
+                    <div className="w-10 h-10 bg-gradient-to-br from-[#8B4513] to-[#D2691E] dark:from-[#D2691E] dark:to-[#8B4513] rounded-full flex items-center justify-center">
                       <span className="text-white font-semibold">
                         {user.full_name?.[0] || "U"}
                       </span>
                     </div>
                     <div>
-                      <p className="font-medium text-[#5C2E0F]">{user.full_name}</p>
+                      <p className="font-medium text-[#5C2E0F] dark:text-amber-100">{user.full_name}</p>
                       {isAdmin && (
-                        <span className="text-xs text-[#8B4513] bg-amber-200 px-2 py-0.5 rounded-full">
+                        <span className="text-xs text-[#8B4513] dark:text-amber-100 bg-amber-200 dark:bg-amber-900 px-2 py-0.5 rounded-full">
                           Admin
                         </span>
                       )}
@@ -201,7 +240,35 @@ export default function Layout({ children, currentPageName }) {
 
       <ChatBot />
 
-      <footer className="bg-[#FFFBF0] backdrop-blur-sm border-t border-amber-200 mt-16">
+      {/* Mobile Bottom Tab Bar */}
+      {isMobile && !isDetailPage && (
+        <nav className="fixed bottom-0 left-0 right-0 bg-[#FFFBF0] dark:bg-card border-t border-amber-200 dark:border-amber-800 z-40 safe-area-bottom">
+          <div className="flex justify-around items-center py-2 px-2">
+            {bottomTabItems.map((item) => {
+              if (item.requireAuth && !user) return null;
+              const Icon = item.icon;
+              const isActive = location.pathname === createPageUrl(item.path);
+              
+              return (
+                <Link
+                  key={item.path}
+                  to={createPageUrl(item.path)}
+                  className={`flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-all ${
+                    isActive 
+                      ? "bg-amber-200 dark:bg-amber-900 text-[#5C2E0F] dark:text-amber-100" 
+                      : "text-[#8B4513] dark:text-amber-200"
+                  }`}
+                >
+                  <Icon className="w-5 h-5" />
+                  <span className="text-xs font-medium">{item.name}</span>
+                </Link>
+              );
+            })}
+          </div>
+        </nav>
+      )}
+
+      <footer className="bg-[#FFFBF0] dark:bg-card backdrop-blur-sm border-t border-amber-200 dark:border-amber-800 mt-16 safe-area-bottom">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
             <img 
@@ -209,7 +276,7 @@ export default function Layout({ children, currentPageName }) {
               alt="Bountiful Blessings Food Pantry"
               className="h-12 w-auto object-contain"
             />
-            <p className="text-sm text-[#8B4513]">
+            <p className="text-sm text-[#8B4513] dark:text-amber-200">
               Serving the community with love ❤️
             </p>
           </div>
