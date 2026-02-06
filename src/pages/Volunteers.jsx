@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Heart, Users, MapPin, Clock, Plus } from "lucide-react";
+import { motion } from "framer-motion";
 import { format } from "date-fns";
 import { useToast } from "@/components/ui/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -133,44 +134,52 @@ export default function VolunteersPage() {
       return;
     }
 
+    const existingSignups = selectedEvent.signups || [];
+    
+    if (existingSignups.some(s => s.user_email === user.email)) {
+      toast({
+        title: "ℹ️ Already Signed Up",
+        description: "You're already registered for this event.",
+      });
+      return;
+    }
+
+    const newSignup = {
+      user_email: user.email,
+      user_name: user.full_name,
+      phone: signupData.phone
+    };
+
+    const updatedSignups = [...existingSignups, newSignup];
+
+    // Optimistic UI update
+    setVolunteers(prevVolunteers =>
+      prevVolunteers.map(v =>
+        v.id === selectedEvent.id
+          ? { ...v, signups: updatedSignups }
+          : v
+      )
+    );
+
+    toast({
+      title: "✅ Signed Up!",
+      description: "Thank you for volunteering! We'll contact you soon."
+    });
+
+    setShowSignupDialog(false);
+    setSignupData({ phone: '' });
+
     try {
-      const existingSignups = selectedEvent.signups || [];
-      
-      if (existingSignups.some(s => s.user_email === user.email)) {
-        toast({
-          title: "ℹ️ Already Signed Up",
-          description: "You're already registered for this event.",
-        });
-        return;
-      }
-
-      const updatedSignups = [
-        ...existingSignups,
-        {
-          user_email: user.email,
-          user_name: user.full_name,
-          phone: signupData.phone
-        }
-      ];
-
       await base44.entities.Volunteer.update(selectedEvent.id, {
         signups: updatedSignups
       });
-
-      toast({
-        title: "✅ Signed Up!",
-        description: "Thank you for volunteering! We'll contact you soon."
-      });
-
-      setShowSignupDialog(false);
-      setSignupData({ phone: '' });
-      loadData();
     } catch (error) {
       toast({
         title: "❌ Error",
-        description: "Failed to sign up.",
+        description: "Failed to confirm signup. Please refresh.",
         variant: "destructive"
       });
+      loadData(); // Revert on error
     }
   };
 

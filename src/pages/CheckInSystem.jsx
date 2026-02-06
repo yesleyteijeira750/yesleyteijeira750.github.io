@@ -90,29 +90,35 @@ export default function CheckInSystemPage() {
   };
 
   const handleCheckIn = async (targetUser) => {
+    const checkInData = {
+      user_email: targetUser.email,
+      user_name: targetUser.full_name,
+      barcode_number: targetUser.barcode_number || '',
+      check_in_date: format(new Date(), 'yyyy-MM-dd'),
+      event_type: eventType,
+      created_date: new Date().toISOString(),
+    };
+
+    // Optimistic UI update
+    setRecentCheckIns(prev => [checkInData, ...prev]);
+    setSearchTerm("");
+    setSearchResults([]);
+
+    toast({
+      title: "✅ Check-In Successful!",
+      description: `${targetUser.full_name} has been checked in.`
+    });
+
     try {
-      await base44.entities.CheckIn.create({
-        user_email: targetUser.email,
-        user_name: targetUser.full_name,
-        barcode_number: targetUser.barcode_number || '',
-        check_in_date: format(new Date(), 'yyyy-MM-dd'),
-        event_type: eventType
-      });
-
-      toast({
-        title: "✅ Check-In Successful!",
-        description: `${targetUser.full_name} has been checked in.`
-      });
-
-      setSearchTerm("");
-      setSearchResults([]);
-      await loadRecentCheckIns();
+      await base44.entities.CheckIn.create(checkInData);
+      await loadRecentCheckIns(); // Refresh with real data
     } catch (error) {
       toast({
         title: "❌ Error",
-        description: "Failed to check in user.",
+        description: "Failed to confirm check-in. Please refresh.",
         variant: "destructive"
       });
+      await loadRecentCheckIns(); // Revert on error
     }
   };
 
