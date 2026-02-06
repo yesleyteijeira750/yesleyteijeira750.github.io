@@ -7,6 +7,18 @@ import ChatBot from "./components/chat/ChatBot";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 
+const pageVariants = {
+  initial: { opacity: 0, x: 20 },
+  animate: { opacity: 1, x: 0 },
+  exit: { opacity: 0, x: -20 }
+};
+
+const pageTransition = {
+  type: "tween",
+  ease: "easeInOut",
+  duration: 0.3
+};
+
 export default function Layout({ children, currentPageName }) {
   const location = useLocation();
   const navigate = useNavigate();
@@ -235,7 +247,18 @@ export default function Layout({ children, currentPageName }) {
       </header>
 
       <main className="flex-1">
-        {children}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={location.pathname}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            variants={pageVariants}
+            transition={pageTransition}
+          >
+            {children}
+          </motion.div>
+        </AnimatePresence>
       </main>
 
       <ChatBot />

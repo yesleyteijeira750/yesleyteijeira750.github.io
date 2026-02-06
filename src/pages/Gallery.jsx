@@ -17,7 +17,12 @@ export default function GalleryPage() {
   const [showForm, setShowForm] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [uploading, setUploading] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [pullDistance, setPullDistance] = useState(0);
   const { toast } = useToast();
+
+  const startY = React.useRef(0);
+  const isPulling = React.useRef(false);
 
   const [formData, setFormData] = useState({
     title: '',
@@ -30,6 +35,44 @@ export default function GalleryPage() {
   useEffect(() => {
     loadData();
   }, []);
+
+  useEffect(() => {
+    const handleTouchStart = (e) => {
+      if (window.scrollY === 0) {
+        startY.current = e.touches[0].clientY;
+        isPulling.current = true;
+      }
+    };
+
+    const handleTouchMove = (e) => {
+      if (!isPulling.current) return;
+      const currentY = e.touches[0].clientY;
+      const distance = currentY - startY.current;
+      if (distance > 0 && distance < 150) {
+        setPullDistance(distance);
+      }
+    };
+
+    const handleTouchEnd = async () => {
+      if (pullDistance > 80 && !isRefreshing) {
+        setIsRefreshing(true);
+        await loadData();
+        setIsRefreshing(false);
+      }
+      setPullDistance(0);
+      isPulling.current = false;
+    };
+
+    document.addEventListener('touchstart', handleTouchStart);
+    document.addEventListener('touchmove', handleTouchMove);
+    document.addEventListener('touchend', handleTouchEnd);
+
+    return () => {
+      document.removeEventListener('touchstart', handleTouchStart);
+      document.removeEventListener('touchmove', handleTouchMove);
+      document.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [pullDistance, isRefreshing]);
 
   const loadData = async () => {
     setIsLoading(true);
@@ -113,7 +156,24 @@ export default function GalleryPage() {
     : photos.filter(p => p.category === categoryFilter);
 
   return (
-    <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8 pb-24">
+      {/* Pull to Refresh Indicator */}
+      {pullDistance > 0 && (
+        <div 
+          className="fixed top-16 left-1/2 transform -translate-x-1/2 z-50 transition-opacity"
+          style={{ opacity: Math.min(pullDistance / 80, 1) }}
+        >
+          <div className={`bg-white dark:bg-card rounded-full p-3 shadow-lg border-2 border-amber-300 dark:border-amber-700 ${isRefreshing ? 'animate-spin' : ''}`}>
+            <motion.div
+              animate={{ rotate: isRefreshing ? 360 : pullDistance * 3 }}
+              transition={{ duration: isRefreshing ? 1 : 0, repeat: isRefreshing ? Infinity : 0, ease: "linear" }}
+            >
+              <Camera className="w-5 h-5 text-[#8B4513] dark:text-amber-400" />
+            </motion.div>
+          </div>
+        </div>
+      )}
+
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
