@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
+import { useNavigate } from "react-router-dom";
+import { createPageUrl } from "@/utils";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, MapPin, Clock } from "lucide-react";
+import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, MapPin, Clock, Users, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, isToday, addMonths, subMonths } from "date-fns";
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, isToday, addMonths, subMonths, startOfWeek, endOfWeek } from "date-fns";
 
 export default function CalendarPage() {
+  const navigate = useNavigate();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [announcements, setAnnouncements] = useState([]);
   const [volunteers, setVolunteers] = useState([]);
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -34,13 +37,15 @@ export default function CalendarPage() {
 
   const monthStart = startOfMonth(currentDate);
   const monthEnd = endOfMonth(currentDate);
-  const daysInMonth = eachDayOfInterval({ start: monthStart, end: monthEnd });
+  const calendarStart = startOfWeek(monthStart);
+  const calendarEnd = endOfWeek(monthEnd);
+  const calendarDays = eachDayOfInterval({ start: calendarStart, end: calendarEnd });
 
   const getEventsForDate = (date) => {
     const dateStr = format(date, 'yyyy-MM-dd');
-    const announcements = announcements.filter(a => a.date === dateStr);
-    const volunteers = volunteers.filter(v => v.event_date === dateStr);
-    return { announcements, volunteers };
+    const dayAnnouncements = announcements.filter(a => a.date === dateStr);
+    const dayVolunteers = volunteers.filter(v => v.event_date === dateStr);
+    return { announcements: dayAnnouncements, volunteers: dayVolunteers };
   };
 
   const hasEventsOnDate = (date) => {
@@ -113,10 +118,11 @@ export default function CalendarPage() {
 
                 {/* Calendar Days */}
                 <div className="grid grid-cols-7 gap-2">
-                  {daysInMonth.map(day => {
+                  {calendarDays.map(day => {
                     const hasEvents = hasEventsOnDate(day);
                     const isSelected = selectedDate && isSameDay(day, selectedDate);
                     const isTodayDate = isToday(day);
+                    const isCurrentMonth = isSameMonth(day, currentDate);
 
                     return (
                       <button
@@ -124,15 +130,15 @@ export default function CalendarPage() {
                         onClick={() => setSelectedDate(day)}
                         className={`
                           aspect-square p-2 rounded-lg text-center transition-all
-                          ${!isSameMonth(day, currentDate) ? 'text-gray-300' : 'text-[#5C2E0F]'}
-                          ${isTodayDate ? 'bg-amber-100 font-bold' : ''}
-                          ${isSelected ? 'bg-[#8B4513] text-white' : 'hover:bg-amber-50'}
-                          ${hasEvents && !isSelected ? 'border-2 border-[#D2691E]' : 'border border-amber-200'}
+                          ${!isCurrentMonth ? 'text-gray-400 dark:text-gray-600' : 'text-[#5C2E0F] dark:text-white'}
+                          ${isTodayDate ? 'bg-amber-100 dark:bg-amber-900 font-bold' : ''}
+                          ${isSelected ? 'bg-[#8B4513] dark:bg-amber-600 text-white' : 'hover:bg-amber-50 dark:hover:bg-gray-800'}
+                          ${hasEvents && !isSelected ? 'border-2 border-[#D2691E] dark:border-amber-500' : 'border border-amber-200 dark:border-gray-700'}
                         `}
                       >
                         <div className="text-sm">{format(day, 'd')}</div>
                         {hasEvents && !isSelected && (
-                          <div className="w-1.5 h-1.5 bg-[#D2691E] rounded-full mx-auto mt-1"></div>
+                          <div className="w-1.5 h-1.5 bg-[#D2691E] dark:bg-amber-500 rounded-full mx-auto mt-1"></div>
                         )}
                       </button>
                     );
@@ -156,59 +162,78 @@ export default function CalendarPage() {
 
           {/* Events for Selected Date */}
           <div className="lg:col-span-1">
-            <Card className="border-amber-200 sticky top-24">
+            <Card className="border-amber-200 dark:border-amber-800 sticky top-24">
               <CardContent className="p-6">
-                <h3 className="text-lg font-bold text-[#5C2E0F] mb-4">
+                <h3 className="text-lg font-bold text-[#5C2E0F] dark:text-white mb-4">
                   {selectedDate ? format(selectedDate, 'MMMM d, yyyy') : 'Select a date'}
                 </h3>
 
                 {selectedEvents && (selectedEvents.announcements.length > 0 || selectedEvents.volunteers.length > 0) ? (
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     {selectedEvents.announcements.map(event => (
-                      <div key={event.id} className="p-3 bg-amber-50 rounded-lg border border-amber-200">
+                      <button
+                        key={event.id}
+                        onClick={() => navigate(createPageUrl('AnnouncementDetail') + `?id=${event.id}`)}
+                        className="w-full text-left p-3 bg-amber-50 dark:bg-amber-950 rounded-lg border border-amber-200 dark:border-amber-800 hover:shadow-md transition-shadow"
+                      >
                         <Badge className={`${categoryColors[event.category]} mb-2`}>
                           {event.category.replace(/_/g, ' ')}
                         </Badge>
-                        <h4 className="font-semibold text-[#5C2E0F] mb-1">{event.title}</h4>
+                        <h4 className="font-semibold text-[#5C2E0F] dark:text-white mb-1 flex items-center gap-2">
+                          {event.title}
+                          <ExternalLink className="w-3 h-3" />
+                        </h4>
                         {event.start_time && (
-                          <div className="flex items-center gap-1 text-sm text-[#8B4513]">
+                          <div className="flex items-center gap-1 text-sm text-[#8B4513] dark:text-white">
                             <Clock className="w-3 h-3" />
                             {event.start_time}
                             {event.end_time && ` - ${event.end_time}`}
                           </div>
                         )}
                         {event.address && (
-                          <div className="flex items-center gap-1 text-sm text-[#8B4513] mt-1">
-                            <MapPin className="w-3 h-3" />
-                            {event.address}
+                          <div className="flex items-start gap-1 text-sm text-[#8B4513] dark:text-white mt-1">
+                            <MapPin className="w-3 h-3 mt-0.5 flex-shrink-0" />
+                            <span className="line-clamp-2">{event.address}</span>
                           </div>
                         )}
-                      </div>
+                      </button>
                     ))}
 
-                    {selectedEvents.volunteers.map(event => (
-                      <div key={event.id} className="p-3 bg-purple-50 rounded-lg border border-purple-200">
-                        <Badge className="bg-purple-100 text-purple-800 mb-2">
-                          Volunteer Opportunity
-                        </Badge>
-                        <h4 className="font-semibold text-[#5C2E0F] mb-1">{event.event_title}</h4>
-                        {event.start_time && (
-                          <div className="flex items-center gap-1 text-sm text-[#8B4513]">
-                            <Clock className="w-3 h-3" />
-                            {event.start_time}
-                            {event.end_time && ` - ${event.end_time}`}
+                    {selectedEvents.volunteers.map(event => {
+                      const spotsLeft = event.volunteers_needed - (event.signups?.length || 0);
+                      return (
+                        <button
+                          key={event.id}
+                          onClick={() => navigate(createPageUrl('Volunteers'))}
+                          className="w-full text-left p-3 bg-purple-50 dark:bg-purple-950 rounded-lg border border-purple-200 dark:border-purple-800 hover:shadow-md transition-shadow"
+                        >
+                          <Badge className="bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200 mb-2">
+                            Volunteer Opportunity
+                          </Badge>
+                          <h4 className="font-semibold text-[#5C2E0F] dark:text-white mb-1 flex items-center gap-2">
+                            {event.event_title}
+                            <ExternalLink className="w-3 h-3" />
+                          </h4>
+                          {event.start_time && (
+                            <div className="flex items-center gap-1 text-sm text-[#8B4513] dark:text-white">
+                              <Clock className="w-3 h-3" />
+                              {event.start_time}
+                              {event.end_time && ` - ${event.end_time}`}
+                            </div>
+                          )}
+                          <div className="flex items-center gap-1 text-sm text-[#8B4513] dark:text-white mt-1">
+                            <Users className="w-3 h-3" />
+                            {event.signups?.length || 0} / {event.volunteers_needed} signed up
+                            {spotsLeft > 0 && <span className="text-green-600 dark:text-green-400">({spotsLeft} spots left)</span>}
                           </div>
-                        )}
-                        <div className="text-sm text-[#8B4513] mt-1">
-                          {event.signups?.length || 0} / {event.volunteers_needed} volunteers
-                        </div>
-                      </div>
-                    ))}
+                        </button>
+                      );
+                    })}
                   </div>
                 ) : selectedDate ? (
-                  <p className="text-[#8B4513] text-sm">No events scheduled for this date.</p>
+                  <p className="text-[#8B4513] dark:text-white text-sm">No events scheduled for this date.</p>
                 ) : (
-                  <p className="text-[#8B4513] text-sm">Click on a date to see events.</p>
+                  <p className="text-[#8B4513] dark:text-white text-sm">Click on a date to see events.</p>
                 )}
               </CardContent>
             </Card>

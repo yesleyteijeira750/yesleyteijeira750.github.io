@@ -20,7 +20,8 @@ import {
   Heart,
   BookOpen,
   Camera,
-  ChevronRight
+  ChevronRight,
+  Bell
 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
@@ -195,6 +196,12 @@ export default function ProfilePage() {
   );
   const [language, setLanguage] = useState(localStorage.getItem("language") || "en");
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [notifications, setNotifications] = useState({
+    announcements: true,
+    volunteers: true,
+    reminders: true,
+    system_updates: false
+  });
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -209,6 +216,9 @@ export default function ProfilePage() {
     try {
       const currentUser = await base44.auth.me();
       setUser(currentUser);
+      if (currentUser?.notification_preferences) {
+        setNotifications(currentUser.notification_preferences);
+      }
     } catch (error) {
       console.error("Not logged in:", error);
       setUser(null);
@@ -232,7 +242,27 @@ export default function ProfilePage() {
   const handleLanguageChange = (newLanguage) => {
     setLanguage(newLanguage);
     localStorage.setItem("language", newLanguage);
-    window.location.reload(); // Reload to apply language everywhere
+    window.location.reload();
+  };
+
+  const handleNotificationToggle = async (key) => {
+    const newNotifications = { ...notifications, [key]: !notifications[key] };
+    setNotifications(newNotifications);
+    
+    try {
+      await base44.auth.updateMe({ notification_preferences: newNotifications });
+      toast({
+        title: "Preferences Updated",
+        description: "Your notification preferences have been saved.",
+      });
+    } catch (error) {
+      setNotifications(notifications);
+      toast({
+        title: "Error",
+        description: "Failed to update preferences.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleDeleteAccount = async () => {
@@ -379,6 +409,63 @@ export default function ProfilePage() {
                   <SelectItem value="ru">{t.russian}</SelectItem>
                 </SelectContent>
               </Select>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Notifications */}
+        <Card className="border-amber-200 dark:border-amber-800">
+          <CardHeader className="bg-[#F5EFE6] dark:bg-gray-800">
+            <CardTitle className="text-[#5C2E0F] dark:text-white flex items-center gap-2">
+              <Bell className="w-5 h-5" />
+              Notifications
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-4">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-3 rounded-lg border border-amber-200 dark:border-amber-700">
+                <div>
+                  <p className="font-medium text-[#5C2E0F] dark:text-white">New Announcements</p>
+                  <p className="text-sm text-[#8B4513] dark:text-white">Get notified about new announcements and events</p>
+                </div>
+                <Switch 
+                  checked={notifications.announcements} 
+                  onCheckedChange={() => handleNotificationToggle('announcements')} 
+                />
+              </div>
+
+              <div className="flex items-center justify-between p-3 rounded-lg border border-amber-200 dark:border-amber-700">
+                <div>
+                  <p className="font-medium text-[#5C2E0F] dark:text-white">Volunteer Opportunities</p>
+                  <p className="text-sm text-[#8B4513] dark:text-white">Alerts for new volunteer opportunities</p>
+                </div>
+                <Switch 
+                  checked={notifications.volunteers} 
+                  onCheckedChange={() => handleNotificationToggle('volunteers')} 
+                />
+              </div>
+
+              <div className="flex items-center justify-between p-3 rounded-lg border border-amber-200 dark:border-amber-700">
+                <div>
+                  <p className="font-medium text-[#5C2E0F] dark:text-white">Event Reminders</p>
+                  <p className="text-sm text-[#8B4513] dark:text-white">Reminders before upcoming events</p>
+                </div>
+                <Switch 
+                  checked={notifications.reminders} 
+                  onCheckedChange={() => handleNotificationToggle('reminders')} 
+                />
+              </div>
+
+              <div className="flex items-center justify-between p-3 rounded-lg border border-amber-200 dark:border-amber-700">
+                <div>
+                  <p className="font-medium text-[#5C2E0F] dark:text-white">System Updates</p>
+                  <p className="text-sm text-[#8B4513] dark:text-white">Important system announcements and updates</p>
+                </div>
+                <Switch 
+                  checked={notifications.system_updates} 
+                  onCheckedChange={() => handleNotificationToggle('system_updates')} 
+                />
+              </div>
             </div>
           </CardContent>
         </Card>
