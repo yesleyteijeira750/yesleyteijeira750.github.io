@@ -8,7 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import ResponsiveSelect from "@/components/ui/ResponsiveSelect";
+import { SelectItem } from "@/components/ui/select";
 import { format } from "date-fns";
 
 export default function GalleryPage() {
@@ -161,7 +162,7 @@ export default function GalleryPage() {
       {/* Pull to Refresh Indicator */}
       {pullDistance > 0 && (
         <div 
-          className="fixed top-16 left-1/2 transform -translate-x-1/2 z-50 transition-opacity"
+          className="fixed top-16 left-1/2 transform -translate-x-1/2 z-[60] transition-opacity"
           style={{ opacity: Math.min(pullDistance / 80, 1) }}
         >
           <div className={`bg-white dark:bg-card rounded-full p-3 shadow-lg border-2 border-amber-300 dark:border-amber-700 ${isRefreshing ? 'animate-spin' : ''}`}>
@@ -191,19 +192,20 @@ export default function GalleryPage() {
 
         {/* Controls */}
         <div className="flex justify-between items-center mb-6">
-          <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-            <SelectTrigger className="w-48 border-amber-300">
-              <SelectValue placeholder="All Categories" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Photos</SelectItem>
-              <SelectItem value="distribution">Food Distribution</SelectItem>
-              <SelectItem value="volunteer">Volunteer Events</SelectItem>
-              <SelectItem value="event">Community Events</SelectItem>
-              <SelectItem value="facility">Our Facility</SelectItem>
-              <SelectItem value="other">Other</SelectItem>
-            </SelectContent>
-          </Select>
+          <ResponsiveSelect 
+            value={categoryFilter} 
+            onValueChange={setCategoryFilter}
+            placeholder="All Categories"
+            label="Filter by Category"
+            triggerClassName="w-48 border-amber-300"
+          >
+            <SelectItem value="all">All Photos</SelectItem>
+            <SelectItem value="distribution">Food Distribution</SelectItem>
+            <SelectItem value="volunteer">Volunteer Events</SelectItem>
+            <SelectItem value="event">Community Events</SelectItem>
+            <SelectItem value="facility">Our Facility</SelectItem>
+            <SelectItem value="other">Other</SelectItem>
+          </ResponsiveSelect>
 
           {user?.role === 'admin' && (
             <Button
@@ -309,21 +311,18 @@ export default function GalleryPage() {
                   value={formData.event_date}
                   onChange={(e) => setFormData({ ...formData, event_date: e.target.value })}
                 />
-                <Select
+                <ResponsiveSelect
                   value={formData.category}
                   onValueChange={(value) => setFormData({ ...formData, category: value })}
+                  placeholder="Select category"
+                  label="Photo Category"
                 >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="distribution">Food Distribution</SelectItem>
-                    <SelectItem value="volunteer">Volunteer Event</SelectItem>
-                    <SelectItem value="event">Community Event</SelectItem>
-                    <SelectItem value="facility">Facility</SelectItem>
-                    <SelectItem value="other">Other</SelectItem>
-                  </SelectContent>
-                </Select>
+                  <SelectItem value="distribution">Food Distribution</SelectItem>
+                  <SelectItem value="volunteer">Volunteer Event</SelectItem>
+                  <SelectItem value="event">Community Event</SelectItem>
+                  <SelectItem value="facility">Facility</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
+                </ResponsiveSelect>
               </div>
 
               <Textarea

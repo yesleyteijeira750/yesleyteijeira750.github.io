@@ -56,13 +56,13 @@ import Calendar from './pages/Calendar';
 import CheckInSystem from './pages/CheckInSystem';
 import Contact from './pages/Contact';
 import Gallery from './pages/Gallery';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import Profile from './pages/Profile';
 import Resources from './pages/Resources';
 import Reviews from './pages/Reviews';
+import Settings from './pages/Settings';
 import Stories from './pages/Stories';
 import Volunteers from './pages/Volunteers';
-import Settings from './pages/Settings';
-import Profile from './pages/Profile';
-import PrivacyPolicy from './pages/PrivacyPolicy';
 import __Layout from './Layout.jsx';
 
 
@@ -76,13 +76,13 @@ export const PAGES = {
     "CheckInSystem": CheckInSystem,
     "Contact": Contact,
     "Gallery": Gallery,
+    "PrivacyPolicy": PrivacyPolicy,
+    "Profile": Profile,
     "Resources": Resources,
     "Reviews": Reviews,
+    "Settings": Settings,
     "Stories": Stories,
     "Volunteers": Volunteers,
-    "Settings": Settings,
-    "Profile": Profile,
-    "PrivacyPolicy": PrivacyPolicy,
 }
 
 export const pagesConfig = {

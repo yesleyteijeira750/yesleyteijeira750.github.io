@@ -160,9 +160,16 @@ export default function Layout({ children, currentPageName }) {
               const isActive = location.pathname === createPageUrl(item.path);
               
               return (
-                <Link
+                <button
                   key={item.path}
-                  to={createPageUrl(item.path)}
+                  onClick={() => {
+                    if (isActive) {
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                      navigate(createPageUrl(item.path), { replace: true });
+                    } else {
+                      navigate(createPageUrl(item.path));
+                    }
+                  }}
                   className={`flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-all ${
                     isActive 
                       ? "bg-amber-200 dark:bg-amber-900 text-[#5C2E0F] dark:text-white" 
@@ -171,7 +178,7 @@ export default function Layout({ children, currentPageName }) {
                 >
                   <Icon className="w-5 h-5" />
                   <span className="text-xs font-medium">{item.name}</span>
-                </Link>
+                </button>
               );
             })}
           </div>

@@ -4,13 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import ResponsiveSelect from "@/components/ui/ResponsiveSelect";
+import { SelectItem } from "@/components/ui/select";
 import { base44 } from "@/api/base44Client";
 import { X, Loader2, Image as ImageIcon, Clock } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
@@ -130,21 +125,19 @@ export default function AnnouncementForm({ announcement, onSubmit, onCancel }) {
 
             <div className="space-y-2">
               <Label htmlFor="category" className="text-[#5C2E0F]">Category *</Label>
-              <Select
+              <ResponsiveSelect
                 value={formData.category}
                 onValueChange={(value) => setFormData({ ...formData, category: value })}
+                placeholder="Select category"
+                label="Category"
+                triggerClassName="border-amber-300 focus:border-[#8B4513]"
               >
-                <SelectTrigger className="border-amber-300 focus:border-[#8B4513]">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="food_distribution">Food Distribution</SelectItem>
-                  <SelectItem value="community_event">Community Event</SelectItem>
-                  <SelectItem value="volunteer">Volunteer Opportunity</SelectItem>
-                  <SelectItem value="donation_drive">Donation Drive</SelectItem>
-                  <SelectItem value="news">News & Updates</SelectItem>
-                </SelectContent>
-              </Select>
+                <SelectItem value="food_distribution">Food Distribution</SelectItem>
+                <SelectItem value="community_event">Community Event</SelectItem>
+                <SelectItem value="volunteer">Volunteer Opportunity</SelectItem>
+                <SelectItem value="donation_drive">Donation Drive</SelectItem>
+                <SelectItem value="news">News & Updates</SelectItem>
+              </ResponsiveSelect>
             </div>
           </div>
 

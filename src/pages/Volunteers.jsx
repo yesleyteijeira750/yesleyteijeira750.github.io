@@ -18,7 +18,12 @@ export default function VolunteersPage() {
   const [showSignupDialog, setShowSignupDialog] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [signupData, setSignupData] = useState({ phone: '' });
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [pullDistance, setPullDistance] = useState(0);
   const { toast } = useToast();
+
+  const startY = React.useRef(0);
+  const isPulling = React.useRef(false);
 
   const [formData, setFormData] = useState({
     event_title: '',
@@ -188,7 +193,7 @@ export default function VolunteersPage() {
       {/* Pull to Refresh Indicator */}
       {pullDistance > 0 && (
         <div 
-          className="fixed top-16 left-1/2 transform -translate-x-1/2 z-50 transition-opacity"
+          className="fixed top-16 left-1/2 transform -translate-x-1/2 z-[60] transition-opacity"
           style={{ opacity: Math.min(pullDistance / 80, 1) }}
         >
           <div className={`bg-white dark:bg-card rounded-full p-3 shadow-lg border-2 border-amber-300 dark:border-amber-700 ${isRefreshing ? 'animate-spin' : ''}`}>

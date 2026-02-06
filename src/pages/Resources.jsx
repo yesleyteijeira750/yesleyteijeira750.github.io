@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Phone, Mail, Globe, MapPin, Plus, Search, Briefcase, Home, Heart, GraduationCap, DollarSign, Scale } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import ResponsiveSelect from "@/components/ui/ResponsiveSelect";
+import { SelectItem } from "@/components/ui/select";
 
 export default function ResourcesPage() {
   const [resources, setResources] = useState([]);
@@ -102,21 +103,22 @@ export default function ResourcesPage() {
               className="pl-10 border-amber-300"
             />
           </div>
-          <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-            <SelectTrigger className="w-full md:w-48 border-amber-300">
-              <SelectValue placeholder="All Categories" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Categories</SelectItem>
-              <SelectItem value="housing">Housing</SelectItem>
-              <SelectItem value="employment">Employment</SelectItem>
-              <SelectItem value="healthcare">Healthcare</SelectItem>
-              <SelectItem value="education">Education</SelectItem>
-              <SelectItem value="financial">Financial Aid</SelectItem>
-              <SelectItem value="legal">Legal Services</SelectItem>
-              <SelectItem value="other">Other</SelectItem>
-            </SelectContent>
-          </Select>
+          <ResponsiveSelect 
+            value={categoryFilter} 
+            onValueChange={setCategoryFilter}
+            placeholder="All Categories"
+            label="Filter by Category"
+            triggerClassName="w-full md:w-48 border-amber-300"
+          >
+            <SelectItem value="all">All Categories</SelectItem>
+            <SelectItem value="housing">Housing</SelectItem>
+            <SelectItem value="employment">Employment</SelectItem>
+            <SelectItem value="healthcare">Healthcare</SelectItem>
+            <SelectItem value="education">Education</SelectItem>
+            <SelectItem value="financial">Financial Aid</SelectItem>
+            <SelectItem value="legal">Legal Services</SelectItem>
+            <SelectItem value="other">Other</SelectItem>
+          </ResponsiveSelect>
         </div>
 
         {/* Resources Grid */}
