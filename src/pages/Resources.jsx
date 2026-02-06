@@ -12,10 +12,15 @@ import { SelectItem } from "@/components/ui/select";
 export default function ResourcesPage() {
   const [resources, setResources] = useState([]);
   const [filteredResources, setFilteredResources] = useState([]);
+  const [reviews, setReviews] = useState([]);
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
+  const [showReviewDialog, setShowReviewDialog] = useState(false);
+  const [selectedResource, setSelectedResource] = useState(null);
+  const [showMapDialog, setShowMapDialog] = useState(false);
+  const [reviewForm, setReviewForm] = useState({ rating: 5, comment: "" });
   const { toast } = useToast();
 
   useEffect(() => {
@@ -31,17 +36,25 @@ export default function ResourcesPage() {
     try {
       const currentUser = await base44.auth.me();
       setUser(currentUser);
-      const data = await base44.entities.Resource.list();
-      setResources(data);
+    } catch (error) {
+      setUser(null);
+    }
+    
+    try {
+      const [resourcesData, reviewsData] = await Promise.all([
+        base44.entities.Resource.list(),
+        base44.entities.ResourceReview.list()
+      ]);
+      setResources(resourcesData);
+      setReviews(reviewsData);
     } catch (error) {
       console.error("Error loading resources:", error);
-      setUser(null);
     }
     setIsLoading(false);
   };
 
   const filterResources = () => {
-    let filtered = resources;
+    let filtered = [...resources];
 
     if (searchTerm) {
       filtered = filtered.filter(r =>
@@ -54,8 +67,74 @@ export default function ResourcesPage() {
       filtered = filtered.filter(r => r.category === categoryFilter);
     }
 
+    filtered.sort((a, b) => {
+      if (a.is_featured && !b.is_featured) return -1;
+      if (!a.is_featured && b.is_featured) return 1;
+      if (a.is_verified && !b.is_verified) return -1;
+      if (!a.is_verified && b.is_verified) return 1;
+      return 0;
+    });
+
     setFilteredResources(filtered);
   };
+
+  const handleSubmitReview = async () => {
+    if (!user) {
+      toast({
+        title: "Login Required",
+        description: "Please log in to submit a review.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!reviewForm.comment.trim()) {
+      toast({
+        title: "Comment Required",
+        description: "Please write a comment.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      await base44.entities.ResourceReview.create({
+        resource_id: selectedResource.id,
+        user_name: user.full_name,
+        user_email: user.email,
+        rating: reviewForm.rating,
+        comment: reviewForm.comment
+      });
+
+      toast({
+        title: "Review Submitted",
+        description: "Thank you for your feedback!"
+      });
+
+      setShowReviewDialog(false);
+      setReviewForm({ rating: 5, comment: "" });
+      loadData();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to submit review.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const getResourceReviews = (resourceId) => {
+    return reviews.filter(r => r.resource_id === resourceId && r.is_approved);
+  };
+
+  const getAverageRating = (resourceId) => {
+    const resourceReviews = getResourceReviews(resourceId);
+    if (resourceReviews.length === 0) return 0;
+    const sum = resourceReviews.reduce((acc, r) => acc + r.rating, 0);
+    return (sum / resourceReviews.length).toFixed(1);
+  };
+
+  const resourcesWithAddresses = filteredResources.filter(r => r.address);
 
   const categoryIcons = {
     housing: Home,
@@ -130,21 +209,45 @@ export default function ResourcesPage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredResources.map(resource => {
               const CategoryIcon = categoryIcons[resource.category] || Heart;
+              const resourceReviews = getResourceReviews(resource.id);
+              const avgRating = getAverageRating(resource.id);
+              
               return (
-                <Card key={resource.id} className="border-amber-200 hover:shadow-lg transition-shadow">
-                  <CardHeader className="bg-[#F5EFE6]">
+                <Card key={resource.id} className="border-amber-200 dark:border-amber-800 hover:shadow-lg transition-shadow">
+                  <CardHeader className="bg-[#F5EFE6] dark:bg-gray-800">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <Badge className={`${categoryColors[resource.category]} mb-2`}>
-                          <CategoryIcon className="w-3 h-3 mr-1" />
-                          {resource.category}
-                        </Badge>
-                        <CardTitle className="text-[#5C2E0F]">{resource.title}</CardTitle>
+                        <div className="flex gap-2 mb-2 flex-wrap">
+                          <Badge className={`${categoryColors[resource.category]}`}>
+                            <CategoryIcon className="w-3 h-3 mr-1" />
+                            {resource.category}
+                          </Badge>
+                          {resource.is_verified && (
+                            <Badge className="bg-green-600 text-white">
+                              <CheckCircle className="w-3 h-3 mr-1" />
+                              Verified
+                            </Badge>
+                          )}
+                          {resource.is_featured && (
+                            <Badge className="bg-amber-600 text-white">
+                              <Star className="w-3 h-3 mr-1" />
+                              Featured
+                            </Badge>
+                          )}
+                        </div>
+                        <CardTitle className="text-[#5C2E0F] dark:text-white">{resource.title}</CardTitle>
+                        {resourceReviews.length > 0 && (
+                          <div className="flex items-center gap-1 mt-2">
+                            <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+                            <span className="text-sm font-medium text-[#8B4513] dark:text-white">{avgRating}</span>
+                            <span className="text-sm text-[#8B4513] dark:text-white">({resourceReviews.length} reviews)</span>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </CardHeader>
                   <CardContent className="p-6">
-                    <p className="text-[#8B4513] mb-4">{resource.description}</p>
+                    <p className="text-[#8B4513] dark:text-white mb-4">{resource.description}</p>
                     
                     <div className="space-y-2">
                       {resource.contact_name && (
@@ -186,12 +289,43 @@ export default function ResourcesPage() {
                       )}
 
                       {resource.address && (
-                        <div className="flex items-start gap-2 text-sm text-[#8B4513]">
+                        <div className="flex items-start gap-2 text-sm text-[#8B4513] dark:text-white">
                           <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
                           <span>{resource.address}</span>
                         </div>
                       )}
                     </div>
+
+                    {resourceReviews.length > 0 && (
+                      <div className="mt-4 pt-4 border-t border-amber-200 dark:border-amber-800">
+                        <h4 className="text-sm font-semibold text-[#5C2E0F] dark:text-white mb-2">Recent Reviews</h4>
+                        <div className="space-y-2">
+                          {resourceReviews.slice(0, 2).map(review => (
+                            <div key={review.id} className="text-sm">
+                              <div className="flex items-center gap-1 mb-1">
+                                {[...Array(5)].map((_, i) => (
+                                  <Star key={i} className={`w-3 h-3 ${i < review.rating ? 'fill-amber-400 text-amber-400' : 'text-gray-300'}`} />
+                                ))}
+                                <span className="text-xs text-[#8B4513] dark:text-white ml-1">- {review.user_name}</span>
+                              </div>
+                              <p className="text-[#8B4513] dark:text-white line-clamp-2">{review.comment}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    <Button
+                      onClick={() => {
+                        setSelectedResource(resource);
+                        setShowReviewDialog(true);
+                      }}
+                      variant="outline"
+                      className="w-full mt-4 border-amber-300 dark:border-amber-700"
+                    >
+                      <MessageSquare className="w-4 h-4 mr-2" />
+                      Leave a Review
+                    </Button>
                   </CardContent>
                 </Card>
               );
@@ -211,6 +345,104 @@ export default function ResourcesPage() {
           </Card>
         )}
       </div>
+
+      {/* Review Dialog */}
+      <Dialog open={showReviewDialog} onOpenChange={setShowReviewDialog}>
+        <DialogContent className="bg-[#F5EFE6] dark:bg-card">
+          <DialogHeader>
+            <DialogTitle className="text-[#5C2E0F] dark:text-white">Leave a Review</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <p className="text-sm text-[#8B4513] dark:text-white mb-2">Rating</p>
+              <div className="flex gap-2">
+                {[1, 2, 3, 4, 5].map(rating => (
+                  <button
+                    key={rating}
+                    onClick={() => setReviewForm({ ...reviewForm, rating })}
+                    className="transition-transform hover:scale-110"
+                  >
+                    <Star className={`w-8 h-8 ${rating <= reviewForm.rating ? 'fill-amber-400 text-amber-400' : 'text-gray-300'}`} />
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <p className="text-sm text-[#8B4513] dark:text-white mb-2">Your Review</p>
+              <Textarea
+                value={reviewForm.comment}
+                onChange={(e) => setReviewForm({ ...reviewForm, comment: e.target.value })}
+                placeholder="Share your experience with this resource..."
+                rows={4}
+                className="border-amber-300 dark:border-amber-700"
+              />
+            </div>
+            <div className="flex gap-3">
+              <Button variant="outline" onClick={() => setShowReviewDialog(false)} className="flex-1">
+                Cancel
+              </Button>
+              <Button onClick={handleSubmitReview} className="flex-1 bg-[#8B4513] hover:bg-[#5C2E0F] dark:bg-amber-600 dark:hover:bg-amber-700">
+                Submit Review
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Map Dialog */}
+      <Dialog open={showMapDialog} onOpenChange={setShowMapDialog}>
+        <DialogContent className="bg-[#F5EFE6] dark:bg-card max-w-4xl">
+          <DialogHeader>
+            <DialogTitle className="text-[#5C2E0F] dark:text-white">Resource Locations</DialogTitle>
+          </DialogHeader>
+          <div className="h-[500px] rounded-lg overflow-hidden">
+            <MapContainer
+              center={[26.9342, -81.7623]}
+              zoom={10}
+              style={{ height: '100%', width: '100%' }}
+            >
+              <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              />
+              {resourcesWithAddresses.map(resource => {
+                const geocodeAddress = async (address) => {
+                  try {
+                    const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`);
+                    const data = await response.json();
+                    if (data && data[0]) {
+                      return [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+                    }
+                  } catch (error) {
+                    console.error('Geocoding error:', error);
+                  }
+                  return null;
+                };
+
+                const [coords, setCoords] = React.useState(null);
+
+                React.useEffect(() => {
+                  geocodeAddress(resource.address).then(setCoords);
+                }, [resource.address]);
+
+                if (!coords) return null;
+
+                return (
+                  <Marker key={resource.id} position={coords}>
+                    <Popup>
+                      <div className="p-2">
+                        <h3 className="font-bold text-sm">{resource.title}</h3>
+                        <p className="text-xs text-gray-600">{resource.category}</p>
+                        {resource.phone && <p className="text-xs mt-1">{resource.phone}</p>}
+                      </div>
+                    </Popup>
+                  </Marker>
+                );
+              })}
+            </MapContainer>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

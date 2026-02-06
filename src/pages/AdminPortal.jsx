@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Users, Megaphone, Shield, Mail, Trash2, CreditCard, Edit, Save, X } from "lucide-react";
+import { Users, Megaphone, Shield, Mail, Trash2, CreditCard, Edit, Save, X, Heart, Camera, BookOpen, CheckCircle, Star } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import {
@@ -34,6 +34,10 @@ export default function AdminPortalPage() {
   const [user, setUser] = useState(null);
   const [users, setUsers] = useState([]);
   const [announcements, setAnnouncements] = useState([]);
+  const [resources, setResources] = useState([]);
+  const [photos, setPhotos] = useState([]);
+  const [volunteers, setVolunteers] = useState([]);
+  const [stories, setStories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleteType, setDeleteType] = useState(null);
@@ -74,17 +78,25 @@ export default function AdminPortalPage() {
   const loadData = async () => {
     setIsLoading(true);
     try {
-      const [allUsers, allAnnouncements] = await Promise.all([
+      const [allUsers, allAnnouncements, allResources, allPhotos, allVolunteers, allStories] = await Promise.all([
         base44.entities.User.list(),
-        base44.entities.Announcement.list("-created_date")
+        base44.entities.Announcement.list("-created_date"),
+        base44.entities.Resource.list("-created_date"),
+        base44.entities.Photo.list("-created_date"),
+        base44.entities.Volunteer.list("-created_date"),
+        base44.entities.Story.list("-created_date")
       ]);
       
       setUsers(allUsers);
       setAnnouncements(allAnnouncements);
+      setResources(allResources);
+      setPhotos(allPhotos);
+      setVolunteers(allVolunteers);
+      setStories(allStories);
     } catch (error) {
       console.error("Error loading data:", error);
       toast({
-        title: "❌ Error",
+        title: "Error",
         description: "Failed to load data. Please try again.",
         variant: "destructive",
       });
@@ -120,7 +132,7 @@ export default function AdminPortalPage() {
     try {
       await base44.entities.Announcement.delete(deleteTarget.id);
       toast({
-        title: "✅ Announcement deleted",
+        title: "Announcement deleted",
         description: `"${deleteTarget.title}" has been removed.`,
       });
       setDeleteTarget(null);
@@ -129,8 +141,56 @@ export default function AdminPortalPage() {
     } catch (error) {
       console.error("Error deleting announcement:", error);
       toast({
-        title: "❌ Error",
+        title: "Error",
         description: "Failed to delete announcement. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDeleteContent = async () => {
+    if (!deleteTarget) return;
+    
+    try {
+      const entityMap = {
+        resource: base44.entities.Resource,
+        photo: base44.entities.Photo,
+        volunteer: base44.entities.Volunteer,
+        story: base44.entities.Story
+      };
+      
+      await entityMap[deleteType].delete(deleteTarget.id);
+      toast({
+        title: "Deleted",
+        description: `Content has been removed.`,
+      });
+      setDeleteTarget(null);
+      setDeleteType(null);
+      await loadData();
+    } catch (error) {
+      console.error("Error deleting content:", error);
+      toast({
+        title: "Error",
+        description: "Failed to delete content. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleToggleResourceStatus = async (resource, field) => {
+    try {
+      await base44.entities.Resource.update(resource.id, {
+        [field]: !resource[field]
+      });
+      toast({
+        title: "Updated",
+        description: `Resource ${field} status updated.`,
+      });
+      await loadData();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update resource.",
         variant: "destructive",
       });
     }
@@ -244,14 +304,30 @@ export default function AdminPortalPage() {
 
         {/* Main Content Tabs */}
         <Tabs defaultValue="users" className="space-y-6">
-          <TabsList className="bg-[#F5EFE6] border border-amber-200">
+          <TabsList className="bg-[#F5EFE6] border border-amber-200 grid grid-cols-3 lg:grid-cols-6">
             <TabsTrigger value="users" className="data-[state=active]:bg-[#8B4513] data-[state=active]:text-white">
               <Users className="w-4 h-4 mr-2" />
-              Users & Barcodes
+              <span className="hidden sm:inline">Users</span>
             </TabsTrigger>
             <TabsTrigger value="announcements" className="data-[state=active]:bg-[#8B4513] data-[state=active]:text-white">
               <Megaphone className="w-4 h-4 mr-2" />
-              Announcements
+              <span className="hidden sm:inline">Announcements</span>
+            </TabsTrigger>
+            <TabsTrigger value="resources" className="data-[state=active]:bg-[#8B4513] data-[state=active]:text-white">
+              <Heart className="w-4 h-4 mr-2" />
+              <span className="hidden sm:inline">Resources</span>
+            </TabsTrigger>
+            <TabsTrigger value="photos" className="data-[state=active]:bg-[#8B4513] data-[state=active]:text-white">
+              <Camera className="w-4 h-4 mr-2" />
+              <span className="hidden sm:inline">Photos</span>
+            </TabsTrigger>
+            <TabsTrigger value="volunteers" className="data-[state=active]:bg-[#8B4513] data-[state=active]:text-white">
+              <Heart className="w-4 h-4 mr-2" />
+              <span className="hidden sm:inline">Volunteers</span>
+            </TabsTrigger>
+            <TabsTrigger value="stories" className="data-[state=active]:bg-[#8B4513] data-[state=active]:text-white">
+              <BookOpen className="w-4 h-4 mr-2" />
+              <span className="hidden sm:inline">Stories</span>
             </TabsTrigger>
           </TabsList>
 
@@ -427,29 +503,241 @@ export default function AdminPortalPage() {
               </CardContent>
             </Card>
           </TabsContent>
+
+          {/* Resources Tab */}
+          <TabsContent value="resources">
+            <Card className="border-amber-200">
+              <CardHeader className="bg-[#F5EFE6] border-b border-amber-200">
+                <CardTitle className="text-[#5C2E0F]">Resource Management</CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Title</TableHead>
+                        <TableHead>Category</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {resources.map((resource) => (
+                        <TableRow key={resource.id}>
+                          <TableCell className="font-medium max-w-xs truncate">
+                            {resource.title}
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="outline">{resource.category}</Badge>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex gap-2">
+                              <Button
+                                size="sm"
+                                variant={resource.is_verified ? "default" : "outline"}
+                                onClick={() => handleToggleResourceStatus(resource, 'is_verified')}
+                                className={resource.is_verified ? "bg-green-600 hover:bg-green-700" : ""}
+                              >
+                                <CheckCircle className="w-3 h-3 mr-1" />
+                                {resource.is_verified ? "Verified" : "Verify"}
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant={resource.is_featured ? "default" : "outline"}
+                                onClick={() => handleToggleResourceStatus(resource, 'is_featured')}
+                                className={resource.is_featured ? "bg-amber-600 hover:bg-amber-700" : ""}
+                              >
+                                <Star className="w-3 h-3 mr-1" />
+                                {resource.is_featured ? "Featured" : "Feature"}
+                              </Button>
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                setDeleteTarget(resource);
+                                setDeleteType("resource");
+                              }}
+                              className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Photos Tab */}
+          <TabsContent value="photos">
+            <Card className="border-amber-200">
+              <CardHeader className="bg-[#F5EFE6] border-b border-amber-200">
+                <CardTitle className="text-[#5C2E0F]">Photo Gallery Management</CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Title</TableHead>
+                        <TableHead>Category</TableHead>
+                        <TableHead>Date</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {photos.map((photo) => (
+                        <TableRow key={photo.id}>
+                          <TableCell className="font-medium">{photo.title}</TableCell>
+                          <TableCell><Badge variant="outline">{photo.category}</Badge></TableCell>
+                          <TableCell>{photo.event_date ? format(new Date(photo.event_date), "MMM d, yyyy") : "—"}</TableCell>
+                          <TableCell className="text-right">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                setDeleteTarget(photo);
+                                setDeleteType("photo");
+                              }}
+                              className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Volunteers Tab */}
+          <TabsContent value="volunteers">
+            <Card className="border-amber-200">
+              <CardHeader className="bg-[#F5EFE6] border-b border-amber-200">
+                <CardTitle className="text-[#5C2E0F]">Volunteer Opportunities Management</CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Title</TableHead>
+                        <TableHead>Date</TableHead>
+                        <TableHead>Signups</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {volunteers.map((volunteer) => (
+                        <TableRow key={volunteer.id}>
+                          <TableCell className="font-medium">{volunteer.event_title}</TableCell>
+                          <TableCell>{format(new Date(volunteer.event_date), "MMM d, yyyy")}</TableCell>
+                          <TableCell>{volunteer.signups?.length || 0} / {volunteer.volunteers_needed}</TableCell>
+                          <TableCell className="text-right">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                setDeleteTarget(volunteer);
+                                setDeleteType("volunteer");
+                              }}
+                              className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Stories Tab */}
+          <TabsContent value="stories">
+            <Card className="border-amber-200">
+              <CardHeader className="bg-[#F5EFE6] border-b border-amber-200">
+                <CardTitle className="text-[#5C2E0F]">Stories Management</CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Title</TableHead>
+                        <TableHead>Author</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {stories.map((story) => (
+                        <TableRow key={story.id}>
+                          <TableCell className="font-medium max-w-xs truncate">{story.title}</TableCell>
+                          <TableCell>{story.author_name || "Anonymous"}</TableCell>
+                          <TableCell>
+                            {story.is_approved ? (
+                              <Badge className="bg-green-600">Approved</Badge>
+                            ) : (
+                              <Badge variant="outline">Pending</Badge>
+                            )}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                setDeleteTarget(story);
+                                setDeleteType("story");
+                              }}
+                              className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
         </Tabs>
       </div>
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={!!deleteTarget} onOpenChange={() => setDeleteTarget(null)}>
-        <AlertDialogContent className="bg-[#F5EFE6]">
+        <AlertDialogContent className="bg-[#F5EFE6] dark:bg-card">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-[#5C2E0F]">
-              Delete {deleteType === "user" ? "User" : "Announcement"}?
+            <AlertDialogTitle className="text-[#5C2E0F] dark:text-white">
+              Delete {deleteType?.charAt(0).toUpperCase() + deleteType?.slice(1)}?
             </AlertDialogTitle>
-            <AlertDialogDescription className="text-[#8B4513]">
-              {deleteType === "user" 
-                ? `This will permanently delete ${deleteTarget?.full_name}. This action cannot be undone.`
-                : `This will permanently delete "${deleteTarget?.title}". This action cannot be undone.`
-              }
+            <AlertDialogDescription className="text-[#8B4513] dark:text-white">
+              This will permanently delete this content. This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="border-[#8B4513] text-[#8B4513] hover:bg-amber-100">
+            <AlertDialogCancel className="border-[#8B4513] text-[#8B4513] hover:bg-amber-100 dark:border-amber-700 dark:text-white">
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
-              onClick={deleteType === "user" ? handleDeleteUser : handleDeleteAnnouncement}
+              onClick={
+                deleteType === "user" ? handleDeleteUser : 
+                deleteType === "announcement" ? handleDeleteAnnouncement : 
+                handleDeleteContent
+              }
               className="bg-red-600 hover:bg-red-700"
             >
               Delete
