@@ -61,7 +61,8 @@ import Reviews from './pages/Reviews';
 import Stories from './pages/Stories';
 import Volunteers from './pages/Volunteers';
 import Settings from './pages/Settings';
-import MyIDCard from './pages/MyIDCard';
+import Profile from './pages/Profile';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 import __Layout from './Layout.jsx';
 
 
@@ -80,7 +81,8 @@ export const PAGES = {
     "Stories": Stories,
     "Volunteers": Volunteers,
     "Settings": Settings,
-    "MyIDCard": MyIDCard,
+    "Profile": Profile,
+    "PrivacyPolicy": PrivacyPolicy,
 }
 
 export const pagesConfig = {

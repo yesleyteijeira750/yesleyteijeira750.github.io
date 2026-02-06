@@ -1,3 +1,4 @@
+css
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -30,24 +31,24 @@
   }
 
   .dark {
-    --background: 28 25% 9%;
-    --foreground: 39 40% 93%;
-    --card: 28 20% 12%;
-    --card-foreground: 39 40% 93%;
-    --popover: 28 25% 10%;
-    --popover-foreground: 39 40% 93%;
+    --background: 0 0% 12%;
+    --foreground: 0 0% 100%;
+    --card: 0 0% 15%;
+    --card-foreground: 0 0% 100%;
+    --popover: 0 0% 15%;
+    --popover-foreground: 0 0% 100%;
     --primary: 28 30% 27%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 28 20% 18%;
-    --secondary-foreground: 39 40% 93%;
-    --muted: 28 20% 18%;
-    --muted-foreground: 39 20% 65%;
+    --secondary: 0 0% 20%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 0 0% 20%;
+    --muted-foreground: 0 0% 100%;
     --accent: 25 52% 56%;
-    --accent-foreground: 28 59% 21%;
+    --accent-foreground: 0 0% 100%;
     --destructive: 0 62% 50%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 28 20% 25%;
-    --input: 28 20% 25%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 25%;
+    --input: 0 0% 25%;
     --ring: 39 40% 60%;
   }
 }

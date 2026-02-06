@@ -23,7 +23,6 @@ export default function Layout({ children, currentPageName }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [user, setUser] = React.useState(null);
-  const [menuOpen, setMenuOpen] = React.useState(false);
   const [isMobile, setIsMobile] = React.useState(false);
 
   React.useEffect(() => {
@@ -50,12 +49,13 @@ export default function Layout({ children, currentPageName }) {
 
   const bottomTabItems = [
     { name: "Home", icon: Home, path: "Announcements" },
-    { name: "Calendar", icon: CalendarIcon, path: "Calendar" },
-    { name: "Volunteer", icon: Heart, path: "Volunteers" },
-    { name: "ID Card", icon: CreditCard, path: "MyIDCard", requireAuth: true }
+    { name: "Resources", icon: Info, path: "Resources" },
+    { name: "Gallery", icon: Info, path: "Gallery" },
+    ...(isAdmin ? [{ name: "Admin", icon: Shield, path: "AdminPortal" }] : []),
+    { name: "Profile", icon: Settings as SettingsIcon, path: "Profile", requireAuth: true }
   ];
 
-  const detailPages = ["AnnouncementDetail", "Settings"];
+  const detailPages = ["AnnouncementDetail", "PrivacyPolicy"];
   const isDetailPage = detailPages.includes(currentPageName);
 
   return (
@@ -85,165 +85,52 @@ export default function Layout({ children, currentPageName }) {
 
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center gap-1">
-              <Link to={createPageUrl("Announcements")} className={`px-3 py-2 rounded-xl font-medium transition-all text-sm ${location.pathname === createPageUrl("Announcements") ? "bg-amber-200 dark:bg-amber-900 text-[#5C2E0F] dark:text-amber-100" : "text-[#8B4513] dark:text-amber-200 hover:bg-amber-100 dark:hover:bg-amber-900/20"}`}>
+              <Link to={createPageUrl("Announcements")} className={`px-3 py-2 rounded-xl font-medium transition-all text-sm ${location.pathname === createPageUrl("Announcements") ? "bg-amber-200 dark:bg-amber-900 text-[#5C2E0F] dark:text-white" : "text-[#8B4513] dark:text-white hover:bg-amber-100 dark:hover:bg-amber-900/20"}`}>
                 Home
               </Link>
 
-              <Link to={createPageUrl("Calendar")} className={`px-3 py-2 rounded-xl font-medium transition-all text-sm ${location.pathname === createPageUrl("Calendar") ? "bg-amber-200 dark:bg-amber-900 text-[#5C2E0F] dark:text-amber-100" : "text-[#8B4513] dark:text-amber-200 hover:bg-amber-100 dark:hover:bg-amber-900/20"}`}>
-                Calendar
+              <Link to={createPageUrl("Resources")} className={`px-3 py-2 rounded-xl font-medium transition-all text-sm ${location.pathname === createPageUrl("Resources") ? "bg-amber-200 dark:bg-amber-900 text-[#5C2E0F] dark:text-white" : "text-[#8B4513] dark:text-white hover:bg-amber-100 dark:hover:bg-amber-900/20"}`}>
+                Resources
               </Link>
 
-              <Link to={createPageUrl("Volunteers")} className={`px-3 py-2 rounded-xl font-medium transition-all text-sm ${location.pathname === createPageUrl("Volunteers") ? "bg-amber-200 dark:bg-amber-900 text-[#5C2E0F] dark:text-amber-100" : "text-[#8B4513] dark:text-amber-200 hover:bg-amber-100 dark:hover:bg-amber-900/20"}`}>
-                Volunteer
-              </Link>
-
-              <Link to={createPageUrl("Gallery")} className={`px-3 py-2 rounded-xl font-medium transition-all text-sm ${location.pathname === createPageUrl("Gallery") ? "bg-amber-200 dark:bg-amber-900 text-[#5C2E0F] dark:text-amber-100" : "text-[#8B4513] dark:text-amber-200 hover:bg-amber-100 dark:hover:bg-amber-900/20"}`}>
+              <Link to={createPageUrl("Gallery")} className={`px-3 py-2 rounded-xl font-medium transition-all text-sm ${location.pathname === createPageUrl("Gallery") ? "bg-amber-200 dark:bg-amber-900 text-[#5C2E0F] dark:text-white" : "text-[#8B4513] dark:text-white hover:bg-amber-100 dark:hover:bg-amber-900/20"}`}>
                 Gallery
               </Link>
 
               {isAdmin && (
                 <>
-                  <Link to={createPageUrl("CheckInSystem")} className={`px-3 py-2 rounded-xl font-medium transition-all text-sm ${location.pathname === createPageUrl("CheckInSystem") ? "bg-amber-200 dark:bg-amber-900 text-[#5C2E0F] dark:text-amber-100" : "text-[#8B4513] dark:text-amber-200 hover:bg-amber-100 dark:hover:bg-amber-900/20"}`}>
+                  <Link to={createPageUrl("CheckInSystem")} className={`px-3 py-2 rounded-xl font-medium transition-all text-sm ${location.pathname === createPageUrl("CheckInSystem") ? "bg-amber-200 dark:bg-amber-900 text-[#5C2E0F] dark:text-white" : "text-[#8B4513] dark:text-white hover:bg-amber-100 dark:hover:bg-amber-900/20"}`}>
                     Check-In
                   </Link>
-                  <Link to={createPageUrl("Analytics")} className={`px-3 py-2 rounded-xl font-medium transition-all text-sm ${location.pathname === createPageUrl("Analytics") ? "bg-amber-200 dark:bg-amber-900 text-[#5C2E0F] dark:text-amber-100" : "text-[#8B4513] dark:text-amber-200 hover:bg-amber-100 dark:hover:bg-amber-900/20"}`}>
+                  <Link to={createPageUrl("Analytics")} className={`px-3 py-2 rounded-xl font-medium transition-all text-sm ${location.pathname === createPageUrl("Analytics") ? "bg-amber-200 dark:bg-amber-900 text-[#5C2E0F] dark:text-white" : "text-[#8B4513] dark:text-white hover:bg-amber-100 dark:hover:bg-amber-900/20"}`}>
                     Analytics
                   </Link>
-                  <Link to={createPageUrl("AdminPortal")} className={`flex items-center gap-1 px-3 py-2 rounded-xl font-medium transition-all text-sm ${location.pathname === createPageUrl("AdminPortal") ? "bg-amber-200 dark:bg-amber-900 text-[#5C2E0F] dark:text-amber-100" : "text-[#8B4513] dark:text-amber-200 hover:bg-amber-100 dark:hover:bg-amber-900/20"}`}>
+                  <Link to={createPageUrl("AdminPortal")} className={`flex items-center gap-1 px-3 py-2 rounded-xl font-medium transition-all text-sm ${location.pathname === createPageUrl("AdminPortal") ? "bg-amber-200 dark:bg-amber-900 text-[#5C2E0F] dark:text-white" : "text-[#8B4513] dark:text-white hover:bg-amber-100 dark:hover:bg-amber-900/20"}`}>
                     <Shield className="w-3 h-3" />
                     Admin
                   </Link>
                 </>
               )}
 
-              {user && (
-                <Link to={createPageUrl("Settings")} className={`px-3 py-2 rounded-xl font-medium transition-all text-sm ${location.pathname === createPageUrl("Settings") ? "bg-amber-200 dark:bg-amber-900 text-[#5C2E0F] dark:text-amber-100" : "text-[#8B4513] dark:text-amber-200 hover:bg-amber-100 dark:hover:bg-amber-900/20"}`}>
-                  <SettingsIcon className="w-4 h-4" />
-                </Link>
-              )}
-
               {user ? (
-                <div className="flex items-center gap-2 ml-2 pl-2 border-l border-[#8B4513]/20 dark:border-amber-700/20">
+                <Link to={createPageUrl("Profile")} className="flex items-center gap-2 ml-2 pl-2 border-l border-[#8B4513]/20 dark:border-amber-700/20">
                   <div className="w-8 h-8 bg-gradient-to-br from-[#8B4513] to-[#D2691E] dark:from-[#D2691E] dark:to-[#8B4513] rounded-full flex items-center justify-center">
                     <span className="text-white font-semibold text-sm">
                       {user.full_name?.[0] || "U"}
                     </span>
                   </div>
                   {isAdmin && (
-                    <span className="text-xs font-medium text-[#5C2E0F] dark:text-amber-100 bg-amber-200 dark:bg-amber-900 px-2 py-1 rounded-full">
+                    <span className="text-xs font-medium text-[#5C2E0F] dark:text-white bg-amber-200 dark:bg-amber-900 px-2 py-1 rounded-full">
                       Admin
                     </span>
                   )}
-                </div>
+                </Link>
               ) : null}
             </nav>
-
-            {/* Mobile Menu Button */}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setMenuOpen(!menuOpen)}
-              className="lg:hidden text-[#8B4513] dark:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-900/20"
-            >
-              {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </Button>
           </div>
         </div>
 
-        {/* Mobile Menu */}
-        <AnimatePresence>
-          {menuOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              className="lg:hidden border-t border-amber-200 dark:border-amber-800 bg-[#FFFBF0] dark:bg-card"
-            >
-              <nav className="px-4 py-4 space-y-2">
-                {menuItems.map((item) => {
-                  const Icon = item.icon;
-                  if (item.requireAuth && !user) return null;
-                  
-                  return (
-                    <Link
-                      key={item.path}
-                      to={createPageUrl(item.path)}
-                      onClick={() => setMenuOpen(false)}
-                      className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${
-                        location.pathname === createPageUrl(item.path)
-                          ? "bg-amber-200 dark:bg-amber-900 text-[#5C2E0F] dark:text-amber-100"
-                          : "text-[#8B4513] dark:text-amber-200 hover:bg-amber-100 dark:hover:bg-amber-900/20"
-                      }`}
-                    >
-                      <Icon className="w-5 h-5" />
-                      {item.name}
-                    </Link>
-                  );
-                })}
 
-                <Link
-                  to={createPageUrl("Reviews")}
-                  onClick={() => setMenuOpen(false)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${
-                    location.pathname === createPageUrl("Reviews")
-                      ? "bg-amber-200 dark:bg-amber-900 text-[#5C2E0F] dark:text-amber-100"
-                      : "text-[#8B4513] dark:text-amber-200 hover:bg-amber-100 dark:hover:bg-amber-900/20"
-                  }`}
-                >
-                  ⭐ Reviews
-                </Link>
-
-                {user && (
-                  <Link
-                    to={createPageUrl("Settings")}
-                    onClick={() => setMenuOpen(false)}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${
-                      location.pathname === createPageUrl("Settings")
-                        ? "bg-amber-200 dark:bg-amber-900 text-[#5C2E0F] dark:text-amber-100"
-                        : "text-[#8B4513] dark:text-amber-200 hover:bg-amber-100 dark:hover:bg-amber-900/20"
-                    }`}
-                  >
-                    <SettingsIcon className="w-5 h-5" />
-                    Settings
-                  </Link>
-                )}
-
-                {isAdmin && (
-                  <Link
-                    to={createPageUrl("AdminPortal")}
-                    onClick={() => setMenuOpen(false)}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${
-                      location.pathname === createPageUrl("AdminPortal")
-                        ? "bg-amber-200 dark:bg-amber-900 text-[#5C2E0F] dark:text-amber-100"
-                        : "text-[#8B4513] dark:text-amber-200 hover:bg-amber-100 dark:hover:bg-amber-900/20"
-                    }`}
-                  >
-                    <Shield className="w-5 h-5" />
-                    Admin Portal
-                  </Link>
-                )}
-
-                {user && (
-                  <div className="flex items-center gap-3 px-4 py-3 mt-4 border-t border-amber-200 dark:border-amber-800">
-                    <div className="w-10 h-10 bg-gradient-to-br from-[#8B4513] to-[#D2691E] dark:from-[#D2691E] dark:to-[#8B4513] rounded-full flex items-center justify-center">
-                      <span className="text-white font-semibold">
-                        {user.full_name?.[0] || "U"}
-                      </span>
-                    </div>
-                    <div>
-                      <p className="font-medium text-[#5C2E0F] dark:text-amber-100">{user.full_name}</p>
-                      {isAdmin && (
-                        <span className="text-xs text-[#8B4513] dark:text-amber-100 bg-amber-200 dark:bg-amber-900 px-2 py-0.5 rounded-full">
-                          Admin
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </nav>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </header>
 
       <main className="flex-1">
@@ -276,10 +163,10 @@ export default function Layout({ children, currentPageName }) {
                 <Link
                   key={item.path}
                   to={createPageUrl(item.path)}
-                  className={`flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-all ${
+                  className={`flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-all ${
                     isActive 
-                      ? "bg-amber-200 dark:bg-amber-900 text-[#5C2E0F] dark:text-amber-100" 
-                      : "text-[#8B4513] dark:text-amber-200"
+                      ? "bg-amber-200 dark:bg-amber-900 text-[#5C2E0F] dark:text-white" 
+                      : "text-[#8B4513] dark:text-white"
                   }`}
                 >
                   <Icon className="w-5 h-5" />
