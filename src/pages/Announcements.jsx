@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
-import { Plus, Search, Filter, Megaphone } from "lucide-react";
+import { Plus, Search, Filter, Megaphone, RefreshCw } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -366,7 +366,7 @@ export default function AnnouncementsPage() {
               animate={{ rotate: isRefreshing ? 360 : pullDistance * 3 }}
               transition={{ duration: isRefreshing ? 1 : 0, repeat: isRefreshing ? Infinity : 0, ease: "linear" }}
             >
-              <ArrowLeft className="w-5 h-5 text-[#8B4513] dark:text-amber-400 transform rotate-90" />
+              <RefreshCw className="w-5 h-5 text-[#8B4513] dark:text-amber-400" />
             </motion.div>
           </div>
         </div>
