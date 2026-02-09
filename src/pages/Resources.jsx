@@ -10,8 +10,9 @@ import { useToast } from "@/components/ui/use-toast";
 import ResponsiveSelect from "@/components/ui/ResponsiveSelect";
 import { SelectItem } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
+import ResourceMarker from '@/components/resources/ResourceMarker';
 
 export default function ResourcesPage() {
   const [resources, setResources] = useState([]);
@@ -160,17 +161,17 @@ export default function ResourcesPage() {
   };
 
   return (
-    <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8 dark:bg-gradient-to-br dark:from-gray-900 dark:via-amber-950 dark:to-gray-900">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#8B4513] to-[#D2691E] rounded-2xl mb-3">
             <Heart className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-[#5C2E0F] mb-2">
+          <h1 className="text-3xl sm:text-4xl font-bold text-[#5C2E0F] dark:text-white mb-2">
             Community Resources
           </h1>
-          <p className="text-[#8B4513] text-lg">
+          <p className="text-[#8B4513] dark:text-white text-lg">
             Find helpful services and support in our community
           </p>
         </div>
@@ -183,7 +184,7 @@ export default function ResourcesPage() {
               placeholder="Search resources..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 border-amber-300"
+              className="pl-10 border-amber-300 dark:border-amber-700"
             />
           </div>
           <ResponsiveSelect 
@@ -191,7 +192,7 @@ export default function ResourcesPage() {
             onValueChange={setCategoryFilter}
             placeholder="All Categories"
             label="Filter by Category"
-            triggerClassName="w-full md:w-48 border-amber-300"
+            triggerClassName="w-full md:w-48 border-amber-300 dark:border-amber-700"
           >
             <SelectItem value="all">All Categories</SelectItem>
             <SelectItem value="housing">Housing</SelectItem>
@@ -266,41 +267,41 @@ export default function ResourcesPage() {
                     
                     <div className="space-y-2">
                       {resource.contact_name && (
-                        <div className="text-sm text-[#8B4513]">
-                          <strong>Contact:</strong> {resource.contact_name}
-                        </div>
+                       <div className="text-sm text-[#8B4513] dark:text-white">
+                         <strong>Contact:</strong> {resource.contact_name}
+                       </div>
                       )}
 
                       {resource.phone && (
-                        <a
-                          href={`tel:${resource.phone}`}
-                          className="flex items-center gap-2 text-sm text-[#8B4513] hover:text-[#5C2E0F]"
-                        >
-                          <Phone className="w-4 h-4" />
-                          {resource.phone}
-                        </a>
+                       <a
+                         href={`tel:${resource.phone}`}
+                         className="flex items-center gap-2 text-sm text-[#8B4513] dark:text-white hover:text-[#5C2E0F] dark:hover:text-amber-400"
+                       >
+                         <Phone className="w-4 h-4" />
+                         {resource.phone}
+                       </a>
                       )}
 
                       {resource.email && (
-                        <a
-                          href={`mailto:${resource.email}`}
-                          className="flex items-center gap-2 text-sm text-[#8B4513] hover:text-[#5C2E0F]"
-                        >
-                          <Mail className="w-4 h-4" />
-                          {resource.email}
-                        </a>
+                       <a
+                         href={`mailto:${resource.email}`}
+                         className="flex items-center gap-2 text-sm text-[#8B4513] dark:text-white hover:text-[#5C2E0F] dark:hover:text-amber-400"
+                       >
+                         <Mail className="w-4 h-4" />
+                         {resource.email}
+                       </a>
                       )}
 
                       {resource.website && (
-                        <a
-                          href={resource.website}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2 text-sm text-[#8B4513] hover:text-[#5C2E0F]"
-                        >
-                          <Globe className="w-4 h-4" />
-                          Visit Website
-                        </a>
+                       <a
+                         href={resource.website}
+                         target="_blank"
+                         rel="noopener noreferrer"
+                         className="flex items-center gap-2 text-sm text-[#8B4513] dark:text-white hover:text-[#5C2E0F] dark:hover:text-amber-400"
+                       >
+                         <Globe className="w-4 h-4" />
+                         Visit Website
+                       </a>
                       )}
 
                       {resource.address && (
@@ -347,11 +348,11 @@ export default function ResourcesPage() {
             })}
           </div>
         ) : (
-          <Card className="border-amber-200">
+          <Card className="border-amber-200 dark:border-amber-800">
             <CardContent className="p-12 text-center">
-              <Heart className="w-16 h-16 text-[#8B4513] opacity-30 mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-[#5C2E0F] mb-2">No Resources Found</h3>
-              <p className="text-[#8B4513]">
+              <Heart className="w-16 h-16 text-[#8B4513] dark:text-amber-400 opacity-30 mx-auto mb-4" />
+              <h3 className="text-xl font-bold text-[#5C2E0F] dark:text-white mb-2">No Resources Found</h3>
+              <p className="text-[#8B4513] dark:text-white">
                 {searchTerm || categoryFilter !== "all"
                   ? "Try adjusting your search or filter."
                   : "Resources will be added soon."}
@@ -420,40 +421,9 @@ export default function ResourcesPage() {
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               />
-              {resourcesWithAddresses.map(resource => {
-                const geocodeAddress = async (address) => {
-                  try {
-                    const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`);
-                    const data = await response.json();
-                    if (data && data[0]) {
-                      return [parseFloat(data[0].lat), parseFloat(data[0].lon)];
-                    }
-                  } catch (error) {
-                    console.error('Geocoding error:', error);
-                  }
-                  return null;
-                };
-
-                const [coords, setCoords] = React.useState(null);
-
-                React.useEffect(() => {
-                  geocodeAddress(resource.address).then(setCoords);
-                }, [resource.address]);
-
-                if (!coords) return null;
-
-                return (
-                  <Marker key={resource.id} position={coords}>
-                    <Popup>
-                      <div className="p-2">
-                        <h3 className="font-bold text-sm">{resource.title}</h3>
-                        <p className="text-xs text-gray-600">{resource.category}</p>
-                        {resource.phone && <p className="text-xs mt-1">{resource.phone}</p>}
-                      </div>
-                    </Popup>
-                  </Marker>
-                );
-              })}
+              {resourcesWithAddresses.map(resource => (
+                <ResourceMarker key={resource.id} resource={resource} />
+              ))}
             </MapContainer>
           </div>
         </DialogContent>

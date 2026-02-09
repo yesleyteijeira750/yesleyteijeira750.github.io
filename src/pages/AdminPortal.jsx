@@ -246,7 +246,7 @@ export default function AdminPortalPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 py-12">
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 dark:from-gray-900 dark:via-amber-950 dark:to-gray-900 py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
@@ -255,48 +255,82 @@ export default function AdminPortalPage() {
               <Shield className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-[#5C2E0F]">Admin Portal</h1>
-              <p className="text-[#8B4513]">Manage users and announcements</p>
+              <h1 className="text-3xl font-bold text-[#5C2E0F] dark:text-white">Admin Portal</h1>
+              <p className="text-[#8B4513] dark:text-white">Manage all content and users</p>
             </div>
           </div>
         </div>
 
         {/* Stats Cards */}
-        <div className="grid md:grid-cols-3 gap-6 mb-8">
-          <Card className="border-amber-200">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-[#8B4513] mb-1">Total Users</p>
-                  <p className="text-3xl font-bold text-[#5C2E0F]">{users.length}</p>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+          <Card className="border-amber-200 dark:border-amber-800">
+            <CardContent className="p-4">
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center justify-between">
+                  <Users className="w-6 h-6 text-[#8B4513] dark:text-amber-400" />
+                  <Badge variant="secondary" className="text-xs">{users.length}</Badge>
                 </div>
-                <Users className="w-10 h-10 text-[#8B4513] opacity-50" />
+                <p className="text-xs text-[#8B4513] dark:text-white font-medium">Users</p>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="border-amber-200">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-[#8B4513] mb-1">Announcements</p>
-                  <p className="text-3xl font-bold text-[#5C2E0F]">{announcements.length}</p>
+          <Card className="border-amber-200 dark:border-amber-800">
+            <CardContent className="p-4">
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center justify-between">
+                  <Megaphone className="w-6 h-6 text-[#8B4513] dark:text-amber-400" />
+                  <Badge variant="secondary" className="text-xs">{announcements.length}</Badge>
                 </div>
-                <Megaphone className="w-10 h-10 text-[#8B4513] opacity-50" />
+                <p className="text-xs text-[#8B4513] dark:text-white font-medium">Announcements</p>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="border-amber-200">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-[#8B4513] mb-1">With Barcodes</p>
-                  <p className="text-3xl font-bold text-[#5C2E0F]">
-                    {users.filter(u => u.barcode_number && u.barcode_number.trim() !== '').length}
-                  </p>
+          <Card className="border-amber-200 dark:border-amber-800">
+            <CardContent className="p-4">
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center justify-between">
+                  <Heart className="w-6 h-6 text-[#8B4513] dark:text-amber-400" />
+                  <Badge variant="secondary" className="text-xs">{resources.length}</Badge>
                 </div>
-                <CreditCard className="w-10 h-10 text-[#8B4513] opacity-50" />
+                <p className="text-xs text-[#8B4513] dark:text-white font-medium">Resources</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-amber-200 dark:border-amber-800">
+            <CardContent className="p-4">
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center justify-between">
+                  <Camera className="w-6 h-6 text-[#8B4513] dark:text-amber-400" />
+                  <Badge variant="secondary" className="text-xs">{photos.length}</Badge>
+                </div>
+                <p className="text-xs text-[#8B4513] dark:text-white font-medium">Photos</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-amber-200 dark:border-amber-800">
+            <CardContent className="p-4">
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center justify-between">
+                  <Heart className="w-6 h-6 text-[#8B4513] dark:text-amber-400" />
+                  <Badge variant="secondary" className="text-xs">{volunteers.length}</Badge>
+                </div>
+                <p className="text-xs text-[#8B4513] dark:text-white font-medium">Volunteers</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-amber-200 dark:border-amber-800">
+            <CardContent className="p-4">
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center justify-between">
+                  <BookOpen className="w-6 h-6 text-[#8B4513] dark:text-amber-400" />
+                  <Badge variant="secondary" className="text-xs">{stories.length}</Badge>
+                </div>
+                <p className="text-xs text-[#8B4513] dark:text-white font-medium">Stories</p>
               </div>
             </CardContent>
           </Card>
@@ -333,10 +367,10 @@ export default function AdminPortalPage() {
 
           {/* Users Tab */}
           <TabsContent value="users">
-            <Card className="border-amber-200">
-              <CardHeader className="bg-[#F5EFE6] border-b border-amber-200">
+            <Card className="border-amber-200 dark:border-amber-800">
+              <CardHeader className="bg-[#F5EFE6] dark:bg-gray-800 border-b border-amber-200 dark:border-amber-800">
                 <div className="flex justify-between items-center">
-                  <CardTitle className="text-[#5C2E0F]">User Management & Barcode Assignment</CardTitle>
+                  <CardTitle className="text-[#5C2E0F] dark:text-white">User Management & Barcode Assignment</CardTitle>
                   <Button
                     onClick={handleSendInvite}
                     className="bg-gradient-to-r from-[#8B4513] to-[#D2691E] hover:from-[#5C2E0F] hover:to-[#A0522D]"
@@ -439,10 +473,10 @@ export default function AdminPortalPage() {
 
           {/* Announcements Tab */}
           <TabsContent value="announcements">
-            <Card className="border-amber-200">
-              <CardHeader className="bg-[#F5EFE6] border-b border-amber-200">
+            <Card className="border-amber-200 dark:border-amber-800">
+              <CardHeader className="bg-[#F5EFE6] dark:bg-gray-800 border-b border-amber-200 dark:border-amber-800">
                 <div className="flex justify-between items-center">
-                  <CardTitle className="text-[#5C2E0F]">Announcement Management</CardTitle>
+                  <CardTitle className="text-[#5C2E0F] dark:text-white">Announcement Management</CardTitle>
                   <Button
                     onClick={() => navigate(createPageUrl("Announcements"))}
                     className="bg-gradient-to-r from-[#8B4513] to-[#D2691E] hover:from-[#5C2E0F] hover:to-[#A0522D]"
@@ -506,9 +540,18 @@ export default function AdminPortalPage() {
 
           {/* Resources Tab */}
           <TabsContent value="resources">
-            <Card className="border-amber-200">
-              <CardHeader className="bg-[#F5EFE6] border-b border-amber-200">
-                <CardTitle className="text-[#5C2E0F]">Resource Management</CardTitle>
+            <Card className="border-amber-200 dark:border-amber-800">
+              <CardHeader className="bg-[#F5EFE6] dark:bg-gray-800 border-b border-amber-200 dark:border-amber-800">
+                <div className="flex justify-between items-center">
+                  <CardTitle className="text-[#5C2E0F] dark:text-white">Resource Management</CardTitle>
+                  <Button
+                    onClick={() => navigate(createPageUrl("Resources"))}
+                    className="bg-gradient-to-r from-[#8B4513] to-[#D2691E] hover:from-[#5C2E0F] hover:to-[#A0522D]"
+                  >
+                    <Heart className="w-4 h-4 mr-2" />
+                    View Resources
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
@@ -576,9 +619,18 @@ export default function AdminPortalPage() {
 
           {/* Photos Tab */}
           <TabsContent value="photos">
-            <Card className="border-amber-200">
-              <CardHeader className="bg-[#F5EFE6] border-b border-amber-200">
-                <CardTitle className="text-[#5C2E0F]">Photo Gallery Management</CardTitle>
+            <Card className="border-amber-200 dark:border-amber-800">
+              <CardHeader className="bg-[#F5EFE6] dark:bg-gray-800 border-b border-amber-200 dark:border-amber-800">
+                <div className="flex justify-between items-center">
+                  <CardTitle className="text-[#5C2E0F] dark:text-white">Photo Gallery Management</CardTitle>
+                  <Button
+                    onClick={() => navigate(createPageUrl("Gallery"))}
+                    className="bg-gradient-to-r from-[#8B4513] to-[#D2691E] hover:from-[#5C2E0F] hover:to-[#A0522D]"
+                  >
+                    <Camera className="w-4 h-4 mr-2" />
+                    View Gallery
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
@@ -621,9 +673,18 @@ export default function AdminPortalPage() {
 
           {/* Volunteers Tab */}
           <TabsContent value="volunteers">
-            <Card className="border-amber-200">
-              <CardHeader className="bg-[#F5EFE6] border-b border-amber-200">
-                <CardTitle className="text-[#5C2E0F]">Volunteer Opportunities Management</CardTitle>
+            <Card className="border-amber-200 dark:border-amber-800">
+              <CardHeader className="bg-[#F5EFE6] dark:bg-gray-800 border-b border-amber-200 dark:border-amber-800">
+                <div className="flex justify-between items-center">
+                  <CardTitle className="text-[#5C2E0F] dark:text-white">Volunteer Opportunities Management</CardTitle>
+                  <Button
+                    onClick={() => navigate(createPageUrl("Volunteers"))}
+                    className="bg-gradient-to-r from-[#8B4513] to-[#D2691E] hover:from-[#5C2E0F] hover:to-[#A0522D]"
+                  >
+                    <Heart className="w-4 h-4 mr-2" />
+                    View Opportunities
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
@@ -666,9 +727,18 @@ export default function AdminPortalPage() {
 
           {/* Stories Tab */}
           <TabsContent value="stories">
-            <Card className="border-amber-200">
-              <CardHeader className="bg-[#F5EFE6] border-b border-amber-200">
-                <CardTitle className="text-[#5C2E0F]">Stories Management</CardTitle>
+            <Card className="border-amber-200 dark:border-amber-800">
+              <CardHeader className="bg-[#F5EFE6] dark:bg-gray-800 border-b border-amber-200 dark:border-amber-800">
+                <div className="flex justify-between items-center">
+                  <CardTitle className="text-[#5C2E0F] dark:text-white">Stories Management</CardTitle>
+                  <Button
+                    onClick={() => navigate(createPageUrl("Stories"))}
+                    className="bg-gradient-to-r from-[#8B4513] to-[#D2691E] hover:from-[#5C2E0F] hover:to-[#A0522D]"
+                  >
+                    <BookOpen className="w-4 h-4 mr-2" />
+                    View Stories
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
