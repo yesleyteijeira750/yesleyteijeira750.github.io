@@ -6,7 +6,6 @@ import { useLanguage } from "@/components/i18n/LanguageProvider";
 
 export default function AboutUsPage() {
   const { t } = useLanguage();
-
   return (
     <div className="min-h-screen">
       <div className="bg-gradient-to-r from-[#8B4513] via-[#A0522D] to-[#D2691E] text-white relative overflow-hidden">
@@ -22,16 +21,12 @@ export default function AboutUsPage() {
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="mb-12">
-          <Card className="border-2 border-amber-200 shadow-xl">
-            <CardContent className="p-8 sm:p-12">
-              <h2 className="text-3xl font-bold text-[#5C2E0F] mb-6">{t('about.missionTitle')}</h2>
-              <p className="text-lg text-[#8B4513] leading-relaxed mb-4">
-                {t('about.missionIntro')}
-                <span className="block mt-4 text-xl font-semibold text-[#5C2E0F]">{t('about.missionQuote')}</span>
-              </p>
-              <p className="text-lg text-[#8B4513] leading-relaxed">{t('about.missionText')}</p>
-            </CardContent>
-          </Card>
+          <Card className="border-2 border-amber-200 shadow-xl"><CardContent className="p-8 sm:p-12">
+            <h2 className="text-3xl font-bold text-[#5C2E0F] mb-6">{t('about.missionTitle')}</h2>
+            <p className="text-lg text-[#8B4513] leading-relaxed mb-4" dangerouslySetInnerHTML={{ __html: t('about.missionIntro') }} />
+            <p className="text-xl font-semibold text-[#5C2E0F] mt-4 mb-4">{t('about.missionQuote')}</p>
+            <p className="text-lg text-[#8B4513] leading-relaxed">{t('about.missionText')}</p>
+          </CardContent></Card>
         </motion.div>
 
         <div className="grid md:grid-cols-3 gap-6 mb-12">
@@ -39,33 +34,29 @@ export default function AboutUsPage() {
             { icon: Heart, title: t('about.compassion'), desc: t('about.compassionDesc'), delay: 0.3, fill: true },
             { icon: Users, title: t('about.community'), desc: t('about.communityDesc'), delay: 0.4 },
             { icon: HandHeart, title: t('about.service'), desc: t('about.serviceDesc'), delay: 0.5 },
-          ].map(item => (
-            <motion.div key={item.title} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: item.delay }}>
-              <Card className="border-amber-200 hover:shadow-xl transition-shadow h-full">
-                <CardContent className="p-6 text-center">
-                  <div className="w-16 h-16 bg-gradient-to-br from-[#8B4513] to-[#D2691E] rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <item.icon className={`w-8 h-8 text-white ${item.fill ? 'fill-white' : ''}`} />
-                  </div>
-                  <h3 className="text-xl font-bold text-[#5C2E0F] mb-3">{item.title}</h3>
-                  <p className="text-[#8B4513]">{item.desc}</p>
-                </CardContent>
-              </Card>
+          ].map((item, i) => (
+            <motion.div key={i} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: item.delay }}>
+              <Card className="border-amber-200 hover:shadow-xl transition-shadow h-full"><CardContent className="p-6 text-center">
+                <div className="w-16 h-16 bg-gradient-to-br from-[#8B4513] to-[#D2691E] rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <item.icon className={`w-8 h-8 text-white ${item.fill ? 'fill-white' : ''}`} />
+                </div>
+                <h3 className="text-xl font-bold text-[#5C2E0F] mb-3">{item.title}</h3>
+                <p className="text-[#8B4513]">{item.desc}</p>
+              </CardContent></Card>
             </motion.div>
           ))}
         </div>
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}>
-          <Card className="border-2 border-amber-200 shadow-xl">
-            <CardContent className="p-8 sm:p-12">
-              <div className="flex items-center gap-3 mb-6"><Target className="w-8 h-8 text-[#8B4513]" /><h2 className="text-3xl font-bold text-[#5C2E0F]">{t('about.whatWeDo')}</h2></div>
-              <div className="space-y-4 text-lg text-[#8B4513]">
-                <p className="flex items-start gap-3"><span className="text-2xl">🍎</span><span><strong>{t('about.foodDistTitle')}</strong> {t('about.foodDistDesc')}</span></p>
-                <p className="flex items-start gap-3"><span className="text-2xl">🤝</span><span><strong>{t('about.communityEventsTitle')}</strong> {t('about.communityEventsDesc')}</span></p>
-                <p className="flex items-start gap-3"><span className="text-2xl">💝</span><span><strong>{t('about.volunteerTitle')}</strong> {t('about.volunteerDesc')}</span></p>
-                <p className="flex items-start gap-3"><span className="text-2xl">📦</span><span><strong>{t('about.donationsTitle')}</strong> {t('about.donationsDesc')}</span></p>
-              </div>
-            </CardContent>
-          </Card>
+          <Card className="border-2 border-amber-200 shadow-xl"><CardContent className="p-8 sm:p-12">
+            <div className="flex items-center gap-3 mb-6"><Target className="w-8 h-8 text-[#8B4513]" /><h2 className="text-3xl font-bold text-[#5C2E0F]">{t('about.whatWeDo')}</h2></div>
+            <div className="space-y-4 text-lg text-[#8B4513]">
+              <p className="flex items-start gap-3"><span className="text-2xl">🍎</span><span><strong>{t('about.foodDist')}</strong> {t('about.foodDistDesc')}</span></p>
+              <p className="flex items-start gap-3"><span className="text-2xl">🤝</span><span><strong>{t('about.commEvents')}</strong> {t('about.commEventsDesc')}</span></p>
+              <p className="flex items-start gap-3"><span className="text-2xl">💝</span><span><strong>{t('about.volOpp')}</strong> {t('about.volOppDesc')}</span></p>
+              <p className="flex items-start gap-3"><span className="text-2xl">📦</span><span><strong>{t('about.donDrives')}</strong> {t('about.donDrivesDesc')}</span></p>
+            </div>
+          </CardContent></Card>
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }} className="mt-12 text-center bg-gradient-to-r from-[#8B4513] to-[#D2691E] rounded-2xl p-8 sm:p-12 text-white shadow-xl">

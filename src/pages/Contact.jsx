@@ -7,7 +7,6 @@ import { useLanguage } from "@/components/i18n/LanguageProvider";
 
 export default function ContactPage() {
   const { t } = useLanguage();
-
   return (
     <div className="min-h-screen">
       <div className="bg-gradient-to-r from-[#8B4513] via-[#A0522D] to-[#D2691E] text-white relative overflow-hidden">
@@ -24,50 +23,44 @@ export default function ContactPage() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid md:grid-cols-2 gap-8 mb-12">
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
-            <Card className="border-2 border-amber-200 shadow-xl h-full">
-              <CardContent className="p-8">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-12 h-12 bg-gradient-to-br from-[#8B4513] to-[#D2691E] rounded-xl flex items-center justify-center"><Phone className="w-6 h-6 text-white" /></div>
-                  <h2 className="text-2xl font-bold text-[#5C2E0F]">{t('contact.generalContact')}</h2>
-                </div>
-                <div className="space-y-4">
-                  <div className="flex items-start gap-3"><Globe className="w-5 h-5 text-[#8B4513] mt-1 flex-shrink-0" /><div><p className="text-sm font-semibold text-[#5C2E0F] mb-1">{t('contact.website')}</p><a href="https://bountifulblessingsofcharlottecountyinc.org/" target="_blank" rel="noopener noreferrer" className="text-[#8B4513] hover:underline break-all">bountifulblessingsofcharlottecountyinc.org</a></div></div>
-                  <div className="flex items-start gap-3"><Mail className="w-5 h-5 text-[#8B4513] mt-1 flex-shrink-0" /><div><p className="text-sm font-semibold text-[#5C2E0F] mb-1">{t('contact.email')}</p><a href="mailto:aguilesa@gmail.com" className="text-[#8B4513] hover:underline">aguilesa@gmail.com</a></div></div>
-                  <div className="flex items-start gap-3"><Phone className="w-5 h-5 text-[#8B4513] mt-1 flex-shrink-0" /><div><p className="text-sm font-semibold text-[#5C2E0F] mb-1">{t('contact.phone')}</p><a href="tel:+19418838439" className="text-[#8B4513] hover:underline">+1 (941) 883-8439</a></div></div>
-                </div>
-                <div className="mt-6"><Button onClick={() => window.location.href = 'tel:+19418838439'} className="w-full bg-gradient-to-r from-[#8B4513] to-[#D2691E]"><Phone className="w-4 h-4 mr-2" />{t('contact.callNow')}</Button></div>
-              </CardContent>
-            </Card>
+            <Card className="border-2 border-amber-200 shadow-xl h-full"><CardContent className="p-8">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-12 h-12 bg-gradient-to-br from-[#8B4513] to-[#D2691E] rounded-xl flex items-center justify-center"><Phone className="w-6 h-6 text-white" /></div>
+                <h2 className="text-2xl font-bold text-[#5C2E0F]">{t('contact.generalContact')}</h2>
+              </div>
+              <div className="space-y-4">
+                <div className="flex items-start gap-3"><Globe className="w-5 h-5 text-[#8B4513] mt-1 flex-shrink-0" /><div><p className="text-sm font-semibold text-[#5C2E0F] mb-1">{t('contact.website')}</p><a href="https://bountifulblessingsofcharlottecountyinc.org/" target="_blank" rel="noopener noreferrer" className="text-[#8B4513] hover:text-[#5C2E0F] hover:underline break-all">bountifulblessingsofcharlottecountyinc.org</a></div></div>
+                <div className="flex items-start gap-3"><Mail className="w-5 h-5 text-[#8B4513] mt-1 flex-shrink-0" /><div><p className="text-sm font-semibold text-[#5C2E0F] mb-1">{t('contact.email')}</p><a href="mailto:aguilesa@gmail.com" className="text-[#8B4513] hover:text-[#5C2E0F] hover:underline">aguilesa@gmail.com</a></div></div>
+                <div className="flex items-start gap-3"><Phone className="w-5 h-5 text-[#8B4513] mt-1 flex-shrink-0" /><div><p className="text-sm font-semibold text-[#5C2E0F] mb-1">{t('contact.phone')}</p><a href="tel:+19418838439" className="text-[#8B4513] hover:text-[#5C2E0F] hover:underline">+1 (941) 883-8439</a></div></div>
+              </div>
+              <div className="mt-6"><Button onClick={() => window.location.href = 'tel:+19418838439'} className="w-full bg-gradient-to-r from-[#8B4513] to-[#D2691E] hover:from-[#5C2E0F] hover:to-[#A0522D]"><Phone className="w-4 h-4 mr-2" />{t('contact.callNow')}</Button></div>
+            </CardContent></Card>
           </motion.div>
 
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}>
-            <Card className="border-2 border-amber-200 shadow-xl h-full">
-              <CardContent className="p-8">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-12 h-12 bg-gradient-to-br from-[#8B4513] to-[#D2691E] rounded-xl flex items-center justify-center"><MessageCircle className="w-6 h-6 text-white" /></div>
-                  <h2 className="text-2xl font-bold text-[#5C2E0F]">{t('contact.appSupport')}</h2>
-                </div>
-                <p className="text-[#8B4513] mb-6">{t('contact.appSupportDesc')}</p>
-                <div className="space-y-4">
-                  <div className="flex items-start gap-3"><Phone className="w-5 h-5 text-[#8B4513] mt-1 flex-shrink-0" /><div><p className="text-sm font-semibold text-[#5C2E0F] mb-1">{t('contact.appSupportPhone')}</p><a href="tel:+19413102786" className="text-[#8B4513] hover:underline">+1 (941) 310-2786</a></div></div>
-                  <div className="flex items-start gap-3"><Mail className="w-5 h-5 text-[#8B4513] mt-1 flex-shrink-0" /><div><p className="text-sm font-semibold text-[#5C2E0F] mb-1">{t('contact.appSupportEmail')}</p><a href="mailto:yesleyteijeira750@gmail.com" className="text-[#8B4513] hover:underline break-all">yesleyteijeira750@gmail.com</a></div></div>
-                </div>
-                <div className="mt-6"><Button onClick={() => window.location.href = 'tel:+19413102786'} className="w-full bg-gradient-to-r from-[#8B4513] to-[#D2691E]"><Phone className="w-4 h-4 mr-2" />{t('contact.callAppSupport')}</Button></div>
-              </CardContent>
-            </Card>
+            <Card className="border-2 border-amber-200 shadow-xl h-full"><CardContent className="p-8">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-12 h-12 bg-gradient-to-br from-[#8B4513] to-[#D2691E] rounded-xl flex items-center justify-center"><MessageCircle className="w-6 h-6 text-white" /></div>
+                <h2 className="text-2xl font-bold text-[#5C2E0F]">{t('contact.appSupport')}</h2>
+              </div>
+              <p className="text-[#8B4513] mb-6">{t('contact.appSupportDesc')}</p>
+              <div className="space-y-4">
+                <div className="flex items-start gap-3"><Phone className="w-5 h-5 text-[#8B4513] mt-1 flex-shrink-0" /><div><p className="text-sm font-semibold text-[#5C2E0F] mb-1">{t('contact.appSupportPhone')}</p><a href="tel:+19413102786" className="text-[#8B4513] hover:text-[#5C2E0F] hover:underline">+1 (941) 310-2786</a></div></div>
+                <div className="flex items-start gap-3"><Mail className="w-5 h-5 text-[#8B4513] mt-1 flex-shrink-0" /><div><p className="text-sm font-semibold text-[#5C2E0F] mb-1">{t('contact.appSupportEmail')}</p><a href="mailto:yesleyteijeira750@gmail.com" className="text-[#8B4513] hover:text-[#5C2E0F] hover:underline break-all">yesleyteijeira750@gmail.com</a></div></div>
+              </div>
+              <div className="mt-6"><Button onClick={() => window.location.href = 'tel:+19413102786'} className="w-full bg-gradient-to-r from-[#8B4513] to-[#D2691E] hover:from-[#5C2E0F] hover:to-[#A0522D]"><Phone className="w-4 h-4 mr-2" />{t('contact.callAppSupport')}</Button></div>
+            </CardContent></Card>
           </motion.div>
         </div>
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
-          <Card className="border-2 border-amber-200 shadow-xl">
-            <CardContent className="p-8">
-              <div className="flex items-center gap-3 mb-6"><MapPin className="w-8 h-8 text-[#8B4513]" /><h2 className="text-2xl font-bold text-[#5C2E0F]">{t('contact.visitUs')}</h2></div>
-              <p className="text-lg text-[#8B4513] mb-6">{t('contact.visitUsDesc')}</p>
-              <div className="bg-amber-50 border border-amber-200 rounded-xl p-6">
-                <p className="text-[#8B4513]"><strong className="text-[#5C2E0F]">{t('contact.proTip')}</strong> {t('contact.proTipDesc')}</p>
-              </div>
-            </CardContent>
-          </Card>
+          <Card className="border-2 border-amber-200 shadow-xl"><CardContent className="p-8">
+            <div className="flex items-center gap-3 mb-6"><MapPin className="w-8 h-8 text-[#8B4513]" /><h2 className="text-2xl font-bold text-[#5C2E0F]">{t('contact.visitUs')}</h2></div>
+            <p className="text-lg text-[#8B4513] mb-6">{t('contact.visitUsDesc')}</p>
+            <div className="bg-amber-50 border border-amber-200 rounded-xl p-6">
+              <p className="text-[#8B4513]"><strong className="text-[#5C2E0F]">{t('contact.proTip')}</strong> {t('contact.proTipDesc')}</p>
+            </div>
+          </CardContent></Card>
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="mt-8 bg-gradient-to-r from-red-50 to-orange-50 border-2 border-orange-200 rounded-2xl p-6 sm:p-8">
