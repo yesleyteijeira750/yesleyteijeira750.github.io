@@ -11,7 +11,7 @@ export const useLanguage = () => {
   return context;
 };
 
-export const LanguageProvider = ({ children }) => {
+export function LanguageProvider({ children }) {
   const [language, setLanguage] = useState(() => {
     return localStorage.getItem('language') || 'en';
   });
@@ -28,7 +28,7 @@ export const LanguageProvider = ({ children }) => {
       if (value && typeof value === 'object') {
         value = value[k];
       } else {
-        // fallback to English
+        // Fallback to English
         let fallback = translations['en'];
         for (const fk of keys) {
           if (fallback && typeof fallback === 'object') fallback = fallback[fk];
@@ -51,4 +51,4 @@ export const LanguageProvider = ({ children }) => {
       {children}
     </LanguageContext.Provider>
   );
-};
+}
