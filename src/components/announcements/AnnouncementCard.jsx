@@ -22,7 +22,7 @@ export default function AnnouncementCard({ announcement, index, onDelete, user }
   const categoryConfig = {
     food_distribution: { label: t('announcements.food_distribution'), icon: Package, color: "bg-green-100 text-green-700 border-green-200" },
     community_event: { label: t('announcements.community_event'), icon: Users, color: "bg-blue-100 text-blue-700 border-blue-200" },
-    volunteer: { label: t('announcements.volunteerOpp'), icon: Users, color: "bg-purple-100 text-purple-700 border-purple-200" },
+    volunteer: { label: t('announcements.volunteerOpportunity'), icon: Users, color: "bg-purple-100 text-purple-700 border-purple-200" },
     donation_drive: { label: t('announcements.donation_drive'), icon: DollarSign, color: "bg-amber-100 text-amber-700 border-amber-200" },
     news: { label: t('announcements.news'), icon: Newspaper, color: "bg-orange-100 text-orange-700 border-orange-200" }
   };
@@ -91,7 +91,7 @@ export default function AnnouncementCard({ announcement, index, onDelete, user }
               <h3 className="text-lg sm:text-xl font-bold text-[#5C2E0F] mb-3 group-hover:text-[#8B4513] transition-colors line-clamp-2 break-words">{announcement.title}</h3>
               <p className="text-[#8B4513]/80 line-clamp-3 mb-4 leading-relaxed text-sm sm:text-base break-words flex-1">{announcement.description}</p>
               {announcement.address && (
-                <Button onClick={handleMapClick} variant="outline" size="sm" className="w-full mb-4 border-green-300 text-green-700 hover:bg-green-50">
+                <Button onClick={handleMapClick} variant="outline" size="sm" className="w-full mb-4 border-green-300 text-green-700 hover:bg-green-50 hover:border-green-400 transition-all">
                   <MapPin className="w-4 h-4 mr-2" />{t('announcements.viewOnMap')}
                 </Button>
               )}
@@ -102,8 +102,8 @@ export default function AnnouncementCard({ announcement, index, onDelete, user }
                     <Badge className="bg-gradient-to-r from-[#8B4513] to-[#D2691E] text-white border-none shadow-md"><Shield className="w-3 h-3 mr-1" />{t('common.admin')}</Badge>
                   )}
                 </div>
-                <Button variant="ghost" size="sm" className="text-[#8B4513] hover:text-[#5C2E0F] hover:bg-amber-100 text-sm flex-shrink-0 ml-2">
-                  {t('announcements.readMore')}<ArrowRight className="w-4 h-4 ml-1" />
+                <Button variant="ghost" size="sm" className="text-[#8B4513] hover:text-[#5C2E0F] hover:bg-amber-100 group-hover:gap-2 gap-1 transition-all text-sm flex-shrink-0 ml-2">
+                  {t('announcements.readMore')}<ArrowRight className="w-4 h-4" />
                 </Button>
               </div>
             </CardContent>

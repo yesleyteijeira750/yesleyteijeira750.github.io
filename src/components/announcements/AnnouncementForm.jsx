@@ -14,7 +14,9 @@ import { useLanguage } from "@/components/i18n/LanguageProvider";
 
 export default function AnnouncementForm({ announcement, onSubmit, onCancel }) {
   const { t } = useLanguage();
-  const [formData, setFormData] = React.useState(announcement || { title: "", date: "", start_time: "", end_time: "", description: "", category: "news", image_url: "", is_pinned: false, address: "", reminder_sent: false });
+  const [formData, setFormData] = React.useState(
+    announcement || { title: "", date: "", start_time: "", end_time: "", description: "", category: "news", image_url: "", is_pinned: false, address: "", reminder_sent: false }
+  );
   const [uploading, setUploading] = React.useState(false);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const { toast } = useToast();
@@ -28,16 +30,17 @@ export default function AnnouncementForm({ announcement, onSubmit, onCancel }) {
     try {
       const { file_url } = await base44.integrations.Core.UploadFile({ file });
       setFormData({ ...formData, image_url: file_url });
-      toast({ title: `✅ ${t('announcementForm.imageUploaded')}`, description: t('announcementForm.imageUploadedDesc') });
+      toast({ title: `✅ ${t('announcementForm.uploaded')}`, description: t('announcementForm.uploadedDesc') });
     } catch (error) {
       toast({ title: t('announcementForm.uploadFailed'), description: t('announcementForm.uploadFailedDesc'), variant: "destructive" });
     } finally { setUploading(false); e.target.value = ''; }
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    try { await onSubmit(formData); } catch (error) { toast({ title: t('common.error'), description: t('announcementForm.saveError'), variant: "destructive" }); } finally { setIsSubmitting(false); }
+    e.preventDefault(); setIsSubmitting(true);
+    try { await onSubmit(formData); } catch (error) {
+      toast({ title: t('common.error'), description: t('announcementForm.saveError'), variant: "destructive" });
+    } finally { setIsSubmitting(false); }
   };
 
   return (
@@ -54,14 +57,14 @@ export default function AnnouncementForm({ announcement, onSubmit, onCancel }) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="date" className="text-[#5C2E0F]">{t('announcementForm.dateLabel')}</Label>
-              <Input id="date" type="date" value={formData.date} onChange={(e) => setFormData({ ...formData, date: e.target.value })} required className="border-amber-300" />
+              <Input id="date" type="date" value={formData.date} onChange={(e) => setFormData({ ...formData, date: e.target.value })} required className="border-amber-300 focus:border-[#8B4513]" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="category" className="text-[#5C2E0F]">{t('announcementForm.categoryLabel')}</Label>
-              <ResponsiveSelect value={formData.category} onValueChange={(v) => setFormData({ ...formData, category: v })} placeholder={t('announcementForm.selectCategory')} label={t('announcementForm.categoryLabel')} triggerClassName="border-amber-300">
+              <ResponsiveSelect value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value })} placeholder={t('announcementForm.selectCategory')} label={t('announcementForm.categoryLabel')} triggerClassName="border-amber-300 focus:border-[#8B4513]">
                 <SelectItem value="food_distribution">{t('announcements.food_distribution')}</SelectItem>
                 <SelectItem value="community_event">{t('announcements.community_event')}</SelectItem>
-                <SelectItem value="volunteer">{t('announcements.volunteerOpp')}</SelectItem>
+                <SelectItem value="volunteer">{t('announcements.volunteerOpportunity')}</SelectItem>
                 <SelectItem value="donation_drive">{t('announcements.donation_drive')}</SelectItem>
                 <SelectItem value="news">{t('announcements.news')}</SelectItem>
               </ResponsiveSelect>
@@ -70,21 +73,21 @@ export default function AnnouncementForm({ announcement, onSubmit, onCancel }) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="start_time" className="text-[#5C2E0F] flex items-center gap-2"><Clock className="w-4 h-4" />{t('announcementForm.startTime')}</Label>
-              <Input id="start_time" type="time" value={formData.start_time || ""} onChange={(e) => setFormData({ ...formData, start_time: e.target.value })} className="border-amber-300" />
+              <Input id="start_time" type="time" value={formData.start_time || ""} onChange={(e) => setFormData({ ...formData, start_time: e.target.value })} className="border-amber-300 focus:border-[#8B4513]" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="end_time" className="text-[#5C2E0F] flex items-center gap-2"><Clock className="w-4 h-4" />{t('announcementForm.endTime')}</Label>
-              <Input id="end_time" type="time" value={formData.end_time || ""} onChange={(e) => setFormData({ ...formData, end_time: e.target.value })} className="border-amber-300" />
+              <Input id="end_time" type="time" value={formData.end_time || ""} onChange={(e) => setFormData({ ...formData, end_time: e.target.value })} className="border-amber-300 focus:border-[#8B4513]" />
             </div>
           </div>
           <div className="space-y-2">
             <Label htmlFor="address" className="text-[#5C2E0F]">{t('announcementForm.addressLabel')}</Label>
-            <Input id="address" value={formData.address || ""} onChange={(e) => setFormData({ ...formData, address: e.target.value })} placeholder={t('announcementForm.addressPlaceholder')} className="border-amber-300" />
+            <Input id="address" value={formData.address || ""} onChange={(e) => setFormData({ ...formData, address: e.target.value })} placeholder={t('announcementForm.addressPlaceholder')} className="border-amber-300 focus:border-[#8B4513]" />
             <p className="text-xs text-[#8B4513]/70">{t('announcementForm.addressHint')}</p>
           </div>
           <div className="space-y-2">
             <Label htmlFor="description" className="text-[#5C2E0F]">{t('announcementForm.descLabel')}</Label>
-            <Textarea id="description" value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} placeholder={t('announcementForm.descPlaceholder')} rows={6} required className="border-amber-300 resize-none" />
+            <Textarea id="description" value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} placeholder={t('announcementForm.descPlaceholder')} rows={6} required className="border-amber-300 focus:border-[#8B4513] resize-none" />
           </div>
           <div className="space-y-2">
             <Label className="text-[#5C2E0F]">{t('announcementForm.featuredImage')}</Label>
@@ -104,8 +107,8 @@ export default function AnnouncementForm({ announcement, onSubmit, onCancel }) {
           </div>
           <div className="flex items-center justify-between p-4 bg-[#F5EFE6] rounded-lg border border-amber-200">
             <div className="flex flex-col gap-1">
-              <Label htmlFor="pinned" className="cursor-pointer text-[#5C2E0F]">{t('announcementForm.pinAnnouncement')}</Label>
-              <span className="text-xs text-[#8B4513]">{t('announcementForm.pinnedHint')}</span>
+              <Label htmlFor="pinned" className="cursor-pointer text-[#5C2E0F]">{t('announcementForm.pinLabel')}</Label>
+              <span className="text-xs text-[#8B4513]">{t('announcementForm.pinHint')}</span>
             </div>
             <Switch id="pinned" checked={formData.is_pinned} onCheckedChange={(checked) => setFormData({ ...formData, is_pinned: checked })} />
           </div>

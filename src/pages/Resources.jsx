@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Phone, Mail, Globe, MapPin, Search, Briefcase, Home, Heart, GraduationCap, DollarSign, Scale, Star, CheckCircle, MessageSquare } from "lucide-react";
+import { Phone, Mail, Globe, MapPin, Plus, Search, Briefcase, Home, Heart, GraduationCap, DollarSign, Scale, Star, CheckCircle, MessageSquare } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
@@ -64,7 +64,7 @@ export default function ResourcesPage() {
 
   const categoryIcons = { housing: Home, employment: Briefcase, healthcare: Heart, education: GraduationCap, financial: DollarSign, legal: Scale };
   const categoryColors = { housing: "bg-blue-100 text-blue-800", employment: "bg-green-100 text-green-800", healthcare: "bg-red-100 text-red-800", education: "bg-purple-100 text-purple-800", financial: "bg-yellow-100 text-yellow-800", legal: "bg-gray-100 text-gray-800", other: "bg-amber-100 text-amber-800" };
-  const categoryLabels = { housing: t('resources.housing'), employment: t('resources.employment'), healthcare: t('resources.healthcare'), education: t('resources.education'), financial: t('resources.financial'), legal: t('resources.legal'), other: t('resources.other') };
+  const categoryLabels = { housing: t('resources.housing'), employment: t('resources.employment'), healthcare: t('resources.healthcare'), education: t('resources.education'), financial: t('resources.financialAid'), legal: t('resources.legalServices'), other: t('resources.other') };
 
   return (
     <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8 dark:bg-gradient-to-br dark:from-gray-900 dark:via-amber-950 dark:to-gray-900">
@@ -86,8 +86,8 @@ export default function ResourcesPage() {
             <SelectItem value="employment">{t('resources.employment')}</SelectItem>
             <SelectItem value="healthcare">{t('resources.healthcare')}</SelectItem>
             <SelectItem value="education">{t('resources.education')}</SelectItem>
-            <SelectItem value="financial">{t('resources.financial')}</SelectItem>
-            <SelectItem value="legal">{t('resources.legal')}</SelectItem>
+            <SelectItem value="financial">{t('resources.financialAid')}</SelectItem>
+            <SelectItem value="legal">{t('resources.legalServices')}</SelectItem>
             <SelectItem value="other">{t('resources.other')}</SelectItem>
           </ResponsiveSelect>
           {resourcesWithAddresses.length > 0 && (
@@ -113,9 +113,7 @@ export default function ResourcesPage() {
                         {resource.is_featured && <Badge className="bg-amber-600 text-white"><Star className="w-3 h-3 mr-1" />{t('resources.featured')}</Badge>}
                       </div>
                       <CardTitle className="text-[#5C2E0F] dark:text-white">{resource.title}</CardTitle>
-                      {resourceReviews.length > 0 && (
-                        <div className="flex items-center gap-1 mt-2"><Star className="w-4 h-4 fill-amber-400 text-amber-400" /><span className="text-sm font-medium text-[#8B4513] dark:text-white">{avgRating}</span><span className="text-sm text-[#8B4513] dark:text-white">({resourceReviews.length} {t('resources.reviews')})</span></div>
-                      )}
+                      {resourceReviews.length > 0 && <div className="flex items-center gap-1 mt-2"><Star className="w-4 h-4 fill-amber-400 text-amber-400" /><span className="text-sm font-medium text-[#8B4513] dark:text-white">{avgRating}</span><span className="text-sm text-[#8B4513] dark:text-white">({resourceReviews.length} {t('resources.reviews')})</span></div>}
                     </div></div>
                   </CardHeader>
                   <CardContent className="p-6">
@@ -138,22 +136,18 @@ export default function ResourcesPage() {
                         ))}</div>
                       </div>
                     )}
-                    <Button onClick={() => { setSelectedResource(resource); setShowReviewDialog(true); }} variant="outline" className="w-full mt-4 border-amber-300 dark:border-amber-700">
-                      <MessageSquare className="w-4 h-4 mr-2" />{t('resources.leaveReview')}
-                    </Button>
+                    <Button onClick={() => { setSelectedResource(resource); setShowReviewDialog(true); }} variant="outline" className="w-full mt-4 border-amber-300 dark:border-amber-700"><MessageSquare className="w-4 h-4 mr-2" />{t('resources.leaveReview')}</Button>
                   </CardContent>
                 </Card>
               );
             })}
           </div>
         ) : (
-          <Card className="border-amber-200 dark:border-amber-800">
-            <CardContent className="p-12 text-center">
-              <Heart className="w-16 h-16 text-[#8B4513] dark:text-amber-400 opacity-30 mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-[#5C2E0F] dark:text-white mb-2">{t('resources.noResults')}</h3>
-              <p className="text-[#8B4513] dark:text-white">{searchTerm || categoryFilter !== "all" ? t('resources.tryAdjusting') : t('resources.comingSoon')}</p>
-            </CardContent>
-          </Card>
+          <Card className="border-amber-200 dark:border-amber-800"><CardContent className="p-12 text-center">
+            <Heart className="w-16 h-16 text-[#8B4513] dark:text-amber-400 opacity-30 mx-auto mb-4" />
+            <h3 className="text-xl font-bold text-[#5C2E0F] dark:text-white mb-2">{t('resources.noResults')}</h3>
+            <p className="text-[#8B4513] dark:text-white">{searchTerm || categoryFilter !== "all" ? t('resources.tryAdjusting') : t('resources.comingSoon')}</p>
+          </CardContent></Card>
         )}
       </div>
 
@@ -161,17 +155,15 @@ export default function ResourcesPage() {
         <DialogContent className="bg-[#F5EFE6] dark:bg-card">
           <DialogHeader><DialogTitle className="text-[#5C2E0F] dark:text-white">{t('resources.reviewTitle')}</DialogTitle></DialogHeader>
           <div className="space-y-4">
-            <div>
-              <p className="text-sm text-[#8B4513] dark:text-white mb-2">{t('resources.rating')}</p>
-              <div className="flex gap-2">{[1,2,3,4,5].map(r => <button key={r} onClick={() => setReviewForm({...reviewForm, rating: r})} className="transition-transform hover:scale-110"><Star className={`w-8 h-8 ${r <= reviewForm.rating ? 'fill-amber-400 text-amber-400' : 'text-gray-300'}`} /></button>)}</div>
+            <div><p className="text-sm text-[#8B4513] dark:text-white mb-2">{t('resources.rating')}</p>
+              <div className="flex gap-2">{[1,2,3,4,5].map(rating => <button key={rating} onClick={() => setReviewForm({...reviewForm, rating})} className="transition-transform hover:scale-110"><Star className={`w-8 h-8 ${rating <= reviewForm.rating ? 'fill-amber-400 text-amber-400' : 'text-gray-300'}`} /></button>)}</div>
             </div>
-            <div>
-              <p className="text-sm text-[#8B4513] dark:text-white mb-2">{t('resources.yourReview')}</p>
+            <div><p className="text-sm text-[#8B4513] dark:text-white mb-2">{t('resources.yourReview')}</p>
               <Textarea value={reviewForm.comment} onChange={(e) => setReviewForm({...reviewForm, comment: e.target.value})} placeholder={t('resources.reviewPlaceholder')} rows={4} className="border-amber-300 dark:border-amber-700" />
             </div>
             <div className="flex gap-3">
               <Button variant="outline" onClick={() => setShowReviewDialog(false)} className="flex-1">{t('common.cancel')}</Button>
-              <Button onClick={handleSubmitReview} className="flex-1 bg-[#8B4513] hover:bg-[#5C2E0F]">{t('resources.submitReview')}</Button>
+              <Button onClick={handleSubmitReview} className="flex-1 bg-[#8B4513] hover:bg-[#5C2E0F] dark:bg-amber-600 dark:hover:bg-amber-700">{t('resources.submitReview')}</Button>
             </div>
           </div>
         </DialogContent>
@@ -179,11 +171,11 @@ export default function ResourcesPage() {
 
       <Dialog open={showMapDialog} onOpenChange={setShowMapDialog}>
         <DialogContent className="bg-[#F5EFE6] dark:bg-card max-w-4xl">
-          <DialogHeader><DialogTitle className="text-[#5C2E0F] dark:text-white">{t('resources.locations')}</DialogTitle></DialogHeader>
+          <DialogHeader><DialogTitle className="text-[#5C2E0F] dark:text-white">{t('resources.resourceLocations')}</DialogTitle></DialogHeader>
           <div className="h-[500px] rounded-lg overflow-hidden">
             <MapContainer center={[26.9342, -81.7623]} zoom={10} style={{ height: '100%', width: '100%' }}>
               <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>' />
-              {resourcesWithAddresses.map(r => <ResourceMarker key={r.id} resource={r} />)}
+              {resourcesWithAddresses.map(resource => <ResourceMarker key={resource.id} resource={resource} />)}
             </MapContainer>
           </div>
         </DialogContent>

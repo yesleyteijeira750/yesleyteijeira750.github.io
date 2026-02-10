@@ -50,7 +50,7 @@ export default function GalleryPage() {
   const handleFileUpload = async (e) => {
     const files = Array.from(e.target.files || []);
     const imageFiles = files.filter(f => f.type.startsWith('image/'));
-    if (!imageFiles.length) { toast({ title: `⚠️ ${t('gallery.invalidFiles')}`, description: t('gallery.invalidFilesDesc'), variant: "destructive" }); return; }
+    if (!imageFiles.length) { toast({ title: `⚠️ ${t('gallery.invalidFiles')}`, description: t('gallery.uploadImageFiles'), variant: "destructive" }); return; }
     setUploading(true);
     try {
       const urls = [];
@@ -79,7 +79,7 @@ export default function GalleryPage() {
         toast({ title: `✅ ${t('gallery.photoAdded')}`, description: t('gallery.photoAddedDesc') });
       }
       setShowForm(false); setFormData({ title: '', image_url: '', event_date: '', category: 'other', description: '' }); setSelectedImages([]); setCurrentImageIndex(0); loadData();
-    } catch { toast({ title: `❌ ${t('gallery.addError')}`, description: t('gallery.addErrorDesc'), variant: "destructive" }); }
+    } catch { toast({ title: `❌ ${t('common.error')}`, description: t('gallery.addError'), variant: "destructive" }); }
   };
 
   const filteredPhotos = categoryFilter === "all" ? photos : photos.filter(p => p.category === categoryFilter);
@@ -99,6 +99,7 @@ export default function GalleryPage() {
           <h1 className="text-3xl sm:text-4xl font-bold text-[#5C2E0F] mb-2">{t('gallery.title')}</h1>
           <p className="text-[#8B4513] text-lg">{t('gallery.subtitle')}</p>
         </div>
+
         <div className="flex justify-between items-center mb-6">
           <ResponsiveSelect value={categoryFilter} onValueChange={setCategoryFilter} placeholder={t('gallery.allPhotos')} label={t('gallery.filterLabel')} triggerClassName="w-48 border-amber-300">
             <SelectItem value="all">{t('gallery.allPhotos')}</SelectItem>
@@ -112,6 +113,7 @@ export default function GalleryPage() {
             <Button onClick={() => setShowForm(true)} className="bg-gradient-to-r from-[#8B4513] to-[#D2691E] hover:from-[#5C2E0F] hover:to-[#A0522D]"><Plus className="w-5 h-5 mr-2" />{t('gallery.addPhoto')}</Button>
           )}
         </div>
+
         {isLoading ? (
           <div className="text-center py-12"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#8B4513] mx-auto" /></div>
         ) : filteredPhotos.length > 0 ? (
@@ -128,7 +130,11 @@ export default function GalleryPage() {
             ))}
           </div>
         ) : (
-          <Card className="border-amber-200"><CardContent className="p-12 text-center"><Camera className="w-16 h-16 text-[#8B4513] opacity-30 mx-auto mb-4" /><h3 className="text-xl font-bold text-[#5C2E0F] mb-2">{t('gallery.noPhotos')}</h3><p className="text-[#8B4513]">{t('gallery.checkBack')}</p></CardContent></Card>
+          <Card className="border-amber-200"><CardContent className="p-12 text-center">
+            <Camera className="w-16 h-16 text-[#8B4513] opacity-30 mx-auto mb-4" />
+            <h3 className="text-xl font-bold text-[#5C2E0F] mb-2">{t('gallery.noPhotos')}</h3>
+            <p className="text-[#8B4513]">{t('gallery.checkBack')}</p>
+          </CardContent></Card>
         )}
 
         <Dialog open={showForm} onOpenChange={setShowForm}>
@@ -143,7 +149,7 @@ export default function GalleryPage() {
                       {selectedImages.length > 1 && <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-black/70 text-white px-3 py-1 rounded-full text-sm">{currentImageIndex + 1} / {selectedImages.length}</div>}
                     </div>
                     {selectedImages.length > 1 && <p className="text-sm text-[#8B4513]">{t('gallery.previewInfo')}</p>}
-                    <Button type="button" variant="outline" onClick={() => { setFormData({...formData, image_url: ''}); setSelectedImages([]); setCurrentImageIndex(0); }}>{t('gallery.changeImages')}</Button>
+                    <Button type="button" variant="outline" onClick={() => { setFormData({ ...formData, image_url: '' }); setSelectedImages([]); setCurrentImageIndex(0); }}>{t('gallery.changeImages')}</Button>
                   </div>
                 ) : (
                   <label className="cursor-pointer">
@@ -154,10 +160,10 @@ export default function GalleryPage() {
                   </label>
                 )}
               </div>
-              <Input placeholder={t('gallery.photoTitle')} value={formData.title} onChange={(e) => setFormData({...formData, title: e.target.value})} required />
+              <Input placeholder={t('gallery.photoTitle')} value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} required />
               <div className="grid sm:grid-cols-2 gap-4">
-                <Input type="date" value={formData.event_date} onChange={(e) => setFormData({...formData, event_date: e.target.value})} />
-                <ResponsiveSelect value={formData.category} onValueChange={(v) => setFormData({...formData, category: v})} placeholder={t('gallery.selectCategory')} label={t('gallery.categoryLabel')}>
+                <Input type="date" value={formData.event_date} onChange={(e) => setFormData({ ...formData, event_date: e.target.value })} />
+                <ResponsiveSelect value={formData.category} onValueChange={(v) => setFormData({ ...formData, category: v })} placeholder={t('gallery.selectCat')} label={t('gallery.categoryLabel')}>
                   <SelectItem value="distribution">{t('gallery.distribution')}</SelectItem>
                   <SelectItem value="volunteer">{t('gallery.volunteerEvent')}</SelectItem>
                   <SelectItem value="event">{t('gallery.communityEvent')}</SelectItem>
@@ -165,7 +171,7 @@ export default function GalleryPage() {
                   <SelectItem value="other">{t('gallery.other')}</SelectItem>
                 </ResponsiveSelect>
               </div>
-              <Textarea placeholder={t('gallery.description')} value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} rows={3} />
+              <Textarea placeholder={t('gallery.description')} value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} rows={3} />
               <div className="flex gap-3">
                 <Button type="button" variant="outline" onClick={() => setShowForm(false)} className="flex-1">{t('common.cancel')}</Button>
                 <Button type="submit" disabled={!formData.image_url || !formData.title} className="flex-1 bg-[#8B4513] hover:bg-[#5C2E0F]">

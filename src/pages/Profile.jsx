@@ -53,7 +53,7 @@ export default function ProfilePage() {
     { icon: CalendarIcon, label: t('profile.calendar'), path: "Calendar" },
     { icon: Info, label: t('profile.about'), path: "AboutUs" },
     { icon: Phone, label: t('profile.contact'), path: "Contact" },
-    { icon: Heart, label: t('profile.volunteerOpp'), path: "Volunteers" },
+    { icon: Heart, label: t('profile.volunteersLink'), path: "Volunteers" },
     { icon: BookOpen, label: t('profile.stories'), path: "Stories" },
     { icon: Info, label: t('profile.reviews'), path: "Reviews" },
     { icon: FileText, label: t('profile.privacy'), path: "PrivacyPolicy" }
@@ -66,7 +66,7 @@ export default function ProfilePage() {
       <Card className="max-w-md w-full border-amber-200 dark:border-amber-800"><CardContent className="p-12 text-center">
         <User className="w-16 h-16 text-[#8B4513] dark:text-amber-400 opacity-30 mx-auto mb-4" />
         <h3 className="text-xl font-bold text-[#5C2E0F] dark:text-white mb-2">{t('profile.loginPrompt')}</h3>
-        <Button onClick={() => base44.auth.redirectToLogin(window.location.pathname)} className="mt-4 bg-[#8B4513] hover:bg-[#5C2E0F]">{t('common.login')}</Button>
+        <Button onClick={() => base44.auth.redirectToLogin(window.location.pathname)} className="mt-4 bg-[#8B4513] hover:bg-[#5C2E0F] dark:bg-amber-600 dark:hover:bg-amber-700">{t('common.login')}</Button>
       </CardContent></Card>
     </div>
   );
@@ -77,12 +77,12 @@ export default function ProfilePage() {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
           <Card className="border-amber-200 dark:border-amber-800"><CardContent className="p-6">
             <div className="flex items-center gap-4">
-              <div className="w-20 h-20 bg-gradient-to-br from-[#8B4513] to-[#D2691E] rounded-full flex items-center justify-center"><span className="text-white text-3xl font-bold">{user.full_name?.[0] || "U"}</span></div>
+              <div className="w-20 h-20 bg-gradient-to-br from-[#8B4513] to-[#D2691E] dark:from-amber-600 dark:to-amber-800 rounded-full flex items-center justify-center"><span className="text-white text-3xl font-bold">{user.full_name?.[0] || "U"}</span></div>
               <div className="flex-1">
                 <h1 className="text-2xl font-bold text-[#5C2E0F] dark:text-white mb-1">{user.full_name}</h1>
                 <p className="text-[#8B4513] dark:text-white mb-2">{user.email}</p>
                 <a href="https://wa.me/19413102786" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm text-[#8B4513] dark:text-white hover:underline"><MessageCircle className="w-4 h-4" />{t('profile.supportChat')} +1 (941) 310-2786</a>
-                {user.role === "admin" && <div className="mt-2"><span className="inline-flex items-center gap-1 text-xs font-medium text-white bg-gradient-to-r from-[#8B4513] to-[#D2691E] px-3 py-1 rounded-full"><Shield className="w-3 h-3" />{t('common.admin')}</span></div>}
+                {user.role === "admin" && <div className="mt-2"><span className="inline-flex items-center gap-1 text-xs font-medium text-white bg-gradient-to-r from-[#8B4513] to-[#D2691E] dark:from-amber-600 dark:to-amber-800 px-3 py-1 rounded-full"><Shield className="w-3 h-3" />{t('profile.admin')}</span></div>}
               </div>
             </div>
           </CardContent></Card>
@@ -115,13 +115,13 @@ export default function ProfilePage() {
           <CardContent className="p-4">
             <div className="space-y-4">
               {[
-                { key: 'announcements', label: t('profile.newAnnouncements'), desc: t('profile.newAnnouncementsDesc') },
-                { key: 'volunteers', label: t('profile.volunteerOpportunities'), desc: t('profile.volunteerOpportunitiesDesc') },
-                { key: 'reminders', label: t('profile.eventReminders'), desc: t('profile.eventRemindersDesc') },
-                { key: 'system_updates', label: t('profile.systemUpdates'), desc: t('profile.systemUpdatesDesc') },
+                { key: 'announcements', title: t('profile.newAnnouncements'), desc: t('profile.newAnnouncementsDesc') },
+                { key: 'volunteers', title: t('profile.volunteerOpps'), desc: t('profile.volunteerOppsDesc') },
+                { key: 'reminders', title: t('profile.eventReminders'), desc: t('profile.eventRemindersDesc') },
+                { key: 'system_updates', title: t('profile.systemUpdates'), desc: t('profile.systemUpdatesDesc') },
               ].map(item => (
                 <div key={item.key} className="flex items-center justify-between p-3 rounded-lg border border-amber-200 dark:border-amber-700">
-                  <div><p className="font-medium text-[#5C2E0F] dark:text-white">{item.label}</p><p className="text-sm text-[#8B4513] dark:text-white">{item.desc}</p></div>
+                  <div><p className="font-medium text-[#5C2E0F] dark:text-white">{item.title}</p><p className="text-sm text-[#8B4513] dark:text-white">{item.desc}</p></div>
                   <Switch checked={notifications[item.key]} onCheckedChange={() => handleNotificationToggle(item.key)} />
                 </div>
               ))}
@@ -133,21 +133,18 @@ export default function ProfilePage() {
           <CardHeader className="bg-[#F5EFE6] dark:bg-gray-800"><CardTitle className="text-[#5C2E0F] dark:text-white">{t('profile.navigation')}</CardTitle></CardHeader>
           <CardContent className="p-4">
             <div className="space-y-2">
-              {menuItems.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <button key={item.path} onClick={() => navigate(createPageUrl(item.path))} className="w-full flex items-center justify-between p-3 rounded-lg hover:bg-amber-100 dark:hover:bg-gray-800 transition-colors">
-                    <div className="flex items-center gap-3"><Icon className="w-5 h-5 text-[#8B4513] dark:text-amber-400" /><span className="text-[#5C2E0F] dark:text-white font-medium">{item.label}</span></div>
-                    <ChevronRight className="w-5 h-5 text-[#8B4513] dark:text-amber-400" />
-                  </button>
-                );
-              })}
+              {menuItems.map((item) => { const Icon = item.icon; return (
+                <button key={item.path} onClick={() => navigate(createPageUrl(item.path))} className="w-full flex items-center justify-between p-3 rounded-lg hover:bg-amber-100 dark:hover:bg-gray-800 transition-colors">
+                  <div className="flex items-center gap-3"><Icon className="w-5 h-5 text-[#8B4513] dark:text-amber-400" /><span className="text-[#5C2E0F] dark:text-white font-medium">{item.label}</span></div>
+                  <ChevronRight className="w-5 h-5 text-[#8B4513] dark:text-amber-400" />
+                </button>
+              ); })}
             </div>
           </CardContent>
         </Card>
 
-        <Button onClick={() => base44.auth.logout()} variant="outline" className="w-full border-amber-300 dark:border-amber-700 hover:bg-amber-100 text-[#5C2E0F] dark:text-white"><LogOut className="w-5 h-5 mr-2" />{t('profile.logout')}</Button>
-        <Button onClick={() => setShowDeleteDialog(true)} variant="destructive" className="w-full bg-red-600 hover:bg-red-700"><Trash2 className="w-4 h-4 mr-2" />{t('profile.deleteAccount')}</Button>
+        <Button onClick={() => base44.auth.logout()} variant="outline" className="w-full border-amber-300 dark:border-amber-700 hover:bg-amber-100 dark:hover:bg-gray-800 text-[#5C2E0F] dark:text-white"><LogOut className="w-5 h-5 mr-2" />{t('profile.logout')}</Button>
+        <Button onClick={() => setShowDeleteDialog(true)} variant="destructive" className="w-full bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800"><Trash2 className="w-4 h-4 mr-2" />{t('profile.deleteAccount')}</Button>
       </div>
 
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
@@ -158,7 +155,7 @@ export default function ProfilePage() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel className="dark:border-amber-700 dark:text-white">{t('common.cancel')}</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDeleteAccount} className="bg-red-600 hover:bg-red-700">{t('common.confirm')}</AlertDialogAction>
+            <AlertDialogAction onClick={handleDeleteAccount} className="bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800">{t('common.confirm')}</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

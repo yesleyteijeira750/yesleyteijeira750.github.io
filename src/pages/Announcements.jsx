@@ -37,9 +37,18 @@ export default function AnnouncementsPage() {
   useEffect(() => { filterAnnouncements(); }, [announcements, searchTerm, categoryFilter]);
 
   useEffect(() => {
-    const handleTouchStart = (e) => { if (window.scrollY === 0) { startY.current = e.touches[0].clientY; isPulling.current = true; } };
-    const handleTouchMove = (e) => { if (!isPulling.current) return; const d = e.touches[0].clientY - startY.current; if (d > 0 && d < 150) setPullDistance(d); };
-    const handleTouchEnd = async () => { if (pullDistance > 80 && !isRefreshing) { setIsRefreshing(true); await loadData(); setIsRefreshing(false); } setPullDistance(0); isPulling.current = false; };
+    const handleTouchStart = (e) => {
+      if (window.scrollY === 0) { startY.current = e.touches[0].clientY; isPulling.current = true; }
+    };
+    const handleTouchMove = (e) => {
+      if (!isPulling.current) return;
+      const distance = e.touches[0].clientY - startY.current;
+      if (distance > 0 && distance < 150) setPullDistance(distance);
+    };
+    const handleTouchEnd = async () => {
+      if (pullDistance > 80 && !isRefreshing) { setIsRefreshing(true); await loadData(); setIsRefreshing(false); }
+      setPullDistance(0); isPulling.current = false;
+    };
     document.addEventListener('touchstart', handleTouchStart);
     document.addEventListener('touchmove', handleTouchMove);
     document.addEventListener('touchend', handleTouchEnd);
@@ -50,14 +59,23 @@ export default function AnnouncementsPage() {
     setIsLoading(true);
     try { const currentUser = await base44.auth.me(); setUser(currentUser); } catch (error) { setUser(null); }
     const data = await base44.entities.Announcement.list();
-    const sorted = data.sort((a, b) => { if (a.is_pinned && !b.is_pinned) return -1; if (!a.is_pinned && b.is_pinned) return 1; return new Date(b.date) - new Date(a.date); });
+    const sorted = data.sort((a, b) => {
+      if (a.is_pinned && !b.is_pinned) return -1;
+      if (!a.is_pinned && b.is_pinned) return 1;
+      return new Date(b.date) - new Date(a.date);
+    });
     setAnnouncements(sorted);
     setIsLoading(false);
   };
 
   const filterAnnouncements = () => {
     let filtered = announcements;
-    if (searchTerm) filtered = filtered.filter(a => a.title.toLowerCase().includes(searchTerm.toLowerCase()) || a.description.toLowerCase().includes(searchTerm.toLowerCase()));
+    if (searchTerm) {
+      filtered = filtered.filter(a =>
+        a.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        a.description.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
     if (categoryFilter !== "all") filtered = filtered.filter(a => a.category === categoryFilter);
     setFilteredAnnouncements(filtered);
   };
@@ -76,9 +94,12 @@ export default function AnnouncementsPage() {
     try {
       const allUsers = await base44.entities.User.list();
       const timeStr = announcement.start_time ? new Date(`2000-01-01T${announcement.start_time}`).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }) : '';
-      const emailSubject = `🔔 ${t('announcements.newAnnouncement')}: ${announcement.title}`;
-      const emailBody = `<h1>${announcement.title}</h1><p>${announcement.description}</p>${timeStr ? `<p>⏰ ${timeStr}</p>` : ''}${announcement.address ? `<p>📍 ${announcement.address}</p>` : ''}`;
-      const emailPromises = allUsers.map(u => base44.integrations.Core.SendEmail({ from_name: "Food Pantry Bountiful Blessings", to: u.email, subject: emailSubject, body: emailBody }).catch(() => null));
+      const emailSubject = `🔔 New Announcement: ${announcement.title}`;
+      const emailBody = `
+<!DOCTYPE html><html><head><style>body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;line-height:1.6;color:#5C2E0F;background-color:#F5EFE6;margin:0;padding:20px}.container{max-width:600px;margin:0 auto;background:white;border-radius:16px;overflow:hidden;box-shadow:0 4px 6px rgba(139,69,19,0.1)}.header{background:linear-gradient(135deg,#8B4513 0%,#D2691E 100%);padding:40px 30px;text-align:center}.header h1{color:white;margin:0;font-size:28px}.content{padding:40px 30px}.announcement-title{font-size:24px;font-weight:bold;color:#5C2E0F;margin:0 0 20px}.date-badge{display:inline-block;background:#FEF3C7;color:#8B4513;padding:8px 16px;border-radius:20px;font-size:14px;margin-bottom:20px}.description{color:#8B4513;font-size:16px;line-height:1.8;margin:20px 0}.cta-button{display:inline-block;background:linear-gradient(135deg,#8B4513 0%,#D2691E 100%);color:white;text-decoration:none;padding:14px 32px;border-radius:8px;font-weight:bold;margin:30px 0}.footer{background:#F5EFE6;padding:30px;text-align:center;border-top:2px solid #D2691E}.footer-text{color:#8B4513;font-size:14px;margin:10px 0}</style></head><body><div class="container"><div class="header"><h1>📢 New Announcement</h1></div><div class="content"><h2 class="announcement-title">${announcement.title}</h2><div class="date-badge">📅 ${new Date(announcement.date).toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})}${timeStr?` at ${timeStr}`:''}</div><hr style="border:none;border-top:2px solid #F5EFE6;margin:30px 0"><div class="description">${announcement.description.replace(/\n/g,'<br>')}</div>${announcement.address?`<p style="color:#8B4513;margin:20px 0">📍 <strong>Location:</strong> ${announcement.address}</p>`:''}<div style="text-align:center"><a href="${window.location.origin}" class="cta-button">View Full Announcement</a></div></div><div class="footer"><p class="footer-text">Food Pantry Bountiful Blessings</p><p class="footer-text">Serving the community with love and compassion</p></div></div></body></html>`.trim();
+      const emailPromises = allUsers.map(u =>
+        base44.integrations.Core.SendEmail({ from_name: "Food Pantry Bountiful Blessings", to: u.email, subject: emailSubject, body: emailBody }).catch(error => { console.error(`Failed to send email to ${u.email}:`, error); return null; })
+      );
       await Promise.all(emailPromises);
       toast({ title: `📧 ${t('announcements.notifSent')}`, description: t('announcements.notifSentDesc').replace('{count}', allUsers.length) });
     } catch (error) {
@@ -111,6 +132,7 @@ export default function AnnouncementsPage() {
         </div>
       )}
 
+      {/* Hero Section */}
       <div className="bg-gradient-to-r from-[#8B4513] via-[#A0522D] to-[#D2691E] text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=1200')] bg-cover bg-center opacity-10"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
@@ -125,6 +147,7 @@ export default function AnnouncementsPage() {
         <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-amber-50 to-transparent"></div>
       </div>
 
+      {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex flex-col md:flex-row gap-4 mb-8">
           <div className="flex-1 relative">

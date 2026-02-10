@@ -45,9 +45,11 @@ export default function StoriesPage() {
           <h1 className="text-3xl sm:text-4xl font-bold text-[#5C2E0F] mb-2">{t('stories.title')}</h1>
           <p className="text-[#8B4513] text-lg">{t('stories.subtitle')}</p>
         </div>
+
         <div className="mb-6 flex justify-end">
-          <Button onClick={() => setShowForm(true)} className="bg-gradient-to-r from-[#8B4513] to-[#D2691E]"><Plus className="w-5 h-5 mr-2" />{t('stories.shareStory')}</Button>
+          <Button onClick={() => setShowForm(true)} className="bg-gradient-to-r from-[#8B4513] to-[#D2691E] hover:from-[#5C2E0F] hover:to-[#A0522D]"><Plus className="w-5 h-5 mr-2" />{t('stories.shareYourStory')}</Button>
         </div>
+
         {isLoading ? (
           <div className="text-center py-12"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#8B4513] mx-auto" /></div>
         ) : stories.length > 0 ? (
@@ -59,10 +61,7 @@ export default function StoriesPage() {
                   <div className="flex-1">
                     <CardHeader className="bg-[#F5EFE6]">
                       <div className="flex items-start justify-between">
-                        <div>
-                          <CardTitle className="text-[#5C2E0F] text-2xl mb-2">{story.title}</CardTitle>
-                          <p className="text-sm text-[#8B4513]">{t('stories.by')} {story.author_name || t('stories.anonymous')}</p>
-                        </div>
+                        <div><CardTitle className="text-[#5C2E0F] text-2xl mb-2">{story.title}</CardTitle><p className="text-sm text-[#8B4513]">{t('stories.by')} {story.author_name || t('stories.anonymous')}</p></div>
                         {story.is_featured && <Badge className="bg-yellow-100 text-yellow-800"><Star className="w-3 h-3 mr-1 fill-current" />{t('stories.featured')}</Badge>}
                       </div>
                     </CardHeader>
@@ -77,17 +76,18 @@ export default function StoriesPage() {
             <Heart className="w-16 h-16 text-[#8B4513] opacity-30 mx-auto mb-4 fill-current" />
             <h3 className="text-xl font-bold text-[#5C2E0F] mb-2">{t('stories.noStories')}</h3>
             <p className="text-[#8B4513] mb-4">{t('stories.beFirst')}</p>
-            <Button onClick={() => setShowForm(true)} className="bg-[#8B4513] hover:bg-[#5C2E0F]">{t('stories.shareStory')}</Button>
+            <Button onClick={() => setShowForm(true)} className="bg-[#8B4513] hover:bg-[#5C2E0F]">{t('stories.shareYourStory')}</Button>
           </CardContent></Card>
         )}
+
         <Dialog open={showForm} onOpenChange={setShowForm}>
           <DialogContent className="bg-[#F5EFE6] max-w-2xl">
             <DialogHeader><DialogTitle className="text-[#5C2E0F]">{t('stories.dialogTitle')}</DialogTitle></DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <Input placeholder={t('stories.storyTitle')} value={formData.title} onChange={(e) => setFormData({...formData, title: e.target.value})} required />
-              <Input placeholder={t('stories.yourName')} value={formData.author_name} onChange={(e) => setFormData({...formData, author_name: e.target.value})} />
-              <Textarea placeholder={t('stories.storyPlaceholder')} value={formData.story_text} onChange={(e) => setFormData({...formData, story_text: e.target.value})} rows={8} required />
-              <Input placeholder={t('stories.imageUrl')} value={formData.image_url} onChange={(e) => setFormData({...formData, image_url: e.target.value})} />
+              <Input placeholder={t('stories.storyTitle')} value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} required />
+              <Input placeholder={t('stories.yourName')} value={formData.author_name} onChange={(e) => setFormData({ ...formData, author_name: e.target.value })} />
+              <Textarea placeholder={t('stories.storyPlaceholder')} value={formData.story_text} onChange={(e) => setFormData({ ...formData, story_text: e.target.value })} rows={8} required />
+              <Input placeholder={t('stories.imageUrl')} value={formData.image_url} onChange={(e) => setFormData({ ...formData, image_url: e.target.value })} />
               <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 text-sm text-[#8B4513]">
                 <p><strong>Note:</strong> {user?.role === 'admin' ? t('stories.noteAdmin') : t('stories.noteUser')}</p>
               </div>
