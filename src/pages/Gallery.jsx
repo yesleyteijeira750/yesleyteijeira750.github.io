@@ -21,6 +21,8 @@ export default function GalleryPage() {
   const [uploading, setUploading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [pullDistance, setPullDistance] = useState(0);
+  const [selectedImages, setSelectedImages] = useState([]);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const { toast } = useToast();
 
   const startY = React.useRef(0);
@@ -97,13 +99,14 @@ export default function GalleryPage() {
   };
 
   const handleFileUpload = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
 
-    if (!file.type.startsWith('image/')) {
+    const imageFiles = files.filter(file => file.type.startsWith('image/'));
+    if (imageFiles.length === 0) {
       toast({
-        title: "⚠️ Invalid File",
-        description: "Please upload an image file.",
+        title: "⚠️ Invalid Files",
+        description: "Please upload image files.",
         variant: "destructive"
       });
       return;
@@ -111,30 +114,65 @@ export default function GalleryPage() {
 
     setUploading(true);
     try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
-      setFormData({ ...formData, image_url: file_url });
+      const uploadedUrls = [];
+      for (const file of imageFiles) {
+        const { file_url } = await base44.integrations.Core.UploadFile({ file });
+        uploadedUrls.push(file_url);
+      }
+      
+      setSelectedImages(uploadedUrls);
+      setCurrentImageIndex(0);
+      setFormData({ ...formData, image_url: uploadedUrls[0] });
+      
       toast({
-        title: "✅ Image Uploaded",
-        description: "Your image has been uploaded successfully."
+        title: "✅ Images Uploaded",
+        description: `${uploadedUrls.length} image(s) uploaded successfully.`
       });
     } catch (error) {
       toast({
         title: "❌ Upload Failed",
-        description: "Failed to upload image.",
+        description: "Failed to upload images.",
         variant: "destructive"
       });
     }
     setUploading(false);
   };
 
+  useEffect(() => {
+    if (selectedImages.length > 1) {
+      const interval = setInterval(() => {
+        setCurrentImageIndex((prev) => {
+          const next = (prev + 1) % selectedImages.length;
+          setFormData(fd => ({ ...fd, image_url: selectedImages[next] }));
+          return next;
+        });
+      }, 3000);
+      return () => clearInterval(interval);
+    }
+  }, [selectedImages]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await base44.entities.Photo.create(formData);
-      toast({
-        title: "✅ Photo Added!",
-        description: "Your photo has been added to the gallery."
-      });
+      if (selectedImages.length > 1) {
+        for (const imageUrl of selectedImages) {
+          await base44.entities.Photo.create({
+            ...formData,
+            image_url: imageUrl
+          });
+        }
+        toast({
+          title: "✅ Photos Added!",
+          description: `${selectedImages.length} photos have been added to the gallery.`
+        });
+      } else {
+        await base44.entities.Photo.create(formData);
+        toast({
+          title: "✅ Photo Added!",
+          description: "Your photo has been added to the gallery."
+        });
+      }
+      
       setShowForm(false);
       setFormData({
         title: '',
@@ -143,11 +181,13 @@ export default function GalleryPage() {
         category: 'other',
         description: ''
       });
+      setSelectedImages([]);
+      setCurrentImageIndex(0);
       loadData();
     } catch (error) {
       toast({
         title: "❌ Error",
-        description: "Failed to add photo.",
+        description: "Failed to add photo(s).",
         variant: "destructive"
       });
     }
@@ -268,17 +308,33 @@ export default function GalleryPage() {
               <div className="border-2 border-dashed border-amber-300 rounded-lg p-6 text-center">
                 {formData.image_url ? (
                   <div className="space-y-3">
-                    <img
-                      src={formData.image_url}
-                      alt="Preview"
-                      className="max-h-48 mx-auto rounded-lg"
-                    />
+                    <div className="relative">
+                      <img
+                        src={formData.image_url}
+                        alt="Preview"
+                        className="max-h-48 mx-auto rounded-lg"
+                      />
+                      {selectedImages.length > 1 && (
+                        <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-black/70 text-white px-3 py-1 rounded-full text-sm">
+                          {currentImageIndex + 1} / {selectedImages.length}
+                        </div>
+                      )}
+                    </div>
+                    {selectedImages.length > 1 && (
+                      <p className="text-sm text-[#8B4513]">
+                        Vista previa: Las imágenes cambiarán automáticamente
+                      </p>
+                    )}
                     <Button
                       type="button"
                       variant="outline"
-                      onClick={() => setFormData({ ...formData, image_url: '' })}
+                      onClick={() => {
+                        setFormData({ ...formData, image_url: '' });
+                        setSelectedImages([]);
+                        setCurrentImageIndex(0);
+                      }}
                     >
-                      Change Image
+                      Cambiar Imagen(es)
                     </Button>
                   </div>
                 ) : (
@@ -286,13 +342,18 @@ export default function GalleryPage() {
                     <input
                       type="file"
                       accept="image/*"
+                      multiple
+                      capture="environment"
                       onChange={handleFileUpload}
                       className="hidden"
                       disabled={uploading}
                     />
                     <Upload className="w-12 h-12 text-[#8B4513] mx-auto mb-3" />
-                    <p className="text-[#8B4513]">
-                      {uploading ? 'Uploading...' : 'Click to upload image'}
+                    <p className="text-[#8B4513] font-medium mb-1">
+                      {uploading ? 'Subiendo...' : 'Toca para subir fotos'}
+                    </p>
+                    <p className="text-sm text-[#8B4513]/70">
+                      Puedes seleccionar múltiples fotos
                     </p>
                   </label>
                 )}
@@ -341,7 +402,7 @@ export default function GalleryPage() {
                   disabled={!formData.image_url || !formData.title}
                   className="flex-1 bg-[#8B4513] hover:bg-[#5C2E0F]"
                 >
-                  Add Photo
+                  {selectedImages.length > 1 ? `Agregar ${selectedImages.length} Fotos` : 'Agregar Foto'}
                 </Button>
               </div>
             </form>
