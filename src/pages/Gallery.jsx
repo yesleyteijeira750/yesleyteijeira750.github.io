@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Camera, Plus, Upload } from "lucide-react";
+import { Camera, Plus } from "lucide-react";
 import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -12,6 +12,7 @@ import ResponsiveSelect from "@/components/ui/ResponsiveSelect";
 import { SelectItem } from "@/components/ui/select";
 import { format } from "date-fns";
 import { useLanguage } from "@/components/i18n/LanguageProvider";
+import ImageUploader from "@/components/uploads/ImageUploader";
 
 export default function GalleryPage() {
   const { t } = useLanguage();
@@ -20,7 +21,6 @@ export default function GalleryPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState("all");
-  const [uploading, setUploading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [pullDistance, setPullDistance] = useState(0);
   const [selectedImages, setSelectedImages] = useState([]);
@@ -47,18 +47,10 @@ export default function GalleryPage() {
     setIsLoading(false);
   };
 
-  const handleFileUpload = async (e) => {
-    const files = Array.from(e.target.files || []);
-    const imageFiles = files.filter(f => f.type.startsWith('image/'));
-    if (!imageFiles.length) { toast({ title: `⚠️ ${t('gallery.invalidFiles')}`, description: t('gallery.uploadImageFiles'), variant: "destructive" }); return; }
-    setUploading(true);
-    try {
-      const urls = [];
-      for (const file of imageFiles) { const { file_url } = await base44.integrations.Core.UploadFile({ file }); urls.push(file_url); }
-      setSelectedImages(urls); setCurrentImageIndex(0); setFormData({ ...formData, image_url: urls[0] });
-      toast({ title: `✅ ${t('gallery.uploaded')}`, description: t('gallery.uploadedDesc').replace('{count}', urls.length) });
-    } catch { toast({ title: `❌ ${t('gallery.uploadFailed')}`, description: t('gallery.uploadFailedDesc'), variant: "destructive" }); }
-    setUploading(false);
+  const handleMultipleUpload = (urls) => {
+    setSelectedImages(urls);
+    setCurrentImageIndex(0);
+    setFormData({ ...formData, image_url: urls[0] });
   };
 
   useEffect(() => {
@@ -141,25 +133,23 @@ export default function GalleryPage() {
           <DialogContent className="bg-[#F5EFE6] max-w-2xl">
             <DialogHeader><DialogTitle className="text-[#5C2E0F]">{t('gallery.dialogTitle')}</DialogTitle></DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="border-2 border-dashed border-amber-300 rounded-lg p-6 text-center">
-                {formData.image_url ? (
-                  <div className="space-y-3">
-                    <div className="relative">
-                      <img src={formData.image_url} alt="Preview" className="max-h-48 mx-auto rounded-lg" />
-                      {selectedImages.length > 1 && <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-black/70 text-white px-3 py-1 rounded-full text-sm">{currentImageIndex + 1} / {selectedImages.length}</div>}
-                    </div>
-                    {selectedImages.length > 1 && <p className="text-sm text-[#8B4513]">{t('gallery.previewInfo')}</p>}
-                    <Button type="button" variant="outline" onClick={() => { setFormData({ ...formData, image_url: '' }); setSelectedImages([]); setCurrentImageIndex(0); }}>{t('gallery.changeImages')}</Button>
+              {formData.image_url ? (
+                <div className="space-y-3 rounded-xl border-2 border-amber-300 dark:border-amber-700 p-4">
+                  <div className="relative">
+                    <img src={formData.image_url} alt="Preview" className="max-h-48 mx-auto rounded-lg" />
+                    {selectedImages.length > 1 && <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-black/70 text-white px-3 py-1 rounded-full text-sm">{currentImageIndex + 1} / {selectedImages.length}</div>}
                   </div>
-                ) : (
-                  <label className="cursor-pointer">
-                    <input type="file" accept="image/*" multiple capture="environment" onChange={handleFileUpload} className="hidden" disabled={uploading} />
-                    <Upload className="w-12 h-12 text-[#8B4513] mx-auto mb-3" />
-                    <p className="text-[#8B4513] font-medium mb-1">{uploading ? t('gallery.uploading') : t('gallery.tapUpload')}</p>
-                    <p className="text-sm text-[#8B4513]/70">{t('gallery.selectMultiple')}</p>
-                  </label>
-                )}
-              </div>
+                  {selectedImages.length > 1 && <p className="text-sm text-[#8B4513] text-center">{t('gallery.previewInfo')}</p>}
+                  <Button type="button" variant="outline" className="w-full" onClick={() => { setFormData({ ...formData, image_url: '' }); setSelectedImages([]); setCurrentImageIndex(0); }}>{t('gallery.changeImages')}</Button>
+                </div>
+              ) : (
+                <ImageUploader
+                  multiple
+                  value=""
+                  onChange={(url) => { setFormData({ ...formData, image_url: url }); setSelectedImages([url]); }}
+                  onMultipleUpload={handleMultipleUpload}
+                />
+              )}
               <Input placeholder={t('gallery.photoTitle')} value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} required />
               <div className="grid sm:grid-cols-2 gap-4">
                 <Input type="date" value={formData.event_date} onChange={(e) => setFormData({ ...formData, event_date: e.target.value })} />
