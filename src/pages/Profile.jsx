@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { User, LogOut, Moon, Sun, Globe, Shield, FileText, Trash2, MessageCircle, Calendar as CalendarIcon, Info, Phone, Heart, BookOpen, Camera, ChevronRight, Bell } from "lucide-react";
+import { User, LogOut, Moon, Sun, Globe, Shield, FileText, Trash2, MessageCircle, Calendar as CalendarIcon, Info, Phone, Heart, BookOpen, Camera, ChevronRight, Bell, Mail } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -18,7 +18,7 @@ export default function ProfilePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isDarkMode, setIsDarkMode] = useState(localStorage.getItem("theme") === "dark" || (localStorage.getItem("theme") === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches));
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [notifications, setNotifications] = useState({ announcements: true, volunteers: true, reminders: true, system_updates: false });
+  const [notifications, setNotifications] = useState({ announcements: true, volunteers: true, reminders: true, system_updates: false, method_email: true, method_push: true });
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -114,6 +114,19 @@ export default function ProfilePage() {
           <CardHeader className="bg-[#F5EFE6] dark:bg-gray-800"><CardTitle className="text-[#5C2E0F] dark:text-white flex items-center gap-2"><Bell className="w-5 h-5" />{t('profile.notifications')}</CardTitle></CardHeader>
           <CardContent className="p-4">
             <div className="space-y-4">
+              <div className="p-3 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-700">
+                <p className="text-sm font-semibold text-[#5C2E0F] dark:text-white mb-3">{t('profile.deliveryMethod')}</p>
+                <div className="flex gap-3">
+                  <div className="flex items-center justify-between flex-1 p-2.5 rounded-lg border border-amber-200 dark:border-amber-700 bg-white dark:bg-card">
+                    <div className="flex items-center gap-2"><Mail className="w-4 h-4 text-[#8B4513] dark:text-amber-400" /><span className="text-sm font-medium text-[#5C2E0F] dark:text-white">{t('profile.emailNotif')}</span></div>
+                    <Switch checked={notifications.method_email} onCheckedChange={() => handleNotificationToggle('method_email')} />
+                  </div>
+                  <div className="flex items-center justify-between flex-1 p-2.5 rounded-lg border border-amber-200 dark:border-amber-700 bg-white dark:bg-card">
+                    <div className="flex items-center gap-2"><Bell className="w-4 h-4 text-[#8B4513] dark:text-amber-400" /><span className="text-sm font-medium text-[#5C2E0F] dark:text-white">{t('profile.pushNotif')}</span></div>
+                    <Switch checked={notifications.method_push} onCheckedChange={() => handleNotificationToggle('method_push')} />
+                  </div>
+                </div>
+              </div>
               {[
                 { key: 'announcements', title: t('profile.newAnnouncements'), desc: t('profile.newAnnouncementsDesc') },
                 { key: 'volunteers', title: t('profile.volunteerOpps'), desc: t('profile.volunteerOppsDesc') },
