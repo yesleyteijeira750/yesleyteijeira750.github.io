@@ -22,6 +22,29 @@ export default function CalendarPage() {
 
   useEffect(() => { loadEvents(); }, []);
 
+  // Real-time subscriptions
+  useEffect(() => {
+    const unsubAnnouncements = base44.entities.Announcement.subscribe((event) => {
+      if (event.type === 'create') {
+        setAnnouncements(prev => [event.data, ...prev]);
+      } else if (event.type === 'update') {
+        setAnnouncements(prev => prev.map(a => a.id === event.id ? event.data : a));
+      } else if (event.type === 'delete') {
+        setAnnouncements(prev => prev.filter(a => a.id !== event.id));
+      }
+    });
+    const unsubVolunteers = base44.entities.Volunteer.subscribe((event) => {
+      if (event.type === 'create') {
+        setVolunteers(prev => [event.data, ...prev]);
+      } else if (event.type === 'update') {
+        setVolunteers(prev => prev.map(v => v.id === event.id ? event.data : v));
+      } else if (event.type === 'delete') {
+        setVolunteers(prev => prev.filter(v => v.id !== event.id));
+      }
+    });
+    return () => { unsubAnnouncements(); unsubVolunteers(); };
+  }, []);
+
   const loadEvents = async () => {
     setIsLoading(true);
     const [a, v] = await Promise.all([

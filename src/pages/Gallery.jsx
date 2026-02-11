@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Camera, Plus } from "lucide-react";
+import { Camera, Plus, ChevronLeft, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -53,12 +53,17 @@ export default function GalleryPage() {
     setFormData({ ...formData, image_url: urls[0] });
   };
 
-  useEffect(() => {
-    if (selectedImages.length > 1) {
-      const interval = setInterval(() => { setCurrentImageIndex(prev => { const next = (prev + 1) % selectedImages.length; setFormData(fd => ({ ...fd, image_url: selectedImages[next] })); return next; }); }, 3000);
-      return () => clearInterval(interval);
-    }
-  }, [selectedImages]);
+  const goToPrevImage = () => {
+    const newIdx = currentImageIndex === 0 ? selectedImages.length - 1 : currentImageIndex - 1;
+    setCurrentImageIndex(newIdx);
+    setFormData(fd => ({ ...fd, image_url: selectedImages[newIdx] }));
+  };
+
+  const goToNextImage = () => {
+    const newIdx = (currentImageIndex + 1) % selectedImages.length;
+    setCurrentImageIndex(newIdx);
+    setFormData(fd => ({ ...fd, image_url: selectedImages[newIdx] }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -136,10 +141,29 @@ export default function GalleryPage() {
               {formData.image_url ? (
                 <div className="space-y-3 rounded-xl border-2 border-amber-300 dark:border-amber-700 p-4">
                   <div className="relative">
-                    <img src={formData.image_url} alt="Preview" className="max-h-48 mx-auto rounded-lg" />
-                    {selectedImages.length > 1 && <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-black/70 text-white px-3 py-1 rounded-full text-sm">{currentImageIndex + 1} / {selectedImages.length}</div>}
+                    <img src={formData.image_url} alt="Preview" className="max-h-48 w-full object-contain mx-auto rounded-lg" />
+                    {selectedImages.length > 1 && (
+                      <>
+                        <button type="button" onClick={goToPrevImage} className="absolute left-1 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-1.5 transition-colors">
+                          <ChevronLeft className="w-5 h-5" />
+                        </button>
+                        <button type="button" onClick={goToNextImage} className="absolute right-1 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-1.5 transition-colors">
+                          <ChevronRight className="w-5 h-5" />
+                        </button>
+                        <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-black/70 text-white px-3 py-1 rounded-full text-sm">
+                          {currentImageIndex + 1} / {selectedImages.length}
+                        </div>
+                      </>
+                    )}
                   </div>
-                  {selectedImages.length > 1 && <p className="text-sm text-[#8B4513] text-center">{t('gallery.previewInfo')}</p>}
+                  {selectedImages.length > 1 && (
+                    <div className="flex justify-center gap-1.5">
+                      {selectedImages.map((_, i) => (
+                        <button key={i} type="button" onClick={() => { setCurrentImageIndex(i); setFormData(fd => ({ ...fd, image_url: selectedImages[i] })); }}
+                          className={`w-2 h-2 rounded-full transition-all ${i === currentImageIndex ? 'bg-[#8B4513] scale-125' : 'bg-amber-300'}`} />
+                      ))}
+                    </div>
+                  )}
                   <Button type="button" variant="outline" className="w-full" onClick={() => { setFormData({ ...formData, image_url: '' }); setSelectedImages([]); setCurrentImageIndex(0); }}>{t('gallery.changeImages')}</Button>
                 </div>
               ) : (
