@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Camera, Plus, ChevronLeft, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
+import PhotoCarousel from "@/components/gallery/PhotoCarousel";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
@@ -114,18 +115,7 @@ export default function GalleryPage() {
         {isLoading ? (
           <div className="text-center py-12"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#8B4513] mx-auto" /></div>
         ) : filteredPhotos.length > 0 ? (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredPhotos.map(photo => (
-              <Card key={photo.id} className="border-amber-200 overflow-hidden hover:shadow-lg transition-shadow">
-                <div className="aspect-video bg-gray-200 relative overflow-hidden"><img src={photo.image_url} alt={photo.title} className="w-full h-full object-cover" /></div>
-                <CardContent className="p-4">
-                  <h3 className="font-bold text-[#5C2E0F] mb-1">{photo.title}</h3>
-                  {photo.event_date && <p className="text-sm text-[#8B4513] mb-2">{format(new Date(photo.event_date), 'MMMM d, yyyy')}</p>}
-                  {photo.description && <p className="text-sm text-[#8B4513]">{photo.description}</p>}
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          <PhotoCarousel photos={filteredPhotos} />
         ) : (
           <Card className="border-amber-200"><CardContent className="p-12 text-center">
             <Camera className="w-16 h-16 text-[#8B4513] opacity-30 mx-auto mb-4" />
