@@ -1,6 +1,15 @@
 export const translations = {
   en: {
     nav: { home: 'Home', calendar: 'Calendar', volunteer: 'Volunteer', resources: 'Resources', gallery: 'Gallery', stories: 'Stories', about: 'About Us', contact: 'Contact', profile: 'Profile', admin: 'Admin', checkin: 'Check-In', analytics: 'Analytics' },
+    calendar: {
+      title: 'Events Calendar', subtitle: 'View all upcoming distributions, events, and volunteer opportunities',
+      allEvents: 'All Events', announcementsOnly: 'Announcements Only', volunteersOnly: 'Volunteers Only',
+      today: 'Today', hasEvents: 'Has Events', selectDate: 'Select a date', events: 'events',
+      noEventsOnDate: 'No events scheduled for this date.', clickDate: 'Click on a date to see events.',
+      upcomingEvents: 'Upcoming Events', noUpcoming: 'No upcoming events in the next 30 days.',
+      addToCalendar: 'Add to Calendar', volunteerOpp: 'Volunteer Opportunity',
+      sun: 'Sun', mon: 'Mon', tue: 'Tue', wed: 'Wed', thu: 'Thu', fri: 'Fri', sat: 'Sat',
+    },
     footer: { serving: 'Serving the community with love ❤️' },
     common: { loading: 'Loading...', save: 'Save', cancel: 'Cancel', delete: 'Delete', edit: 'Edit', create: 'Create', update: 'Update', submit: 'Submit', search: 'Search', close: 'Close', confirm: 'Confirm', error: 'Error', success: 'Success', logout: 'Logout', login: 'Login', admin: 'Admin', back: 'Back', add: 'Add', yes: 'Yes', no: 'No' },
     announcements: {
@@ -205,6 +214,15 @@ export const translations = {
   },
   es: {
     nav: { home: 'Inicio', calendar: 'Calendario', volunteer: 'Voluntariado', resources: 'Recursos', gallery: 'Galería', stories: 'Historias', about: 'Acerca de', contact: 'Contacto', profile: 'Perfil', admin: 'Admin', checkin: 'Check-In', analytics: 'Analíticas' },
+    calendar: {
+      title: 'Calendario de Eventos', subtitle: 'Ver todas las distribuciones, eventos y oportunidades de voluntariado',
+      allEvents: 'Todos los Eventos', announcementsOnly: 'Solo Anuncios', volunteersOnly: 'Solo Voluntariado',
+      today: 'Hoy', hasEvents: 'Tiene Eventos', selectDate: 'Selecciona una fecha', events: 'eventos',
+      noEventsOnDate: 'No hay eventos programados para esta fecha.', clickDate: 'Haz clic en una fecha para ver eventos.',
+      upcomingEvents: 'Próximos Eventos', noUpcoming: 'No hay eventos próximos en los siguientes 30 días.',
+      addToCalendar: 'Agregar al Calendario', volunteerOpp: 'Oportunidad de Voluntariado',
+      sun: 'Dom', mon: 'Lun', tue: 'Mar', wed: 'Mié', thu: 'Jue', fri: 'Vie', sat: 'Sáb',
+    },
     footer: { serving: 'Sirviendo a la comunidad con amor ❤️' },
     common: { loading: 'Cargando...', save: 'Guardar', cancel: 'Cancelar', delete: 'Eliminar', edit: 'Editar', create: 'Crear', update: 'Actualizar', submit: 'Enviar', search: 'Buscar', close: 'Cerrar', confirm: 'Confirmar', error: 'Error', success: 'Éxito', logout: 'Cerrar sesión', login: 'Iniciar sesión', admin: 'Admin', back: 'Volver', add: 'Agregar', yes: 'Sí', no: 'No' },
     announcements: {
@@ -409,6 +427,15 @@ export const translations = {
   },
   ht: {
     nav: { home: 'Akèy', calendar: 'Kalandriye', volunteer: 'Volontè', resources: 'Resous', gallery: 'Galri', stories: 'Istwa', about: 'Konsènan Nou', contact: 'Kontak', profile: 'Pwofil', admin: 'Admin', checkin: 'Anrejistreman', analytics: 'Analitik' },
+    calendar: {
+      title: 'Kalandriye Evènman', subtitle: 'Wè tout distribisyon, evènman ak opòtinite volontè ki ap vini',
+      allEvents: 'Tout Evènman', announcementsOnly: 'Anons Sèlman', volunteersOnly: 'Volontè Sèlman',
+      today: 'Jodi a', hasEvents: 'Gen Evènman', selectDate: 'Chwazi yon dat', events: 'evènman',
+      noEventsOnDate: 'Pa gen evènman pwograme pou dat sa a.', clickDate: 'Klike sou yon dat pou wè evènman yo.',
+      upcomingEvents: 'Pwochen Evènman', noUpcoming: 'Pa gen pwochen evènman nan 30 jou kap vini yo.',
+      addToCalendar: 'Ajoute nan Kalandriye', volunteerOpp: 'Opòtinite Volontè',
+      sun: 'Dim', mon: 'Len', tue: 'Mad', wed: 'Mèk', thu: 'Jed', fri: 'Van', sat: 'Sam',
+    },
     footer: { serving: 'Ap sèvi kominote a ak lanmou ❤️' },
     common: { loading: 'Ap chaje...', save: 'Anrejistre', cancel: 'Anile', delete: 'Efase', edit: 'Modifye', create: 'Kreye', update: 'Mete ajou', submit: 'Soumèt', search: 'Chèche', close: 'Fèmen', confirm: 'Konfime', error: 'Erè', success: 'Siksè', logout: 'Dekonekte', login: 'Konekte', admin: 'Admin', back: 'Retounen', add: 'Ajoute', yes: 'Wi', no: 'Non' },
     announcements: {
@@ -613,6 +640,15 @@ export const translations = {
   },
   ru: {
     nav: { home: 'Главная', calendar: 'Календарь', volunteer: 'Волонтёрство', resources: 'Ресурсы', gallery: 'Галерея', stories: 'Истории', about: 'О Нас', contact: 'Контакты', profile: 'Профиль', admin: 'Админ', checkin: 'Регистрация', analytics: 'Аналитика' },
+    calendar: {
+      title: 'Календарь Мероприятий', subtitle: 'Все предстоящие раздачи, мероприятия и возможности волонтёрства',
+      allEvents: 'Все Мероприятия', announcementsOnly: 'Только Объявления', volunteersOnly: 'Только Волонтёрство',
+      today: 'Сегодня', hasEvents: 'Есть Мероприятия', selectDate: 'Выберите дату', events: 'событий',
+      noEventsOnDate: 'На эту дату нет запланированных мероприятий.', clickDate: 'Нажмите на дату чтобы увидеть мероприятия.',
+      upcomingEvents: 'Предстоящие Мероприятия', noUpcoming: 'Нет предстоящих мероприятий в ближайшие 30 дней.',
+      addToCalendar: 'Добавить в Календарь', volunteerOpp: 'Возможность Волонтёрства',
+      sun: 'Вс', mon: 'Пн', tue: 'Вт', wed: 'Ср', thu: 'Чт', fri: 'Пт', sat: 'Сб',
+    },
     footer: { serving: 'Служим сообществу с любовью ❤️' },
     common: { loading: 'Загрузка...', save: 'Сохранить', cancel: 'Отмена', delete: 'Удалить', edit: 'Редактировать', create: 'Создать', update: 'Обновить', submit: 'Отправить', search: 'Поиск', close: 'Закрыть', confirm: 'Подтвердить', error: 'Ошибка', success: 'Успех', logout: 'Выход', login: 'Вход', admin: 'Админ', back: 'Назад', add: 'Добавить', yes: 'Да', no: 'Нет' },
     announcements: {
