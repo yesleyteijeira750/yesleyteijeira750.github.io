@@ -7,34 +7,19 @@ import { Label } from "@/components/ui/label";
 import ResponsiveSelect from "@/components/ui/ResponsiveSelect";
 import { SelectItem } from "@/components/ui/select";
 import { base44 } from "@/api/base44Client";
-import { X, Loader2, Image as ImageIcon, Clock } from "lucide-react";
+import { Loader2, Clock } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
 import { useLanguage } from "@/components/i18n/LanguageProvider";
+import ImageUploader from "@/components/uploads/ImageUploader";
 
 export default function AnnouncementForm({ announcement, onSubmit, onCancel }) {
   const { t } = useLanguage();
   const [formData, setFormData] = React.useState(
     announcement || { title: "", date: "", start_time: "", end_time: "", description: "", category: "news", image_url: "", is_pinned: false, address: "", reminder_sent: false }
   );
-  const [uploading, setUploading] = React.useState(false);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const { toast } = useToast();
-
-  const handleFileUpload = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    if (!file.type.startsWith('image/')) { toast({ title: t('announcementForm.invalidFile'), description: t('announcementForm.invalidFileDesc'), variant: "destructive" }); return; }
-    if (file.size > 10 * 1024 * 1024) { toast({ title: t('announcementForm.fileTooLarge'), description: t('announcementForm.fileTooLargeDesc'), variant: "destructive" }); return; }
-    setUploading(true);
-    try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
-      setFormData({ ...formData, image_url: file_url });
-      toast({ title: `✅ ${t('announcementForm.uploaded')}`, description: t('announcementForm.uploadedDesc') });
-    } catch (error) {
-      toast({ title: t('announcementForm.uploadFailed'), description: t('announcementForm.uploadFailedDesc'), variant: "destructive" });
-    } finally { setUploading(false); e.target.value = ''; }
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault(); setIsSubmitting(true);
@@ -91,19 +76,10 @@ export default function AnnouncementForm({ announcement, onSubmit, onCancel }) {
           </div>
           <div className="space-y-2">
             <Label className="text-[#5C2E0F]">{t('announcementForm.featuredImage')}</Label>
-            {formData.image_url ? (
-              <div className="relative">
-                <img src={formData.image_url} alt="Preview" className="w-full h-48 object-cover rounded-lg border border-amber-300" />
-                <Button type="button" variant="destructive" size="icon" className="absolute top-2 right-2" onClick={() => setFormData({ ...formData, image_url: "" })}><X className="w-4 h-4" /></Button>
-              </div>
-            ) : (
-              <div className="border-2 border-dashed border-amber-300 rounded-lg p-8 text-center hover:border-[#8B4513] transition-colors bg-[#F5EFE6]/30">
-                <input type="file" accept="image/*" onChange={handleFileUpload} className="hidden" id="file-upload" disabled={uploading} />
-                <label htmlFor="file-upload" className="cursor-pointer flex flex-col items-center gap-2">
-                  {uploading ? (<><Loader2 className="w-8 h-8 text-[#8B4513] animate-spin" /><span className="text-sm text-[#8B4513]">{t('announcementForm.uploading')}</span></>) : (<><ImageIcon className="w-8 h-8 text-[#8B4513]" /><span className="text-sm text-[#8B4513]">{t('announcementForm.clickUpload')}</span><span className="text-xs text-[#8B4513]/70">{t('announcementForm.fileHint')}</span></>)}
-                </label>
-              </div>
-            )}
+            <ImageUploader
+              value={formData.image_url}
+              onChange={(url) => setFormData({ ...formData, image_url: url })}
+            />
           </div>
           <div className="flex items-center justify-between p-4 bg-[#F5EFE6] rounded-lg border border-amber-200">
             <div className="flex flex-col gap-1">
@@ -119,7 +95,7 @@ export default function AnnouncementForm({ announcement, onSubmit, onCancel }) {
           )}
           <div className="flex gap-3 pt-4">
             <Button type="button" variant="outline" onClick={onCancel} className="flex-1 border-amber-300 hover:bg-amber-100 text-[#8B4513]" disabled={isSubmitting}>{t('common.cancel')}</Button>
-            <Button type="submit" disabled={isSubmitting || uploading} className="flex-1 bg-gradient-to-r from-[#8B4513] to-[#D2691E] hover:from-[#5C2E0F] hover:to-[#A0522D] text-white">
+            <Button type="submit" disabled={isSubmitting} className="flex-1 bg-gradient-to-r from-[#8B4513] to-[#D2691E] hover:from-[#5C2E0F] hover:to-[#A0522D] text-white">
               {isSubmitting ? (<><Loader2 className="w-4 h-4 mr-2 animate-spin" />{t('announcementForm.saving')}</>) : announcement ? t('announcementForm.updateBtn') : t('announcementForm.createBtn')}
             </Button>
           </div>
