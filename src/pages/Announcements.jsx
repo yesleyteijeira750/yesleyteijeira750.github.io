@@ -162,9 +162,9 @@ export default function AnnouncementsPage() {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#8B4513]/50 w-5 h-5" />
             <Input placeholder={t('announcements.searchPlaceholder')} value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="pl-10 border-amber-300 focus:border-[#8B4513] bg-white" />
           </div>
-          <div className="flex gap-3">
+          <div className="flex gap-3 flex-wrap">
             <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-              <SelectTrigger className="w-[200px] border-amber-300 bg-white">
+              <SelectTrigger className="w-[180px] border-amber-300 bg-white">
                 <Filter className="w-4 h-4 mr-2" />
                 <SelectValue placeholder={t('announcements.allCategories')} />
               </SelectTrigger>
@@ -178,9 +178,10 @@ export default function AnnouncementsPage() {
               </SelectContent>
             </Select>
             {user?.role === 'admin' && (
-              <Button onClick={() => setShowForm(true)} disabled={isSendingEmails} className="bg-gradient-to-r from-[#8B4513] to-[#D2691E] hover:from-[#5C2E0F] hover:to-[#A0522D] text-white shadow-lg hover:shadow-xl transition-all">
-                <Plus className="w-5 h-5 mr-2" />
-                {t('announcements.newAnnouncement')}
+              <Button onClick={() => setShowForm(true)} disabled={isSendingEmails} className="bg-gradient-to-r from-[#8B4513] to-[#D2691E] hover:from-[#5C2E0F] hover:to-[#A0522D] text-white shadow-lg hover:shadow-xl transition-all text-sm">
+                <Plus className="w-4 h-4 mr-1" />
+                <span className="hidden sm:inline">{t('announcements.newAnnouncement')}</span>
+                <span className="sm:hidden">{t('common.add')}</span>
               </Button>
             )}
           </div>

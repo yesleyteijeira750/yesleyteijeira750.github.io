@@ -77,10 +77,10 @@ export default function AnnouncementCard({ announcement, index, onDelete, user }
               <img src={displayImage} alt={announcement.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
             </div>
-            <CardContent className="p-6 flex flex-col flex-1">
-              <div className="flex items-start justify-between gap-3 mb-3">
-                <Badge variant="outline" className={`${config.color} border font-medium text-xs sm:text-sm`}><CategoryIcon className="w-3 h-3 mr-1" />{config.label}</Badge>
-                <div className="flex items-center gap-1 text-xs sm:text-sm text-[#8B4513]"><Calendar className="w-4 h-4" />{format(new Date(announcement.date), "MMM d, yyyy")}</div>
+            <CardContent className="p-4 sm:p-6 flex flex-col flex-1">
+              <div className="flex items-start justify-between gap-2 mb-3">
+                <Badge variant="outline" className={`${config.color} border font-medium text-xs flex-shrink-0`}><CategoryIcon className="w-3 h-3 mr-1" />{config.label}</Badge>
+                <div className="flex items-center gap-1 text-xs text-[#8B4513] flex-shrink-0"><Calendar className="w-3 h-3" />{format(new Date(announcement.date), "MMM d, yyyy")}</div>
               </div>
               {(announcement.start_time || announcement.end_time) && (
                 <div className="flex items-center gap-2 text-sm text-[#8B4513] mb-3 bg-blue-50 px-3 py-2 rounded-lg border border-blue-200">
