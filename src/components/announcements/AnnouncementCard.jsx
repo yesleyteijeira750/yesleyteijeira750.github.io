@@ -73,7 +73,7 @@ export default function AnnouncementCard({ announcement, index, onDelete, user }
                 <Badge className="bg-[#8B4513] text-white border-none shadow-lg"><Pin className="w-3 h-3 mr-1 fill-white" />{t('announcements.pinned')}</Badge>
               </div>
             )}
-            <div className="relative h-48 overflow-hidden bg-gradient-to-br from-amber-100 to-[#F5EFE6]">
+            <div className="relative h-40 sm:h-48 overflow-hidden bg-gradient-to-br from-amber-100 to-[#F5EFE6]">
               <img src={displayImage} alt={announcement.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
             </div>

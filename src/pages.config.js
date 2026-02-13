@@ -63,6 +63,7 @@ import Reviews from './pages/Reviews';
 import Settings from './pages/Settings';
 import Stories from './pages/Stories';
 import Volunteers from './pages/Volunteers';
+import NotificationSettings from './pages/NotificationSettings';
 import __Layout from './Layout.jsx';
 
 
@@ -83,6 +84,7 @@ export const PAGES = {
     "Settings": Settings,
     "Stories": Stories,
     "Volunteers": Volunteers,
+    "NotificationSettings": NotificationSettings,
 }
 
 export const pagesConfig = {

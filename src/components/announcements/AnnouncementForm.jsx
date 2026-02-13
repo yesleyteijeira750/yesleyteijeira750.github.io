@@ -42,7 +42,14 @@ export default function AnnouncementForm({ announcement, onSubmit, onCancel }) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="date" className="text-[#5C2E0F]">{t('announcementForm.dateLabel')}</Label>
-              <Input id="date" type="date" value={formData.date} onChange={(e) => setFormData({ ...formData, date: e.target.value })} required className="border-amber-300 focus:border-[#8B4513]" />
+              <Input id="date" type="date" value={formData.date} onChange={(e) => {
+                const val = e.target.value;
+                if (val && /^\d{4}-\d{2}-\d{2}$/.test(val)) {
+                  setFormData({ ...formData, date: val });
+                } else {
+                  setFormData({ ...formData, date: val });
+                }
+              }} required className="border-amber-300 focus:border-[#8B4513]" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="category" className="text-[#5C2E0F]">{t('announcementForm.categoryLabel')}</Label>
