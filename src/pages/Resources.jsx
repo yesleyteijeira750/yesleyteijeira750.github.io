@@ -14,6 +14,7 @@ import { MapContainer, TileLayer } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import ResourceMarker from '@/components/resources/ResourceMarker';
 import { useLanguage } from "@/components/i18n/LanguageProvider";
+import { useAutoTranslate } from "@/components/i18n/useAutoTranslate";
 
 export default function ResourcesPage() {
   const { t } = useLanguage();
@@ -29,6 +30,8 @@ export default function ResourcesPage() {
   const [showMapDialog, setShowMapDialog] = useState(false);
   const [reviewForm, setReviewForm] = useState({ rating: 5, comment: "" });
   const { toast } = useToast();
+  const allTexts = resources.flatMap(r => [r.title, r.description, r.contact_name].filter(Boolean));
+  const { tt } = useAutoTranslate(allTexts);
 
   useEffect(() => { loadData(); }, []);
   useEffect(() => { filterResources(); }, [resources, searchTerm, categoryFilter]);
@@ -112,14 +115,14 @@ export default function ResourcesPage() {
                         {resource.is_verified && <Badge className="bg-green-600 text-white"><CheckCircle className="w-3 h-3 mr-1" />{t('resources.verified')}</Badge>}
                         {resource.is_featured && <Badge className="bg-amber-600 text-white"><Star className="w-3 h-3 mr-1" />{t('resources.featured')}</Badge>}
                       </div>
-                      <CardTitle className="text-[#5C2E0F] dark:text-white">{resource.title}</CardTitle>
+                      <CardTitle className="text-[#5C2E0F] dark:text-white">{tt(resource.title)}</CardTitle>
                       {resourceReviews.length > 0 && <div className="flex items-center gap-1 mt-2"><Star className="w-4 h-4 fill-amber-400 text-amber-400" /><span className="text-sm font-medium text-[#8B4513] dark:text-white">{avgRating}</span><span className="text-sm text-[#8B4513] dark:text-white">({resourceReviews.length} {t('resources.reviews')})</span></div>}
                     </div></div>
                   </CardHeader>
                   <CardContent className="p-6">
-                    <p className="text-[#8B4513] dark:text-white mb-4">{resource.description}</p>
+                    <p className="text-[#8B4513] dark:text-white mb-4">{tt(resource.description)}</p>
                     <div className="space-y-2">
-                      {resource.contact_name && <div className="text-sm text-[#8B4513] dark:text-white"><strong>{t('resources.contactLabel')}</strong> {resource.contact_name}</div>}
+                      {resource.contact_name && <div className="text-sm text-[#8B4513] dark:text-white"><strong>{t('resources.contactLabel')}</strong> {tt(resource.contact_name)}</div>}
                       {resource.phone && <a href={`tel:${resource.phone}`} className="flex items-center gap-2 text-sm text-[#8B4513] dark:text-white hover:text-[#5C2E0F]"><Phone className="w-4 h-4" />{resource.phone}</a>}
                       {resource.email && <a href={`mailto:${resource.email}`} className="flex items-center gap-2 text-sm text-[#8B4513] dark:text-white hover:text-[#5C2E0F]"><Mail className="w-4 h-4" />{resource.email}</a>}
                       {resource.website && <a href={resource.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm text-[#8B4513] dark:text-white hover:text-[#5C2E0F]"><Globe className="w-4 h-4" />{t('resources.visitWebsite')}</a>}

@@ -29,6 +29,7 @@ import { useToast } from "@/components/ui/use-toast";
 
 import ShareButton from "../components/announcements/ShareButton";
 import AnnouncementForm from "../components/announcements/AnnouncementForm";
+import { useAutoTranslate } from "@/components/i18n/useAutoTranslate";
 
 const categoryConfig = {
   food_distribution: {
@@ -61,6 +62,7 @@ export default function AnnouncementDetailPage() {
   const [isEditing, setIsEditing] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const { toast } = useToast();
+  const { tt } = useAutoTranslate([announcement?.title, announcement?.description].filter(Boolean));
 
   useEffect(() => {
     loadData();
@@ -247,7 +249,7 @@ export default function AnnouncementDetailPage() {
 
           {/* Title */}
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#5C2E0F] mb-6 leading-tight break-words">
-            {announcement.title}
+            {tt(announcement.title)}
           </h1>
 
           {/* Meta Info with Admin Badge */}
@@ -273,7 +275,7 @@ export default function AnnouncementDetailPage() {
           {/* Description */}
           <div className="prose prose-lg max-w-none mb-8">
             <p className="text-[#8B4513] leading-relaxed whitespace-pre-wrap text-base sm:text-lg break-words">
-              {announcement.description}
+              {tt(announcement.description)}
             </p>
           </div>
 

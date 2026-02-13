@@ -11,6 +11,7 @@ import { base44 } from "@/api/base44Client";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useToast } from "@/components/ui/use-toast";
 import { useLanguage } from "@/components/i18n/LanguageProvider";
+import { useAutoTranslate } from "@/components/i18n/useAutoTranslate";
 
 const DEFAULT_IMAGE = "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68e4114143e84ad0df65d068/61281850d_Clipped_image_20251006_150708.png";
 
@@ -18,6 +19,7 @@ export default function AnnouncementCard({ announcement, index, onDelete, user }
   const [showConfirmDialog, setShowConfirmDialog] = React.useState(false);
   const { toast } = useToast();
   const { t } = useLanguage();
+  const { tt } = useAutoTranslate([announcement.title, announcement.description]);
 
   const categoryConfig = {
     food_distribution: { label: t('announcements.food_distribution'), icon: Package, color: "bg-green-100 text-green-700 border-green-200" },
@@ -88,8 +90,8 @@ export default function AnnouncementCard({ announcement, index, onDelete, user }
                   <span className="font-medium">{announcement.start_time && formatTime(announcement.start_time)}{announcement.start_time && announcement.end_time && ' - '}{announcement.end_time && formatTime(announcement.end_time)}</span>
                 </div>
               )}
-              <h3 className="text-lg sm:text-xl font-bold text-[#5C2E0F] mb-3 group-hover:text-[#8B4513] transition-colors line-clamp-2 break-words">{announcement.title}</h3>
-              <p className="text-[#8B4513]/80 line-clamp-3 mb-4 leading-relaxed text-sm sm:text-base break-words flex-1">{announcement.description}</p>
+              <h3 className="text-lg sm:text-xl font-bold text-[#5C2E0F] mb-3 group-hover:text-[#8B4513] transition-colors line-clamp-2 break-words">{tt(announcement.title)}</h3>
+              <p className="text-[#8B4513]/80 line-clamp-3 mb-4 leading-relaxed text-sm sm:text-base break-words flex-1">{tt(announcement.description)}</p>
               {announcement.address && (
                 <Button onClick={handleMapClick} variant="outline" size="sm" className="w-full mb-4 border-green-300 text-green-700 hover:bg-green-50 hover:border-green-400 transition-all">
                   <MapPin className="w-4 h-4 mr-2" />{t('announcements.viewOnMap')}

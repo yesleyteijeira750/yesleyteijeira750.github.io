@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { format, parseISO } from "date-fns";
+import { useAutoTranslate } from "@/components/i18n/useAutoTranslate";
 
 const variants = {
   enter: (direction) => ({ x: direction > 0 ? 300 : -300, opacity: 0 }),
@@ -11,6 +12,8 @@ const variants = {
 };
 
 export default function PhotoCarousel({ photos }) {
+  const allTexts = photos.flatMap(p => [p.title, p.description].filter(Boolean));
+  const { tt } = useAutoTranslate(allTexts);
   const [current, setCurrent] = useState(0);
   const [direction, setDirection] = useState(1);
   const [paused, setPaused] = useState(false);
@@ -81,12 +84,12 @@ export default function PhotoCarousel({ photos }) {
 
         {/* Photo info */}
         <div className="absolute bottom-0 inset-x-0 p-4 sm:p-6 text-white z-10">
-          <h3 className="text-lg sm:text-xl font-bold drop-shadow-lg">{photo.title}</h3>
+          <h3 className="text-lg sm:text-xl font-bold drop-shadow-lg">{tt(photo.title)}</h3>
           {photo.event_date && (
             <p className="text-sm text-white/80 mt-1">{format(parseISO(photo.event_date + "T00:00:00"), 'MMMM d, yyyy')}</p>
           )}
           {photo.description && (
-            <p className="text-sm text-white/70 mt-1 line-clamp-2">{photo.description}</p>
+            <p className="text-sm text-white/70 mt-1 line-clamp-2">{tt(photo.description)}</p>
           )}
         </div>
 
