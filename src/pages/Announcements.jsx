@@ -15,9 +15,10 @@ import { useLanguage } from "@/components/i18n/LanguageProvider";
 
 import AnnouncementCard from "../components/announcements/AnnouncementCard";
 import AnnouncementForm from "../components/announcements/AnnouncementForm";
+import WelcomeModal from "../components/welcome/WelcomeModal";
 
 export default function AnnouncementsPage() {
-  const { t } = useLanguage();
+  const { t, changeLanguage } = useLanguage();
   const [announcements, setAnnouncements] = useState([]);
   const [filteredAnnouncements, setFilteredAnnouncements] = useState([]);
   const [user, setUser] = useState(null);
@@ -28,6 +29,7 @@ export default function AnnouncementsPage() {
   const [isSendingEmails, setIsSendingEmails] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [pullDistance, setPullDistance] = useState(0);
+  const [showWelcome, setShowWelcome] = useState(() => !localStorage.getItem("welcome_seen"));
   const { toast } = useToast();
 
   const startY = React.useRef(0);
@@ -120,8 +122,14 @@ export default function AnnouncementsPage() {
     }
   };
 
+  const handleWelcomeComplete = (lang) => {
+    changeLanguage(lang);
+    setShowWelcome(false);
+  };
+
   return (
     <div className="min-h-screen">
+      {showWelcome && <WelcomeModal onComplete={handleWelcomeComplete} />}
       {pullDistance > 0 && (
         <div className="fixed top-16 left-1/2 transform -translate-x-1/2 z-[60] transition-opacity" style={{ opacity: Math.min(pullDistance / 80, 1) }}>
           <div className={`bg-white dark:bg-card rounded-full p-3 shadow-lg border-2 border-amber-300 dark:border-amber-700 ${isRefreshing ? 'animate-spin' : ''}`}>
