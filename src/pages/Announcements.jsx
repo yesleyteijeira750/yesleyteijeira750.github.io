@@ -143,13 +143,13 @@ export default function AnnouncementsPage() {
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-[#8B4513] via-[#A0522D] to-[#D2691E] text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=1200')] bg-cover bg-center opacity-10"></div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-20">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="text-center">
             <div className="inline-flex items-center justify-center w-20 h-20 bg-white/20 backdrop-blur-sm rounded-3xl mb-6">
               <Megaphone className="w-10 h-10" />
             </div>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight">{t('announcements.heroTitle')}</h1>
-            <p className="text-xl sm:text-2xl text-white/90 max-w-3xl mx-auto leading-relaxed">{t('announcements.heroSubtitle')}</p>
+            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-bold mb-4 leading-tight">{t('announcements.heroTitle')}</h1>
+            <p className="text-base sm:text-xl text-white/90 max-w-3xl mx-auto leading-relaxed">{t('announcements.heroSubtitle')}</p>
           </motion.div>
         </div>
         <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-amber-50 to-transparent"></div>
