@@ -56,6 +56,7 @@ import Calendar from './pages/Calendar';
 import CheckInSystem from './pages/CheckInSystem';
 import Contact from './pages/Contact';
 import Gallery from './pages/Gallery';
+import NotificationSettings from './pages/NotificationSettings';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import Profile from './pages/Profile';
 import Resources from './pages/Resources';
@@ -63,7 +64,6 @@ import Reviews from './pages/Reviews';
 import Settings from './pages/Settings';
 import Stories from './pages/Stories';
 import Volunteers from './pages/Volunteers';
-import NotificationSettings from './pages/NotificationSettings';
 import __Layout from './Layout.jsx';
 
 
@@ -77,6 +77,7 @@ export const PAGES = {
     "CheckInSystem": CheckInSystem,
     "Contact": Contact,
     "Gallery": Gallery,
+    "NotificationSettings": NotificationSettings,
     "PrivacyPolicy": PrivacyPolicy,
     "Profile": Profile,
     "Resources": Resources,
@@ -84,7 +85,6 @@ export const PAGES = {
     "Settings": Settings,
     "Stories": Stories,
     "Volunteers": Volunteers,
-    "NotificationSettings": NotificationSettings,
 }
 
 export const pagesConfig = {

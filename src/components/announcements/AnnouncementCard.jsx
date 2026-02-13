@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar, Package, Users, DollarSign, Newspaper, ArrowRight, Pin, Trash2, Shield, MapPin, Clock } from "lucide-react";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { motion } from "framer-motion";
@@ -80,7 +80,7 @@ export default function AnnouncementCard({ announcement, index, onDelete, user }
             <CardContent className="p-4 sm:p-6 flex flex-col flex-1">
               <div className="flex items-start justify-between gap-2 mb-3">
                 <Badge variant="outline" className={`${config.color} border font-medium text-xs flex-shrink-0`}><CategoryIcon className="w-3 h-3 mr-1" />{config.label}</Badge>
-                <div className="flex items-center gap-1 text-xs text-[#8B4513] flex-shrink-0"><Calendar className="w-3 h-3" />{format(new Date(announcement.date), "MMM d, yyyy")}</div>
+                <div className="flex items-center gap-1 text-xs text-[#8B4513] flex-shrink-0"><Calendar className="w-3 h-3" />{format(parseISO(announcement.date + "T00:00:00"), "MMM d, yyyy")}</div>
               </div>
               {(announcement.start_time || announcement.end_time) && (
                 <div className="flex items-center gap-2 text-sm text-[#8B4513] mb-3 bg-blue-50 px-3 py-2 rounded-lg border border-blue-200">

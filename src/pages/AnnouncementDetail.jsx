@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Calendar, Edit, Trash2, Pin, Shield } from "lucide-react";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Badge } from "@/components/ui/badge";
@@ -241,7 +241,7 @@ export default function AnnouncementDetailPage() {
             )}
             <div className="flex items-center gap-2 text-[#8B4513] text-sm ml-auto">
               <Calendar className="w-4 h-4" />
-              {format(new Date(announcement.date), "MMMM d, yyyy")}
+              {format(parseISO(announcement.date + "T00:00:00"), "MMMM d, yyyy")}
             </div>
           </div>
 
