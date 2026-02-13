@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 
 const variants = {
   enter: (direction) => ({ x: direction > 0 ? 300 : -300, opacity: 0 }),
@@ -83,7 +83,7 @@ export default function PhotoCarousel({ photos }) {
         <div className="absolute bottom-0 inset-x-0 p-4 sm:p-6 text-white z-10">
           <h3 className="text-lg sm:text-xl font-bold drop-shadow-lg">{photo.title}</h3>
           {photo.event_date && (
-            <p className="text-sm text-white/80 mt-1">{format(new Date(photo.event_date), 'MMMM d, yyyy')}</p>
+            <p className="text-sm text-white/80 mt-1">{format(parseISO(photo.event_date + "T00:00:00"), 'MMMM d, yyyy')}</p>
           )}
           {photo.description && (
             <p className="text-sm text-white/70 mt-1 line-clamp-2">{photo.description}</p>
