@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Users, Megaphone, Shield, Trash2, Plus, Heart, Camera, BookOpen, CheckCircle, Star, User } from "lucide-react";
+import { Users, Megaphone, Shield, Trash2, Plus, Heart, Camera, BookOpen, CheckCircle, Star, User, CheckSquare, Square, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { useToast } from "@/components/ui/use-toast";
@@ -38,6 +38,12 @@ export default function AdminPortalPage() {
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleteType, setDeleteType] = useState(null);
   const [formData, setFormData] = useState({});
+
+  // Bulk photo delete
+  const [photoSelectionMode, setPhotoSelectionMode] = useState(false);
+  const [selectedPhotoIds, setSelectedPhotoIds] = useState(new Set());
+  const [showBulkDeleteDialog, setShowBulkDeleteDialog] = useState(false);
+  const [isBulkDeleting, setIsBulkDeleting] = useState(false);
 
   useEffect(() => { checkAdminAccess(); }, []);
 
@@ -97,6 +103,27 @@ export default function AdminPortalPage() {
   const toggleField = async (entity, type, field) => {
     await entityMap[type].update(entity.id, { [field]: !entity[field] });
     toast({ title: "✅ Updated" });
+    await loadAllData();
+  };
+
+  const togglePhotoSelection = (id) => {
+    setSelectedPhotoIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  };
+
+  const handleBulkDeletePhotos = async () => {
+    setIsBulkDeleting(true);
+    for (const id of selectedPhotoIds) {
+      await base44.entities.Photo.delete(id);
+    }
+    toast({ title: "✅ Deleted", description: `${selectedPhotoIds.size} photo(s) deleted.` });
+    setSelectedPhotoIds(new Set());
+    setPhotoSelectionMode(false);
+    setShowBulkDeleteDialog(false);
+    setIsBulkDeleting(false);
     await loadAllData();
   };
 
@@ -185,11 +212,81 @@ export default function AdminPortalPage() {
           </TabsContent>
 
           <TabsContent value="photos">
-            <AdminListSection title="Photos" items={photos} type="photo"
-              onAdd={() => openEdit(null, "photo")}
-              onEdit={(item) => openEdit(item, "photo")}
-              onDelete={(item) => openDelete(item, "photo")}
-            />
+            <div className="space-y-4">
+              <div className="flex flex-wrap gap-3 items-center justify-between">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Photos ({photos.length})</h2>
+                <div className="flex gap-2">
+                  {photoSelectionMode ? (
+                    <>
+                      <Button variant="outline" size="sm" onClick={() => {
+                        const allSelected = photos.every(p => selectedPhotoIds.has(p.id));
+                        if (allSelected) { setSelectedPhotoIds(new Set()); }
+                        else { setSelectedPhotoIds(new Set(photos.map(p => p.id))); }
+                      }}>
+                        {photos.every(p => selectedPhotoIds.has(p.id)) ? <CheckSquare className="w-4 h-4 mr-1" /> : <Square className="w-4 h-4 mr-1" />}
+                        All
+                      </Button>
+                      <Button variant="outline" size="sm" onClick={() => { setPhotoSelectionMode(false); setSelectedPhotoIds(new Set()); }}>
+                        <X className="w-4 h-4 mr-1" /> Cancel
+                      </Button>
+                      {selectedPhotoIds.size > 0 && (
+                        <Button variant="destructive" size="sm" onClick={() => setShowBulkDeleteDialog(true)}>
+                          <Trash2 className="w-4 h-4 mr-1" /> Delete {selectedPhotoIds.size}
+                        </Button>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      <Button variant="outline" size="sm" onClick={() => setPhotoSelectionMode(true)} className="text-[#8B4513]">
+                        <CheckSquare className="w-4 h-4 mr-1" /> Select
+                      </Button>
+                      <Button size="sm" onClick={() => openEdit(null, "photo")} className="bg-[#8B4513] hover:bg-[#5C2E0F]">
+                        <Plus className="w-4 h-4 mr-1" /> Add
+                      </Button>
+                    </>
+                  )}
+                </div>
+              </div>
+
+              {photoSelectionMode ? (
+                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2">
+                  {photos.map(photo => (
+                    <button key={photo.id} onClick={() => togglePhotoSelection(photo.id)}
+                      className="relative aspect-square rounded-lg overflow-hidden border-2 transition-all"
+                      style={{ borderColor: selectedPhotoIds.has(photo.id) ? '#8B4513' : 'transparent' }}>
+                      <img src={photo.image_url} alt={photo.title} className="w-full h-full object-cover" />
+                      <div className={`absolute top-1 right-1 w-6 h-6 rounded-full flex items-center justify-center ${selectedPhotoIds.has(photo.id) ? 'bg-[#8B4513] text-white' : 'bg-black/40 text-white'}`}>
+                        {selectedPhotoIds.has(photo.id) ? <CheckSquare className="w-3.5 h-3.5" /> : <Square className="w-3.5 h-3.5" />}
+                      </div>
+                      <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-[10px] px-1 py-0.5 truncate">
+                        {photo.title}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <AdminListSection title="" items={photos} type="photo"
+                  onEdit={(item) => openEdit(item, "photo")}
+                  onDelete={(item) => openDelete(item, "photo")}
+                />
+              )}
+            </div>
+
+            {/* Bulk Delete Dialog */}
+            <AlertDialog open={showBulkDeleteDialog} onOpenChange={setShowBulkDeleteDialog}>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Delete {selectedPhotoIds.size} photo(s)?</AlertDialogTitle>
+                  <AlertDialogDescription>This action cannot be undone.</AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel disabled={isBulkDeleting}>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleBulkDeletePhotos} disabled={isBulkDeleting} className="bg-red-600 hover:bg-red-700">
+                    {isBulkDeleting ? "Deleting..." : "Delete"}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </TabsContent>
 
           <TabsContent value="volunteers">
