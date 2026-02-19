@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { base44 } from "@/api/base44Client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Camera, Plus, ChevronLeft, ChevronRight } from "lucide-react";
+import { Camera, Plus, Trash2, CheckSquare, Square, X } from "lucide-react";
 import { motion } from "framer-motion";
 import PhotoCarousel from "@/components/gallery/PhotoCarousel";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import ResponsiveSelect from "@/components/ui/ResponsiveSelect";
 import { SelectItem } from "@/components/ui/select";
-import { format } from "date-fns";
 import { useLanguage } from "@/components/i18n/LanguageProvider";
 import ImageUploader from "@/components/uploads/ImageUploader";
 
@@ -30,6 +30,12 @@ export default function GalleryPage() {
   const startY = React.useRef(0);
   const isPulling = React.useRef(false);
   const [formData, setFormData] = useState({ title: '', image_url: '', event_date: '', category: 'other', description: '' });
+
+  // Selection mode
+  const [selectionMode, setSelectionMode] = useState(false);
+  const [selectedPhotoIds, setSelectedPhotoIds] = useState(new Set());
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => { loadData(); }, []);
 
@@ -54,33 +60,70 @@ export default function GalleryPage() {
     setFormData({ ...formData, image_url: urls[0] });
   };
 
-  const goToPrevImage = () => {
-    const newIdx = currentImageIndex === 0 ? selectedImages.length - 1 : currentImageIndex - 1;
-    setCurrentImageIndex(newIdx);
-    setFormData(fd => ({ ...fd, image_url: selectedImages[newIdx] }));
-  };
-
-  const goToNextImage = () => {
-    const newIdx = (currentImageIndex + 1) % selectedImages.length;
-    setCurrentImageIndex(newIdx);
-    setFormData(fd => ({ ...fd, image_url: selectedImages[newIdx] }));
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      if (selectedImages.length > 1) {
-        for (const url of selectedImages) await base44.entities.Photo.create({ ...formData, image_url: url });
-        toast({ title: `✅ ${t('gallery.photosAdded')}`, description: t('gallery.photosAddedDesc').replace('{count}', selectedImages.length) });
-      } else {
-        await base44.entities.Photo.create(formData);
-        toast({ title: `✅ ${t('gallery.photoAdded')}`, description: t('gallery.photoAddedDesc') });
-      }
-      setShowForm(false); setFormData({ title: '', image_url: '', event_date: '', category: 'other', description: '' }); setSelectedImages([]); setCurrentImageIndex(0); loadData();
-    } catch { toast({ title: `❌ ${t('common.error')}`, description: t('gallery.addError'), variant: "destructive" }); }
+    if (selectedImages.length > 1) {
+      for (const url of selectedImages) await base44.entities.Photo.create({ ...formData, image_url: url });
+      toast({ title: `✅ ${t('gallery.photosAdded')}`, description: t('gallery.photosAddedDesc').replace('{count}', selectedImages.length) });
+    } else {
+      await base44.entities.Photo.create(formData);
+      toast({ title: `✅ ${t('gallery.photoAdded')}`, description: t('gallery.photoAddedDesc') });
+    }
+    setShowForm(false);
+    setFormData({ title: '', image_url: '', event_date: '', category: 'other', description: '' });
+    setSelectedImages([]);
+    setCurrentImageIndex(0);
+    loadData();
   };
 
   const filteredPhotos = categoryFilter === "all" ? photos : photos.filter(p => p.category === categoryFilter);
+
+  // Group photos by title (batch uploads share same title)
+  const photoGroups = useMemo(() => {
+    const groups = [];
+    const map = new Map();
+    filteredPhotos.forEach(photo => {
+      const key = photo.title || photo.id;
+      if (!map.has(key)) {
+        map.set(key, []);
+        groups.push(key);
+      }
+      map.get(key).push(photo);
+    });
+    return groups.map(key => ({ title: key, photos: map.get(key) }));
+  }, [filteredPhotos]);
+
+  const togglePhotoSelection = (id) => {
+    setSelectedPhotoIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  };
+
+  const selectAllInGroup = (groupPhotos) => {
+    setSelectedPhotoIds(prev => {
+      const next = new Set(prev);
+      const allSelected = groupPhotos.every(p => next.has(p.id));
+      groupPhotos.forEach(p => { if (allSelected) next.delete(p.id); else next.add(p.id); });
+      return next;
+    });
+  };
+
+  const handleBulkDelete = async () => {
+    setIsDeleting(true);
+    for (const id of selectedPhotoIds) {
+      await base44.entities.Photo.delete(id);
+    }
+    toast({ title: "✅ Deleted", description: `${selectedPhotoIds.size} photo(s) deleted.` });
+    setSelectedPhotoIds(new Set());
+    setSelectionMode(false);
+    setShowDeleteDialog(false);
+    setIsDeleting(false);
+    loadData();
+  };
+
+  const isAdmin = user?.role === 'admin';
 
   return (
     <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8 pb-24">
@@ -98,7 +141,7 @@ export default function GalleryPage() {
           <p className="text-[#8B4513] text-lg">{t('gallery.subtitle')}</p>
         </div>
 
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex flex-wrap justify-between items-center gap-3 mb-6">
           <ResponsiveSelect value={categoryFilter} onValueChange={setCategoryFilter} placeholder={t('gallery.allPhotos')} label={t('gallery.filterLabel')} triggerClassName="w-48 border-amber-300">
             <SelectItem value="all">{t('gallery.allPhotos')}</SelectItem>
             <SelectItem value="distribution">{t('gallery.distribution')}</SelectItem>
@@ -107,15 +150,64 @@ export default function GalleryPage() {
             <SelectItem value="facility">{t('gallery.facility')}</SelectItem>
             <SelectItem value="other">{t('gallery.other')}</SelectItem>
           </ResponsiveSelect>
-          {user?.role === 'admin' && (
-            <Button onClick={() => setShowForm(true)} className="bg-gradient-to-r from-[#8B4513] to-[#D2691E] hover:from-[#5C2E0F] hover:to-[#A0522D]"><Plus className="w-5 h-5 mr-2" />{t('gallery.addPhoto')}</Button>
+          {isAdmin && (
+            <div className="flex gap-2">
+              {selectionMode ? (
+                <>
+                  <Button variant="outline" onClick={() => { setSelectionMode(false); setSelectedPhotoIds(new Set()); }} className="border-amber-300">
+                    <X className="w-4 h-4 mr-1" />{t('common.cancel')}
+                  </Button>
+                  {selectedPhotoIds.size > 0 && (
+                    <Button variant="destructive" onClick={() => setShowDeleteDialog(true)}>
+                      <Trash2 className="w-4 h-4 mr-1" />{selectedPhotoIds.size}
+                    </Button>
+                  )}
+                </>
+              ) : (
+                <>
+                  <Button variant="outline" onClick={() => setSelectionMode(true)} className="border-amber-300 text-[#8B4513]">
+                    <CheckSquare className="w-4 h-4 mr-1" />{t('gallery.select') || 'Select'}
+                  </Button>
+                  <Button onClick={() => setShowForm(true)} className="bg-gradient-to-r from-[#8B4513] to-[#D2691E] hover:from-[#5C2E0F] hover:to-[#A0522D]">
+                    <Plus className="w-5 h-5 mr-2" />{t('gallery.addPhoto')}
+                  </Button>
+                </>
+              )}
+            </div>
           )}
         </div>
 
         {isLoading ? (
           <div className="text-center py-12"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#8B4513] mx-auto" /></div>
-        ) : filteredPhotos.length > 0 ? (
-          <PhotoCarousel photos={filteredPhotos} />
+        ) : photoGroups.length > 0 ? (
+          <div className="space-y-8">
+            {photoGroups.map((group) => (
+              <div key={group.title}>
+                {selectionMode && (
+                  <div className="flex items-center gap-2 mb-2">
+                    <button onClick={() => selectAllInGroup(group.photos)} className="flex items-center gap-2 text-sm text-[#8B4513] hover:text-[#5C2E0F] font-medium">
+                      {group.photos.every(p => selectedPhotoIds.has(p.id)) ? <CheckSquare className="w-4 h-4" /> : <Square className="w-4 h-4" />}
+                      {t('gallery.selectAll') || 'Select all'} ({group.photos.length})
+                    </button>
+                  </div>
+                )}
+                {selectionMode ? (
+                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
+                    {group.photos.map(photo => (
+                      <button key={photo.id} onClick={() => togglePhotoSelection(photo.id)} className="relative aspect-square rounded-lg overflow-hidden border-2 transition-all" style={{ borderColor: selectedPhotoIds.has(photo.id) ? '#8B4513' : 'transparent' }}>
+                        <img src={photo.image_url} alt={photo.title} className="w-full h-full object-cover" />
+                        <div className={`absolute top-1 right-1 w-6 h-6 rounded-full flex items-center justify-center ${selectedPhotoIds.has(photo.id) ? 'bg-[#8B4513] text-white' : 'bg-black/40 text-white'}`}>
+                          {selectedPhotoIds.has(photo.id) ? <CheckSquare className="w-3.5 h-3.5" /> : <Square className="w-3.5 h-3.5" />}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <PhotoCarousel photos={group.photos} />
+                )}
+              </div>
+            ))}
+          </div>
         ) : (
           <Card className="border-amber-200"><CardContent className="p-12 text-center">
             <Camera className="w-16 h-16 text-[#8B4513] opacity-30 mx-auto mb-4" />
@@ -124,6 +216,7 @@ export default function GalleryPage() {
           </CardContent></Card>
         )}
 
+        {/* Upload Dialog */}
         <Dialog open={showForm} onOpenChange={setShowForm}>
           <DialogContent className="bg-[#F5EFE6] max-w-2xl">
             <DialogHeader><DialogTitle className="text-[#5C2E0F]">{t('gallery.dialogTitle')}</DialogTitle></DialogHeader>
@@ -133,36 +226,25 @@ export default function GalleryPage() {
                   <div className="relative">
                     <img src={formData.image_url} alt="Preview" className="max-h-48 w-full object-contain mx-auto rounded-lg" />
                     {selectedImages.length > 1 && (
-                      <>
-                        <button type="button" onClick={goToPrevImage} className="absolute left-1 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-1.5 transition-colors">
-                          <ChevronLeft className="w-5 h-5" />
-                        </button>
-                        <button type="button" onClick={goToNextImage} className="absolute right-1 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-1.5 transition-colors">
-                          <ChevronRight className="w-5 h-5" />
-                        </button>
-                        <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-black/70 text-white px-3 py-1 rounded-full text-sm">
-                          {currentImageIndex + 1} / {selectedImages.length}
-                        </div>
-                      </>
+                      <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-black/70 text-white px-3 py-1 rounded-full text-sm">
+                        {currentImageIndex + 1} / {selectedImages.length}
+                      </div>
                     )}
                   </div>
                   {selectedImages.length > 1 && (
-                    <div className="flex justify-center gap-1.5">
-                      {selectedImages.map((_, i) => (
+                    <div className="flex justify-center gap-1.5 flex-wrap">
+                      {selectedImages.map((url, i) => (
                         <button key={i} type="button" onClick={() => { setCurrentImageIndex(i); setFormData(fd => ({ ...fd, image_url: selectedImages[i] })); }}
-                          className={`w-2 h-2 rounded-full transition-all ${i === currentImageIndex ? 'bg-[#8B4513] scale-125' : 'bg-amber-300'}`} />
+                          className={`w-10 h-10 rounded overflow-hidden border-2 transition-all ${i === currentImageIndex ? 'border-[#8B4513]' : 'border-transparent opacity-60'}`}>
+                          <img src={url} className="w-full h-full object-cover" alt="" />
+                        </button>
                       ))}
                     </div>
                   )}
                   <Button type="button" variant="outline" className="w-full" onClick={() => { setFormData({ ...formData, image_url: '' }); setSelectedImages([]); setCurrentImageIndex(0); }}>{t('gallery.changeImages')}</Button>
                 </div>
               ) : (
-                <ImageUploader
-                  multiple
-                  value=""
-                  onChange={(url) => { setFormData({ ...formData, image_url: url }); setSelectedImages([url]); }}
-                  onMultipleUpload={handleMultipleUpload}
-                />
+                <ImageUploader multiple value="" onChange={(url) => { setFormData({ ...formData, image_url: url }); setSelectedImages([url]); }} onMultipleUpload={handleMultipleUpload} />
               )}
               <Input placeholder={t('gallery.photoTitle')} value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} required />
               <div className="grid sm:grid-cols-2 gap-4">
@@ -185,6 +267,22 @@ export default function GalleryPage() {
             </form>
           </DialogContent>
         </Dialog>
+
+        {/* Bulk Delete Confirmation */}
+        <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete {selectedPhotoIds.size} photo(s)?</AlertDialogTitle>
+              <AlertDialogDescription>This action cannot be undone.</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel disabled={isDeleting}>{t('common.cancel')}</AlertDialogCancel>
+              <AlertDialogAction onClick={handleBulkDelete} disabled={isDeleting} className="bg-red-600 hover:bg-red-700">
+                {isDeleting ? "Deleting..." : "Delete"}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   );
