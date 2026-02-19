@@ -76,7 +76,7 @@ export default function ProfilePage() {
               <div className="flex-1">
                 <h1 className="text-2xl font-bold text-[#5C2E0F] dark:text-white mb-1">{user.full_name}</h1>
                 <p className="text-[#8B4513] dark:text-white mb-2">{user.email}</p>
-                <a href="https://wa.me/19413102786" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm text-[#8B4513] dark:text-white hover:underline"><MessageCircle className="w-4 h-4" />{t('profile.supportChat')} +1 (941) 310-2786</a>
+                <button onClick={() => { const chatBtn = document.querySelector('[data-chatbot-trigger]'); if (chatBtn) chatBtn.click(); }} className="inline-flex items-center gap-2 text-sm text-[#8B4513] dark:text-white hover:underline"><MessageCircle className="w-4 h-4" />{t('profile.supportChat')}</button>
                 {user.role === "admin" && <div className="mt-2"><span className="inline-flex items-center gap-1 text-xs font-medium text-white bg-gradient-to-r from-[#8B4513] to-[#D2691E] dark:from-amber-600 dark:to-amber-800 px-3 py-1 rounded-full"><Shield className="w-3 h-3" />{t('profile.admin')}</span></div>}
               </div>
             </div>

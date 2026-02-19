@@ -369,6 +369,7 @@ Respond now:`
       <motion.button
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
+        data-chatbot-trigger
         onClick={() => setIsOpen(!isOpen)}
         className="fixed bottom-4 sm:bottom-6 right-4 sm:right-6 w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-r from-[#8B4513] to-[#D2691E] text-white rounded-full shadow-2xl flex items-center justify-center z-40 hover:shadow-3xl transition-all"
       >
