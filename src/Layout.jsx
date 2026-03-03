@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Bell, Shield, Menu, X, Home, Info, Phone, CreditCard, Heart, Settings as SettingsIcon, Calendar as CalendarIcon, ArrowLeft, BookOpen, Camera } from "lucide-react";
+import { Bell, Shield, Menu, X, Home, Info, Phone, CreditCard, Heart, Settings as SettingsIcon, Calendar as CalendarIcon, ArrowLeft, BookOpen, Camera, Gift } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
@@ -48,6 +48,7 @@ function LayoutContent({ children, currentPageName }) {
     { name: t('nav.home'), icon: Home, path: "Announcements" },
     { name: t('nav.resources'), icon: BookOpen, path: "Resources" },
     { name: t('nav.gallery'), icon: Camera, path: "Gallery" },
+    { name: "Raffle", icon: Gift, path: "__raffle__", external: "https://rafflebbofcc.base44.app/" },
     ...(isAdmin ? [{ name: t('nav.admin'), icon: Shield, path: "AdminPortal" }] : []),
     { name: t('nav.profile'), icon: SettingsIcon, path: "Profile", requireAuth: true }
   ];
@@ -91,6 +92,9 @@ function LayoutContent({ children, currentPageName }) {
               <Link to={createPageUrl("Gallery")} className={`px-3 py-2 rounded-xl font-medium transition-all text-sm ${location.pathname === createPageUrl("Gallery") ? "bg-amber-200 dark:bg-amber-900 text-[#5C2E0F] dark:text-white" : "text-[#8B4513] dark:text-white hover:bg-amber-100 dark:hover:bg-amber-900/20"}`}>
                 {t('nav.gallery')}
               </Link>
+              <a href="https://rafflebbofcc.base44.app/" target="_blank" rel="noopener noreferrer" className="px-3 py-2 rounded-xl font-medium transition-all text-sm text-[#8B4513] dark:text-white hover:bg-amber-100 dark:hover:bg-amber-900/20 flex items-center gap-1">
+                <Gift className="w-3.5 h-3.5" /> Raffle
+              </a>
               {isAdmin && (
                 <>
                   <Link to={createPageUrl("CheckInSystem")} className={`px-3 py-2 rounded-xl font-medium transition-all text-sm ${location.pathname === createPageUrl("CheckInSystem") ? "bg-amber-200 dark:bg-amber-900 text-[#5C2E0F] dark:text-white" : "text-[#8B4513] dark:text-white hover:bg-amber-100 dark:hover:bg-amber-900/20"}`}>
@@ -137,6 +141,15 @@ function LayoutContent({ children, currentPageName }) {
             {bottomTabItems.map((item) => {
               if (item.requireAuth && !user) return null;
               const Icon = item.icon;
+              if (item.external) {
+                return (
+                  <a key={item.path} href={item.external} target="_blank" rel="noopener noreferrer"
+                    className="flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-all text-[#8B4513] dark:text-white">
+                    <Icon className="w-5 h-5" />
+                    <span className="text-xs font-medium">{item.name}</span>
+                  </a>
+                );
+              }
               const isActive = location.pathname === createPageUrl(item.path);
               return (
                 <button
