@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Users, Megaphone, Shield, Trash2, Plus, Heart, Camera, BookOpen, CheckCircle, Star, User, CheckSquare, Square, X } from "lucide-react";
+import { Users, Megaphone, Shield, Trash2, Plus, Heart, Camera, BookOpen, CheckCircle, Star, User, CheckSquare, Square, X, Eye, Key } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { useToast } from "@/components/ui/use-toast";
@@ -16,6 +16,8 @@ import { Switch } from "@/components/ui/switch";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import AdminOverview from "@/components/admin/AdminOverview";
 import AdminListSection from "@/components/admin/AdminListSection";
+import PageViewsPanel from "@/components/admin/PageViewsPanel";
+import AccessCodesPanel from "@/components/admin/AccessCodesPanel";
 
 export default function AdminPortalPage() {
   const navigate = useNavigate();
@@ -146,6 +148,8 @@ export default function AdminPortalPage() {
     { value: "photos", icon: Camera, label: "Photos" },
     { value: "volunteers", icon: Users, label: "Volunteers" },
     { value: "stories", icon: BookOpen, label: "Stories" },
+    { value: "views", icon: Eye, label: "Views" },
+    { value: "codes", icon: Key, label: "Codes" },
   ];
 
   return (
@@ -308,6 +312,14 @@ export default function AdminPortalPage() {
                 </Button>
               )}
             />
+          </TabsContent>
+
+          <TabsContent value="views">
+            <PageViewsPanel />
+          </TabsContent>
+
+          <TabsContent value="codes">
+            <AccessCodesPanel />
           </TabsContent>
         </Tabs>
       </div>
