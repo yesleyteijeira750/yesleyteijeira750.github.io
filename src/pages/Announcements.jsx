@@ -35,6 +35,8 @@ export default function AnnouncementsPage() {
   const startY = React.useRef(0);
   const isPulling = React.useRef(false);
 
+  const [canPostOnce, setCanPostOnce] = useState(false);
+
   useEffect(() => { loadData(); }, []);
   useEffect(() => { filterAnnouncements(); }, [announcements, searchTerm, categoryFilter]);
 
@@ -59,7 +61,18 @@ export default function AnnouncementsPage() {
 
   const loadData = async () => {
     setIsLoading(true);
-    try { const currentUser = await base44.auth.me(); setUser(currentUser); } catch (error) { setUser(null); }
+    try {
+      const currentUser = await base44.auth.me();
+      setUser(currentUser);
+      // Track page view (once per day per user)
+      const todayStr = new Date().toISOString().split("T")[0];
+      const existing = await base44.entities.PageView.filter({ user_email: currentUser.email, page_name: "Announcements", view_date: todayStr });
+      if (existing.length === 0) {
+        await base44.entities.PageView.create({ user_email: currentUser.email, user_name: currentUser.full_name || currentUser.email, page_name: "Announcements", view_date: todayStr });
+      }
+      // Check if user has a one-time post grant
+      if (currentUser.one_time_post_granted) setCanPostOnce(true);
+    } catch (error) { setUser(null); }
     const data = await base44.entities.Announcement.list();
     const sorted = data.sort((a, b) => {
       if (a.is_pinned && !b.is_pinned) return -1;
@@ -113,10 +126,22 @@ export default function AnnouncementsPage() {
     try {
       const newAnnouncement = await base44.entities.Announcement.create(data);
       setShowForm(false);
-      sendNotificationEmails(newAnnouncement);
+
+      // If this was a one-time post, revoke the grant
+      if (canPostOnce && user?.role !== 'admin') {
+        await base44.auth.updateMe({ one_time_post_granted: false });
+        if (user.one_time_post_code_id) {
+          await base44.entities.AccessCode.update(user.one_time_post_code_id, { announcement_id: newAnnouncement.id });
+        }
+        setCanPostOnce(false);
+      }
+
+      if (user?.role === 'admin') {
+        sendNotificationEmails(newAnnouncement);
+      }
       scheduleReminderEmail(newAnnouncement);
       loadData();
-      toast({ title: `✅ ${t('announcements.created')}`, description: t('announcements.sendingEmails') });
+      toast({ title: `✅ ${t('announcements.created')}`, description: user?.role === 'admin' ? t('announcements.sendingEmails') : "Your announcement has been published!" });
     } catch (error) {
       toast({ title: `❌ ${t('common.error')}`, description: t('announcements.createError'), variant: "destructive" });
     }
@@ -177,10 +202,10 @@ export default function AnnouncementsPage() {
                 <SelectItem value="news">{t('announcements.news')}</SelectItem>
               </SelectContent>
             </Select>
-            {user?.role === 'admin' && (
+            {(user?.role === 'admin' || canPostOnce) && (
               <Button onClick={() => setShowForm(true)} disabled={isSendingEmails} className="bg-gradient-to-r from-[#8B4513] to-[#D2691E] hover:from-[#5C2E0F] hover:to-[#A0522D] text-white shadow-lg hover:shadow-xl transition-all text-sm">
                 <Plus className="w-4 h-4 mr-1" />
-                <span className="hidden sm:inline">{t('announcements.newAnnouncement')}</span>
+                <span className="hidden sm:inline">{canPostOnce && user?.role !== 'admin' ? "Publish (1 time)" : t('announcements.newAnnouncement')}</span>
                 <span className="sm:hidden">{t('common.add')}</span>
               </Button>
             )}
