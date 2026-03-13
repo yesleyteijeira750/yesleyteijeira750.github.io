@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Users, Megaphone, Shield, Trash2, Plus, Heart, Camera, BookOpen, CheckCircle, Star, User, CheckSquare, Square, X, Eye, Key } from "lucide-react";
+import { Users, Megaphone, Shield, Trash2, Plus, Heart, Camera, BookOpen, CheckCircle, Star, User, CheckSquare, Square, X, Eye } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { useToast } from "@/components/ui/use-toast";
@@ -17,7 +17,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import AdminOverview from "@/components/admin/AdminOverview";
 import AdminListSection from "@/components/admin/AdminListSection";
 import PageViewsPanel from "@/components/admin/PageViewsPanel";
-import AccessCodesPanel from "@/components/admin/AccessCodesPanel";
+import VolunteerTeamPanel from "@/components/admin/VolunteerTeamPanel";
 
 export default function AdminPortalPage() {
   const navigate = useNavigate();
@@ -149,7 +149,7 @@ export default function AdminPortalPage() {
     { value: "volunteers", icon: Users, label: "Volunteers" },
     { value: "stories", icon: BookOpen, label: "Stories" },
     { value: "views", icon: Eye, label: "Views" },
-    { value: "codes", icon: Key, label: "Codes" },
+    { value: "team", icon: Users, label: "Team" },
   ];
 
   return (
@@ -318,8 +318,8 @@ export default function AdminPortalPage() {
             <PageViewsPanel />
           </TabsContent>
 
-          <TabsContent value="codes">
-            <AccessCodesPanel />
+          <TabsContent value="team">
+            <VolunteerTeamPanel />
           </TabsContent>
         </Tabs>
       </div>

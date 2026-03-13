@@ -130,9 +130,6 @@ export default function AnnouncementsPage() {
       // If this was a one-time post, revoke the grant
       if (canPostOnce && user?.role !== 'admin') {
         await base44.auth.updateMe({ one_time_post_granted: false });
-        if (user.one_time_post_code_id) {
-          await base44.entities.AccessCode.update(user.one_time_post_code_id, { announcement_id: newAnnouncement.id });
-        }
         setCanPostOnce(false);
       }
 

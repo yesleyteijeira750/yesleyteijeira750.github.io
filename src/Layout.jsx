@@ -6,7 +6,7 @@ import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { LanguageProvider, useLanguage } from "@/components/i18n/LanguageProvider";
-import CodeRedeemDialog from "@/components/access/CodeRedeemDialog";
+
 
 const pageVariants = {
   initial: { opacity: 0, x: 20 },
@@ -34,8 +34,7 @@ function LayoutContent({ children, currentPageName }) {
   const navigate = useNavigate();
   const [user, setUser] = React.useState(null);
   const [isMobile, setIsMobile] = React.useState(false);
-  const [showCodeDialog, setShowCodeDialog] = React.useState(false);
-  const longPressTimer = React.useRef(null);
+
 
   React.useEffect(() => {
     base44.auth.me().then(setUser).catch(() => setUser(null));
@@ -75,35 +74,13 @@ function LayoutContent({ children, currentPageName }) {
                 <ArrowLeft className="w-6 h-6" />
               </Button>
             ) : (
-              <div
-                className="flex items-center gap-3 group cursor-pointer select-none"
-                style={{ WebkitTouchCallout: 'none', WebkitUserSelect: 'none', userSelect: 'none' }}
-                onContextMenu={(e) => e.preventDefault()}
-                onTouchStart={(e) => {
-                  longPressTimer.current = setTimeout(() => {
-                    longPressTimer.current = null;
-                    setShowCodeDialog(true);
-                  }, 1200);
-                }}
-                onTouchEnd={(e) => {
-                  if (longPressTimer.current) {
-                    clearTimeout(longPressTimer.current);
-                    longPressTimer.current = null;
-                    navigate(createPageUrl("Announcements"));
-                  }
-                }}
-                onTouchCancel={() => { if (longPressTimer.current) { clearTimeout(longPressTimer.current); longPressTimer.current = null; } }}
-                onMouseDown={() => { longPressTimer.current = setTimeout(() => { longPressTimer.current = null; setShowCodeDialog(true); }, 1200); }}
-                onMouseUp={() => { if (longPressTimer.current) { clearTimeout(longPressTimer.current); longPressTimer.current = null; navigate(createPageUrl("Announcements")); } }}
-                onMouseLeave={() => { if (longPressTimer.current) { clearTimeout(longPressTimer.current); longPressTimer.current = null; } }}
-              >
+              <Link to={createPageUrl("Announcements")} className="flex items-center gap-3 group">
                 <img 
                   src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68e4114143e84ad0df65d068/512622c87_1762982225481.jpg"
                   alt="Bountiful Blessings Food Pantry"
-                  className="h-12 sm:h-16 w-auto object-contain transition-transform group-hover:scale-105 pointer-events-none"
-                  draggable={false}
+                  className="h-12 sm:h-16 w-auto object-contain transition-transform group-hover:scale-105"
                 />
-              </div>
+              </Link>
             )}
 
             {/* Desktop Navigation */}
@@ -197,8 +174,6 @@ function LayoutContent({ children, currentPageName }) {
           </div>
         </nav>
       )}
-
-      <CodeRedeemDialog open={showCodeDialog} onOpenChange={setShowCodeDialog} />
 
       <footer className="bg-[#FFFBF0] dark:bg-card backdrop-blur-sm border-t border-amber-200 dark:border-amber-800 mt-16 safe-area-bottom">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
