@@ -75,20 +75,35 @@ function LayoutContent({ children, currentPageName }) {
                 <ArrowLeft className="w-6 h-6" />
               </Button>
             ) : (
-              <Link to={createPageUrl("Announcements")} className="flex items-center gap-3 group"
-                onTouchStart={() => { longPressTimer.current = setTimeout(() => setShowCodeDialog(true), 1500); }}
-                onTouchEnd={() => clearTimeout(longPressTimer.current)}
-                onTouchCancel={() => clearTimeout(longPressTimer.current)}
-                onMouseDown={() => { longPressTimer.current = setTimeout(() => setShowCodeDialog(true), 1500); }}
-                onMouseUp={() => clearTimeout(longPressTimer.current)}
-                onMouseLeave={() => clearTimeout(longPressTimer.current)}
+              <div
+                className="flex items-center gap-3 group cursor-pointer select-none"
+                style={{ WebkitTouchCallout: 'none', WebkitUserSelect: 'none', userSelect: 'none' }}
+                onContextMenu={(e) => e.preventDefault()}
+                onTouchStart={(e) => {
+                  longPressTimer.current = setTimeout(() => {
+                    longPressTimer.current = null;
+                    setShowCodeDialog(true);
+                  }, 1200);
+                }}
+                onTouchEnd={(e) => {
+                  if (longPressTimer.current) {
+                    clearTimeout(longPressTimer.current);
+                    longPressTimer.current = null;
+                    navigate(createPageUrl("Announcements"));
+                  }
+                }}
+                onTouchCancel={() => { if (longPressTimer.current) { clearTimeout(longPressTimer.current); longPressTimer.current = null; } }}
+                onMouseDown={() => { longPressTimer.current = setTimeout(() => { longPressTimer.current = null; setShowCodeDialog(true); }, 1200); }}
+                onMouseUp={() => { if (longPressTimer.current) { clearTimeout(longPressTimer.current); longPressTimer.current = null; navigate(createPageUrl("Announcements")); } }}
+                onMouseLeave={() => { if (longPressTimer.current) { clearTimeout(longPressTimer.current); longPressTimer.current = null; } }}
               >
                 <img 
                   src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68e4114143e84ad0df65d068/512622c87_1762982225481.jpg"
                   alt="Bountiful Blessings Food Pantry"
-                  className="h-12 sm:h-16 w-auto object-contain transition-transform group-hover:scale-105"
+                  className="h-12 sm:h-16 w-auto object-contain transition-transform group-hover:scale-105 pointer-events-none"
+                  draggable={false}
                 />
-              </Link>
+              </div>
             )}
 
             {/* Desktop Navigation */}
